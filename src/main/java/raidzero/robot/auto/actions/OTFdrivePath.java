@@ -1,11 +1,11 @@
 package raidzero.robot.auto.actions;
 
-import com.pathplanner.lib.PathConstraints;
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.PathPoint;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerTrajectory;
+import com.pathplanner.lib.path.PathPoint;
 
 import edu.wpi.first.wpilibj.Timer;
+
 import raidzero.robot.submodules.Swerve;
 
 /**
@@ -21,7 +21,9 @@ public class OTFdrivePath implements Action {
 
     public OTFdrivePath(double delay, PathConstraints constraints, PathPoint point1, PathPoint point2,
             PathPoint... points) {
-        mTrajectory = PathPlanner.generatePath(constraints, false, point1, point2, points);
+
+        // mTrajectory = 
+        // mTrajectory = PathPlanner.generatePath(constraints, false, point1, point2, points);
         this.duration = delay;
     }
 

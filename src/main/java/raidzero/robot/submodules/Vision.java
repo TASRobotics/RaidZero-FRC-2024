@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import com.ctre.phoenix.sensors.WPI_Pigeon2;
+// import com.ctre.phoenix.sensors.WPI_Pigeon2;
 
 // import com.fasterxml.jackson.annotation.JsonCreator;
 // import com.fasterxml.jackson.annotation.JsonProperty;
@@ -59,7 +59,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Vision extends Submodule {
 
     private static final Swerve robotDrive = Swerve.getInstance();
-    private static final Lights lights = Lights.getInstance();
+    // private static final Lights lights = Lights.getInstance();
     // private String tablename;
     private TimeInterpolatableBuffer<Rotation2d> angleInterpolate;
     // private UnscentedKalmanFilter<N2,N1,N1> aprilYawFilter;
@@ -86,17 +86,17 @@ public class Vision extends Submodule {
 
     private BlockingQueue<Thread> blockingQueue = new LinkedBlockingQueue<>(VisionConstants.NUM_THREADS);
 
-    private WPI_Pigeon2_Helper pigeon;
+    // private WPI_Pigeon2_Helper pigeon;
 
-    private class WPI_Pigeon2_Helper extends WPI_Pigeon2 {
-        public WPI_Pigeon2_Helper(int deviceNumber, String canbus) {
-            super(deviceNumber, canbus);
-        }
+    // private class WPI_Pigeon2_Helper extends WPI_Pigeon2 {
+    //     public WPI_Pigeon2_Helper(int deviceNumber, String canbus) {
+    //         super(deviceNumber, canbus);
+    //     }
 
-        public double getAngle() {
-            return -super.getAngle();
-        }
-    }
+    //     public double getAngle() {
+    //         return -super.getAngle();
+    //     }
+    // }
 
     private static Vision instance;
 
@@ -110,7 +110,7 @@ public class Vision extends Submodule {
     private Vision() {
         robotPose = new Pose2d();
         coneTransform = new Transform2d();
-        pigeon = new WPI_Pigeon2_Helper(SwerveConstants.IMU_ID, Constants.CANBUS_STRING);
+        // pigeon = new WPI_Pigeon2_Helper(SwerveConstants.IMU_ID, Constants.CANBUS_STRING);
         aprilTagGlobalPoses = GenerateAprilTagPoses(VisionConstants.APRILTAGPATH);
         int numAprilTags = aprilTagGlobalPoses.length;
         // angleInterpolate =
@@ -493,11 +493,11 @@ public class Vision extends Submodule {
         NetworkTable subTable = table.getSubTable("Camera 0");
         aprilDetect(subTable);
         if (aprilTagIDs.length > 0) {
-            double pigeonAngle = pigeon.getAngle();
-            Rotation2d robotRotation = Rotation2d.fromDegrees(pigeonAngle);
+            // double pigeonAngle = pigeon.getAngle();
+            // Rotation2d robotRotation = Rotation2d.fromDegrees(pigeonAngle);
 
             Pose2d aprilTagPose = aprilTagGlobalPoses[aprilTagIDs[0]];
-            Pose2d globalToAprilTag = new Pose2d(aprilTagPose.getTranslation(), robotRotation);
+            Pose2d globalToAprilTag = new Pose2d(aprilTagPose.getTranslation(), null);
 
             // Pose2d rotationPose = new Pose2d(0, 0, robotRotation);
             Transform2d aprilTagTransform = new Transform2d(

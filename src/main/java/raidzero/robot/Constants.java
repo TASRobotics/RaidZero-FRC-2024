@@ -2,10 +2,9 @@ package raidzero.robot;
 
 import java.nio.file.Path;
 
-import com.ctre.phoenix.led.CANdle.LEDStripType;
-import com.ctre.phoenix.led.CANdle.VBatOutputMode;
-import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
-import com.revrobotics.SparkMaxLimitSwitch;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
@@ -37,10 +36,10 @@ public class Constants {
         public static final int kRearLeftThrottleID = 3;
         public static final int kRearRightThrottleID = 5;
 
-        public static final int kFrontLeftRotorID = 2;
-        public static final int kFrontRightRotorID = 8;
-        public static final int kRearLeftRotorID = 4;
-        public static final int kRearRightRotorID = 6;
+        public static final int kFrontLeftAzimuthID = 2;
+        public static final int kFrontRightAzimuthID = 8;
+        public static final int kRearLeftAzimuthID = 4;
+        public static final int kRearRightAzimuthID = 6;
 
         public static final int kFrontLeftEncoderID = 1;
         public static final int kFrontRightEncoderID = 4;
@@ -49,13 +48,13 @@ public class Constants {
 
         public static final int kImuID = 0;
 
-        public static final double kFrontLeftRotorOffset = 166.553;
-        public static final double kFrontRightRotorOffset = 24.082;
-        public static final double kRearLeftRotorOffset = 31.641;
-        public static final double kRearRightRotorOffset = 63.281;
+        public static final double kFrontLeftAzimuthOffset = 166.553;
+        public static final double kFrontRightAzimuthOffset = 24.082;
+        public static final double kRearLeftAzimuthOffset = 31.641;
+        public static final double kRearRightAzimuthOffset = 63.281;
 
         public static final double kThrottleReduction = (14.0 / 50.0) * (28.0 / 16.0) * (15.0 / 45.0);
-        public static final double kRotorReduction = (14.0 / 50.0) * (10.0 / 60.0);
+        public static final double kAzimuthReduction = (14.0 / 50.0) * (10.0 / 60.0);
         public static final double kWheelDiameterMeters = 0.1016;
 
         public static final double kMaxVelMPS = 4.959668;
@@ -85,32 +84,32 @@ public class Constants {
         // public static final double MAX_STEERING_VEL = Units.degreesToRadians(1000);
 
         /** 254 Module Constants */
-        public static final int kRotorPositionPIDSlot = 0;
-        public static final double kRotorP = 1;// .75
-        public static final double kRotorI = 0;
-        public static final double kRotorD = 5;// 15
+        public static final int kAzimuthPositionPIDSlot = 0;
+        public static final double kAzimuth_kP = 1;// .75
+        public static final double kAzimuth_kI = 0;
+        public static final double kAzimuth_kD = 5;// 15
         public static final int kThrottleVelPIDSlot = 0;
-        public static final double kThrottleP = 0.1;
-        public static final double kThrottleI = 0.0;
-        public static final double kThrottleD = 0.01;
-        public static final double kThrottleF = 1023 /
+        public static final double kThrottle_kP = 0.1;
+        public static final double kThrottle_kI = 0.0;
+        public static final double kThrottle_kD = 0.01;
+        public static final double kThrottle_kF = 1023 /
                 (kMaxVelMPS /
                         (Math.PI * kWheelDiameterMeters * kThrottleReduction / 2048.0 * 10));
 
         /** 1678 Pathing Constants */
-        public static final double kXControllerP = 1.5;
-        public static final double kYControllerP = 1.5;
-        public static final double kThetaControllerP = 0.5;
-        public static final double kThetaControllerD = 0;
+        public static final double kXController_kP = 1.5;
+        public static final double kYController_kP = 1.5;
+        public static final double kThetaController_kP = 0.5;
+        public static final double kThetaController_kD = 0;
         public static final double kXControllerTolerance = 0.1;
         public static final double kYControllerTolerance = 0.1;
         public static final double kThetaControllerTolerance = Math.toRadians(5);
 
         /** AutoAim Constants */
-        public static final double kAAXControllerP = 1.6;
-        public static final double kAAYControllerP = 1.6;
-        public static final double kAAThetaControllerP = 1.0;
-        public static final double kAAThetaControllerD = 0.1;
+        public static final double kAAXController_kP = 1.6;
+        public static final double kAAYController_kP = 1.6;
+        public static final double kAAThetaController_kP = 1.0;
+        public static final double kAAThetaController_kD = 0.1;
         public static final double kAAXControllerTolerance = 0.01;
         public static final double kAAYControllerTolerance = 0.01;
         public static final double kAAThetaControllerTolerance = Math.toRadians(0.2);
@@ -119,20 +118,25 @@ public class Constants {
         public static final double kThrottleTicksToMeters = Math.PI * kWheelDiameterMeters
                 / (2048 * (1 / kThrottleReduction));
         public static final double kCANCoderToDegrees = 360.0 / 4096.0;
-        public static final boolean kThrottleInversion = false;
-        public static final boolean kRotorInversion = true;
+        public static final InvertedValue kThrottleInversion = InvertedValue.Clockwise_Positive;
+        public static final InvertedValue kAzimuthInversion = InvertedValue.Clockwise_Positive;
+        public static final NeutralModeValue kThrottleNeutralMode = NeutralModeValue.Brake;
+        public static final NeutralModeValue kAzimuthNeutralMode = NeutralModeValue.Brake;
+
+
+
         public static final boolean kRotorInvertSensorPhase = true;
         /** Current Limits */
-        public static final SupplyCurrentLimitConfiguration kRotorCurrentLimit = new SupplyCurrentLimitConfiguration(
-                true,
-                25,
-                40,
-                0.1);
-        public static final SupplyCurrentLimitConfiguration kThrottleCurrentLimit = new SupplyCurrentLimitConfiguration(
-                true,
-                35,
-                60,
-                0.1);
+        // public static final SupplyCurrentLimitConfiguration kRotorCurrentLimit = new SupplyCurrentLimitConfiguration(
+        //         true,
+        //         25,
+        //         40,
+        //         0.1);
+        // public static final SupplyCurrentLimitConfiguration kThrottleCurrentLimit = new SupplyCurrentLimitConfiguration(
+        //         true,
+        //         35,
+        //         60,
+        //         0.1);
     }
 
     public static final class DriveConstants {
@@ -255,10 +259,10 @@ public class Constants {
     public static final class LightsConstants {
         public static final int CANDLE_ID = 0;
         public static final boolean LOS_BEHAVIOR = true;
-        public static final LEDStripType LED_STRIP_TYPE = LEDStripType.GRB;
+        // public static final LEDStripType LED_STRIP_TYPE = LEDStripType.GRB;
         public static final double BRIGHTNESS_SCALAR = 1.0;
         public static final boolean STATUS_LED_CONFIG = false;
-        public static final VBatOutputMode V_BAT_OUTPUT_MODE = VBatOutputMode.Off;
+        // public static final VBatOutputMode V_BAT_OUTPUT_MODE = VBatOutputMode.Off;
 
         public static final int PRIMARY_ANIMATION_SLOT = 0;
     }
@@ -272,7 +276,13 @@ public class Constants {
     public static final double TIMEOUT_S = TIMEOUT_MS / 1000.0f;
     public static final int SECONDS_IN_MINUTE = 60;
     public static final double SQRTTWO = Math.sqrt(2);
-    public static final String CANBUS_STRING = "seCANdary";
     public static final PneumaticsModuleType PNEUMATICS_MODULE_TYPE = PneumaticsModuleType.REVPH;
     public static final double VOLTAGE_COMP = 12.0;
+
+    public static final int kCANTimeoutMs = 10; 
+    public static final int kLongCANTimeoutMs = 100; // constructors
+
+    public static final String kCANBusName = "seCANdary";
+
+    public static final double kMaxMotorVoltage = 12.0; 
 }

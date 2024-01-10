@@ -16,23 +16,7 @@ public class AutoRunner {
     private AutoSequence selectedSequence;
 
     private AutoSequence[] availableSequences = {
-            new TestSequence(),
-            new EmptySequence(),
-            new SafetySequence(),
-            new SingleConeClimbSequence(),
-            new SingleConeSafeClimbSequence(),
-            new CenterConeCubeClimbSequence(),
-            new ConeCubeBumpClimbSequenceBlue(),
-            new ConeCubeBumpSequenceBlue(),
-            new ConeCubeClimbSequenceRed(),
-            new ConeCubeSequenceRed(),
-            new ConeCubeBumpClimbSequenceRed(),
-            new ConeCubeBumpSequenceRed(),
-            new LinkSequenceBlue(),
-            new LinkSequenceRed(),
-            new LinkBumpSequenceBlue(),
-            new LinkBumpSequenceRed(),
-            new FlyingCubeSequence()
+        new EmptySequence(),
     };
 
     public AutoRunner() {

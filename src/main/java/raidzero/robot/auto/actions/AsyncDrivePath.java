@@ -1,6 +1,6 @@
 package raidzero.robot.auto.actions;
 
-import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.path.PathPlannerTrajectory;
 
 import raidzero.robot.submodules.Swerve;
 

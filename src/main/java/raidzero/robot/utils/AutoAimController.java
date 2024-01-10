@@ -130,7 +130,8 @@ public class AutoAimController {
      * @param location  desired auto aim location
      */
     public void setTarget(Pose2d startPose, AutoAimLocation location) {
-        Alliance alliance = DriverStation.getAlliance();
+        // Alliance alliance = DriverStation.getAlliance();
+        Alliance alliance = null;
 
         double fieldLengthMeters = 16.5;
         double blueLongThreshold = 3;
@@ -371,7 +372,8 @@ public class AutoAimController {
     }
 
     private double getYOfAutoAimLocation(AutoAimLocation location) {
-        Alliance alliance = DriverStation.getAlliance();
+        // Alliance alliance = DriverStation.getAlliance();
+        Alliance alliance = null; 
         switch (location) {
             case LL:
                 return alliance == Alliance.Blue ? VisionConstants.BLL : VisionConstants.RLL;
@@ -397,7 +399,8 @@ public class AutoAimController {
     }
 
     private Rotation2d getAutoAimHeading (AutoAimLocation location) {
-        Alliance alliance = DriverStation.getAlliance();
+        // Alliance alliance = DriverStation.getAlliance();
+        Alliance alliance = null; 
         switch (location) {
             case LL:
                 return alliance == Alliance.Blue ? Rotation2d.fromDegrees(180) : Rotation2d.fromDegrees(-22);

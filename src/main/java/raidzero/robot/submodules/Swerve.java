@@ -1,9 +1,9 @@
 package raidzero.robot.submodules;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 
-import com.ctre.phoenix.sensors.WPI_Pigeon2;
+import com.ctre.phoenix6.hardware.Pigeon2;
+
 import com.pathplanner.lib.path.PathPlannerTrajectory;
 
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -24,7 +24,6 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
 import raidzero.robot.Constants;
 import raidzero.robot.Constants.DriveConstants;
@@ -38,16 +37,6 @@ public class Swerve extends Submodule {
         OPEN_LOOP, PATHING, AUTO_AIM
     };
 
-    private class WPI_Pigeon2_Helper extends WPI_Pigeon2 {
-        public WPI_Pigeon2_Helper(int deviceNumber, String canbus) {
-            super(deviceNumber, canbus);
-        }
-
-        public double getAngle() {
-            return -super.getAngle();
-        }
-    }
-
     private static Swerve instance = null;
 
     public static Swerve getInstance() {
@@ -57,17 +46,16 @@ public class Swerve extends Submodule {
         return instance;
     }
 
-    private Swerve() {
-    }
+    private Swerve() {}
 
-    private static final Vision vision = Vision.getInstance();
+    // private static final Vision vision = Vision.getInstance();
 
-    private SwerveModule topRightModule = new SwerveModule();
-    private SwerveModule topLeftModule = new SwerveModule();
-    private SwerveModule bottomLeftModule = new SwerveModule();
-    private SwerveModule bottomRightModule = new SwerveModule();
+    private SwerveModule mTopRightModule = new SwerveModule();
+    private SwerveModule mTopLeftModule = new SwerveModule();
+    private SwerveModule mRearLeftModule = new SwerveModule();
+    private SwerveModule mRearRightModule = new SwerveModule();
 
-    private WPI_Pigeon2_Helper pigeon;
+    private Pigeon2 mPigeon = new Pigeon2(SwerveConstants.kImuID, Constants.kCANBusName);
 
     private SwerveDrivePoseEstimator odometry;
 
@@ -95,7 +83,7 @@ public class Swerve extends Submodule {
 
     public void onStart(double timestamp) {
         controlState = ControlState.OPEN_LOOP;
-        alliance = DriverStation.getAlliance();
+        // alliance = DriverStation.getAlliance();
         zero();
         firstPath = true;
 
@@ -104,64 +92,68 @@ public class Swerve extends Submodule {
     }
 
     public void onInit() {
-        pigeon = new WPI_Pigeon2_Helper(SwerveConstants.IMU_ID, Constants.CANBUS_STRING);
-        Shuffleboard.getTab(Tab.MAIN).add("Pigey", pigeon).withSize(2, 2).withPosition(4, 4);
+        Shuffleboard.getTab(Tab.MAIN).add("Pigey", mPigeon).withSize(2, 2).withPosition(4, 4);
 
-        topLeftModule.onInit(
-                SwerveConstants.FRONT_LEFT_THROTTLE_ID,
-                SwerveConstants.FRONT_LEFT_ROTOR_ID,
-                SwerveConstants.FRONT_LEFT_ENCODER_ID,
-                SwerveConstants.FRONT_LEFT_ROTOR_OFFSET);
-        topRightModule.onInit(
-                SwerveConstants.FRONT_RIGHT_THROTTLE_ID,
-                SwerveConstants.FRONT_RIGHT_ROTOR_ID,
-                SwerveConstants.FRONT_RIGHT_ENCODER_ID,
-                SwerveConstants.FRONT_RIGHT_ROTOR_OFFSET);
-        bottomLeftModule.onInit(
-                SwerveConstants.REAR_LEFT_THROTTLE_ID,
-                SwerveConstants.REAR_LEFT_ROTOR_ID,
-                SwerveConstants.REAR_LEFT_ENCODER_ID,
-                SwerveConstants.REAR_LEFT_ROTOR_OFFSET);
-        bottomRightModule.onInit(
-                SwerveConstants.REAR_RIGHT_THROTTLE_ID,
-                SwerveConstants.REAR_RIGHT_ROTOR_ID,
-                SwerveConstants.REAR_RIGHT_ENCODER_ID,
-                SwerveConstants.REAR_RIGHT_ROTOR_OFFSET);
+        mTopLeftModule.onInit(
+            SwerveConstants.kFrontLeftThrottleID,
+            SwerveConstants.kFrontLeftAzimuthID,
+            SwerveConstants.kFrontLeftAzimuthID,
+            SwerveConstants.kFrontLeftAzimuthOffset
+        );
+        mTopRightModule.onInit(
+            SwerveConstants.kFrontRightThrottleID,
+            SwerveConstants.kFrontRightAzimuthID,
+            SwerveConstants.kFrontRightAzimuthID,
+            SwerveConstants.kFrontRightAzimuthOffset
+        );
+        mRearLeftModule.onInit(
+            SwerveConstants.kRearLeftThrottleID,
+            SwerveConstants.kRearLeftAzimuthID,
+            SwerveConstants.kRearLeftAzimuthID,
+            SwerveConstants.kRearLeftAzimuthOffset
+        );
+        mRearRightModule.onInit(
+            SwerveConstants.kRearRightThrottleID,
+            SwerveConstants.kRearRightAzimuthID,
+            SwerveConstants.kRearRightAzimuthID,
+            SwerveConstants.kRearRightAzimuthOffset
+        );
 
         odometry = new SwerveDrivePoseEstimator(
-                SwerveConstants.KINEMATICS,
-                Rotation2d.fromDegrees(pigeon.getAngle()),
-                getModulePositions(),
-                DriveConstants.STARTING_POSE,
-                DriveConstants.STATE_STDEVS_MATRIX,
-                DriveConstants.VISION_STDEVS_MATRIX);
+            SwerveConstants.KINEMATICS,
+            Rotation2d.fromDegrees(mPigeon.getAngle()),
+            getModulePositions(),
+            DriveConstants.STARTING_POSE,
+            DriveConstants.STATE_STDEVS_MATRIX,
+            DriveConstants.VISION_STDEVS_MATRIX
+        );
 
-        snapController = new ProfiledPIDController(1.25, 0, 0.15, new TrapezoidProfile.Constraints(
-                SwerveConstants.MAX_ANGULAR_VEL_RPS, SwerveConstants.MAX_ANGULAR_ACCEL_RPSPS * 2));
-        snapController.enableContinuousInput(-Math.PI, Math.PI);
-        snapController.reset(getPose().getRotation().getRadians(), 0);
+        // snapController = new ProfiledPIDController(1.25, 0, 0.15, new TrapezoidProfile.Constraints(
+        //         SwerveConstants.MAX_ANGULAR_VEL_RPS, SwerveConstants.MAX_ANGULAR_ACCEL_RPSPS * 2));
+        // snapController.enableContinuousInput(-Math.PI, Math.PI);
+        // snapController.reset(getPose().getRotation().getRadians(), 0);
 
-        xController = new PIDController(SwerveConstants.XCONTROLLER_KP, 0, 0);
-        yController = new PIDController(SwerveConstants.YCONTROLLER_KP, 0, 0);
-        thetaController = new PIDController(SwerveConstants.THETACONTROLLER_KP, 0, SwerveConstants.THETACONTROLLER_KD);
-        xController.setTolerance(SwerveConstants.XCONTROLLER_TOLERANCE);
-        yController.setTolerance(SwerveConstants.YCONTROLLER_TOLERANCE);
-        thetaController.setTolerance(SwerveConstants.THETACONTROLLER_TOLERANCE);
-        thetaController.enableContinuousInput(-Math.PI, Math.PI);
+        // xController = new PIDController(SwerveConstants.kXControllerP, 0, 0);
+        // yController = new PIDController(SwerveConstants.YCONTROLLER_KP, 0, 0);
+        // thetaController = new PIDController(SwerveConstants.THETACONTROLLER_KP, 0, SwerveConstants.THETACONTROLLER_KD);
+        // xController.setTolerance(SwerveConstants.XCONTROLLER_TOLERANCE);
+        // yController.setTolerance(SwerveConstants.YCONTROLLER_TOLERANCE);
+        // thetaController.setTolerance(SwerveConstants.THETACONTROLLER_TOLERANCE);
+        // thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
-        autoAimXController = new PIDController(SwerveConstants.AA_XCONTROLLER_KP, 0.0, 0.0);
-        autoAimYController = new PIDController(SwerveConstants.AA_YCONTROLLER_KP, 0.0, 0.0);
-        autoAimThetaController = new ProfiledPIDController(SwerveConstants.AA_THETACONTROLLER_KP, 0.0, 0.0,
-                new TrapezoidProfile.Constraints(SwerveConstants.MAX_ANGULAR_VEL_RPS,
-                        SwerveConstants.MAX_ANGULAR_ACCEL_RPSPS));
-        autoAimTrajectoryConfig = new TrajectoryConfig(SwerveConstants.MAX_DRIVE_VEL_MPS,
-                SwerveConstants.MAX_DRIVE_ACCEL_MPSPS);
-        autoAimController = new AutoAimController(autoAimXController, autoAimYController, autoAimThetaController,
-                autoAimTrajectoryConfig);
-        autoAimController.setTolerance(new Pose2d(
-                SwerveConstants.AA_XCONTROLLER_TOLERANCE,
-                SwerveConstants.AA_YCONTROLLER_TOLERANCE,
-                Rotation2d.fromRadians(SwerveConstants.AA_THETACONTROLLER_TOLERANCE)));
+        // autoAimXController = new PIDController(SwerveConstants.AA_XCONTROLLER_KP, 0.0, 0.0);
+        // autoAimYController = new PIDController(SwerveConstants.AA_YCONTROLLER_KP, 0.0, 0.0);
+        // autoAimThetaController = new ProfiledPIDController(SwerveConstants.AA_THETACONTROLLER_KP, 0.0, 0.0,
+        //         new TrapezoidProfile.Constraints(SwerveConstants.MAX_ANGULAR_VEL_RPS,
+        //                 SwerveConstants.MAX_ANGULAR_ACCEL_RPSPS));
+        // autoAimTrajectoryConfig = new TrajectoryConfig(SwerveConstants.MAX_DRIVE_VEL_MPS,
+        //         SwerveConstants.MAX_DRIVE_ACCEL_MPSPS);
+        // autoAimController = new AutoAimController(autoAimXController, autoAimYController, autoAimThetaController,
+        //         autoAimTrajectoryConfig);
+        // autoAimController.setTolerance(new Pose2d(
+        //         SwerveConstants.AA_XCONTROLLER_TOLERANCE,
+        //         SwerveConstants.AA_YCONTROLLER_TOLERANCE,
+        //         Rotation2d.fromRadians(SwerveConstants.AA_THETACONTROLLER_TOLERANCE)));
 
         zero();
 
@@ -176,20 +168,10 @@ public class Swerve extends Submodule {
 
     @Override
     public void update(double timestamp) {
-        if (controlState == ControlState.PATHING) {
-            control_state = "pathing";
-            updatePathing();
-        } else if (controlState == ControlState.AUTO_AIM) {
-            control_state = "auto aim";
-            autoAimController.update();
-        } else {
-            control_state = "open loop";
-        }
-        // SmartDashboard.putString("control mode", control_state);
-        topRightModule.update(timestamp);
-        topLeftModule.update(timestamp);
-        bottomLeftModule.update(timestamp);
-        bottomRightModule.update(timestamp);
+        mTopRightModule.update(timestamp);
+        mTopLeftModule.update(timestamp);
+        mRearLeftModule.update(timestamp);
+        mRearRightModule.update(timestamp);
 
         prevPose = currentPose;
 
@@ -203,7 +185,6 @@ public class Swerve extends Submodule {
         SmartDashboard.putNumber("Y pose", odometry.getEstimatedPosition().getY());
         SmartDashboard.putNumber("Theta pose", odometry.getEstimatedPosition().getRotation().getDegrees());
 
-        checkThrottleSpeed();
 
         // if(vision.getRobotPose() != null) {
         // setPose(vision.getRobotPose());
@@ -214,8 +195,6 @@ public class Swerve extends Submodule {
         // SmartDashboard.putNumber("disp", disp);
         prevX = odometry.getEstimatedPosition().getX();
         // SmartDashboard.putNumber("prevX", prevX);
-        beans += deadband(pigeon.getPitch()) * disp;
-        SmartDashboard.putNumber("beans", beans);
     }
 
     /**
@@ -223,19 +202,19 @@ public class Swerve extends Submodule {
      */
     @Override
     public void run() {
-        topRightModule.run();
-        topLeftModule.run();
-        bottomLeftModule.run();
-        bottomRightModule.run();
+        mTopRightModule.run();
+        mTopLeftModule.run();
+        mRearLeftModule.run();
+        mRearRightModule.run();
     }
 
     @Override
     public void stop() {
         controlState = ControlState.OPEN_LOOP;
-        topRightModule.stop();
-        topLeftModule.stop();
-        bottomLeftModule.stop();
-        bottomRightModule.stop();
+        mTopRightModule.stop();
+        mTopLeftModule.stop();
+        mRearLeftModule.stop();
+        mRearRightModule.stop();
     }
 
     /**
@@ -243,33 +222,32 @@ public class Swerve extends Submodule {
      */
     @Override
     public void zero() {
-        if (alliance == Alliance.Blue)
-            zeroHeading(180);
-        else if (alliance == Alliance.Red)
-            zeroHeading(0);
-        setPose(new Pose2d(new Translation2d(1.76, 1.477), new Rotation2d(Math.toRadians(pigeon.getAngle()))));
+        // if (alliance == Alliance.Blue)
+        //     zeroHeading(180);
+        // else if (alliance == Alliance.Red)
+        //     zeroHeading(0);
+        // setPose(new Pose2d(new Translation2d(1.76, 1.477), new Rotation2d(Math.toRadians(pigeon.getAngle()))));
 
-        topRightModule.zero();
-        topLeftModule.zero();
-        bottomLeftModule.zero();
-        bottomRightModule.zero();
-
+        mTopRightModule.zero();
+        mTopLeftModule.zero();
+        mRearLeftModule.zero();
+        mRearRightModule.zero();
     }
 
     /**
      * Zeroes the heading of the swerve at set Yaw
      */
     public void zeroHeading(double q) {
-        pigeon.setYaw(q, Constants.TIMEOUT_MS);
+        mPigeon.setYaw(q, Constants.TIMEOUT_MS);
     }
 
     public void zeroTele(double q) {
-        pigeon.setYaw(q, Constants.TIMEOUT_MS);
-        setPose(new Pose2d(new Translation2d(1.76, 1.477), new Rotation2d(Math.toRadians(pigeon.getAngle()))));
+        mPigeon.setYaw(q, Constants.TIMEOUT_MS);
+        setPose(new Pose2d(new Translation2d(1.76, 1.477), new Rotation2d(Math.toRadians(mPigeon.getAngle()))));
     }
 
     public double getYawRate() {
-        return pigeon.getRate();
+        return mPigeon.getRate();
     }
 
     // public void lockTo90() {
@@ -286,19 +264,19 @@ public class Swerve extends Submodule {
 
     public SwerveModulePosition[] getModulePositions() {
         return new SwerveModulePosition[] {
-                topLeftModule.getModulePosition(),
-                topRightModule.getModulePosition(),
-                bottomLeftModule.getModulePosition(),
-                bottomRightModule.getModulePosition()
+            mTopLeftModule.getPosition(),
+            mTopRightModule.getPosition(),
+            mRearLeftModule.getPosition(),
+            mRearRightModule.getPosition()
         };
     }
 
     public SwerveModuleState[] getModuleStates() {
         return new SwerveModuleState[] {
-                topLeftModule.getModuleState(),
-                topRightModule.getModuleState(),
-                bottomLeftModule.getModuleState(),
-                bottomRightModule.getModuleState()
+            mTopLeftModule.getState(),
+            mTopRightModule.getState(),
+            mRearLeftModule.getState(),
+            mRearRightModule.getState()
         };
     }
 
@@ -317,34 +295,8 @@ public class Swerve extends Submodule {
         beans = 0;
     }
 
-    public double getPitch() {
-        return pigeon.getPitch();
-    }
-
-    /**
-     * Checks the Speed of the throttle and updates the overlimit boolean
-     */
-    public void checkThrottleSpeed() {
-        if (topLeftModule.getThrottlePercentSpeed() > 0.5 || topRightModule.getThrottlePercentSpeed() > 0.3
-                || bottomLeftModule.getThrottlePercentSpeed() > 0.5
-                || bottomRightModule.getThrottlePercentSpeed() > 0.5)
-            overLimit = true;
-        else
-            overLimit = false;
-    }
-
-    /**
-     * Checks whether the swerve is over it's safe speed limit
-     * 
-     * @return is over limit?
-     */
-    public boolean isOverLimit() {
-        // return overLimit;
-        return false;
-    }
-
     public void setPose(Pose2d pose) {
-        odometry.resetPosition(Rotation2d.fromDegrees(pigeon.getAngle()), getModulePositions(), pose);
+        odometry.resetPosition(Rotation2d.fromDegrees(mPigeon.getAngle()), getModulePositions(), pose);
     }
 
     public Pose2d getPose() {
@@ -384,7 +336,7 @@ public class Swerve extends Submodule {
     private Pose2d updateOdometry(double timestamp) {
         try {
             return odometry.updateWithTime(timestamp,
-                    Rotation2d.fromDegrees(pigeon.getAngle()),
+                    Rotation2d.fromDegrees(mPigeon.getAngle()),
                     getModulePositions());
         } catch (Exception e) {
             System.out.println(e);
@@ -410,13 +362,13 @@ public class Swerve extends Submodule {
                 fieldOriented
                         ? ChassisSpeeds.fromFieldRelativeSpeeds(
                                 xSpeed, ySpeed, angularSpeed,
-                                Rotation2d.fromDegrees(pigeon.getAngle()))
+                                Rotation2d.fromDegrees(mPigeon.getAngle()))
                         : new ChassisSpeeds(xSpeed, ySpeed, angularSpeed));
         SwerveDriveKinematics.desaturateWheelSpeeds(targetState, 1);
-        topLeftModule.setTargetState(targetState[0], ignoreAngle, true, true);
-        topRightModule.setTargetState(targetState[1], ignoreAngle, true, true);
-        bottomLeftModule.setTargetState(targetState[2], ignoreAngle, true, true);
-        bottomRightModule.setTargetState(targetState[3], ignoreAngle, true, true);
+        mTopLeftModule.setOpenLoopState(targetState[0]);
+        mTopRightModule.setOpenLoopState(targetState[1]);
+        mRearLeftModule.setOpenLoopState(targetState[2]);
+        mRearRightModule.setOpenLoopState(targetState[3]);
     }
 
     public void drive(double xSpeed, double ySpeed, double angularSpeed, boolean fieldOriented, Rotation2d snapAngle) {
@@ -431,7 +383,7 @@ public class Swerve extends Submodule {
     public void drive(double xSpeed, double ySpeed, double angularSpeed, boolean fieldOriented, boolean snap) {
         if (snap && Math.abs(angularSpeed) < 0.1) {
             double thetaOutput = snapController.calculate(getPose().getRotation().getRadians(),
-                    DriverStation.getAlliance() == Alliance.Blue ? Math.PI : 0);
+                    /*DriverStation.getAlliance() == Alliance.Blue ? Math.PI :*/ 0);
             drive(xSpeed, ySpeed, thetaOutput, fieldOriented);
         } else {
             drive(xSpeed, ySpeed, angularSpeed, fieldOriented);
@@ -466,10 +418,10 @@ public class Swerve extends Submodule {
      */
     private void updatePathing() {
         PathPlannerTrajectory.State state = (PathPlannerTrajectory.State) currentTrajectory.sample(timer.get());
-        double xSpeed = xController.calculate(getPose().getX(), state.poseMeters.getX());
-        double ySpeed = yController.calculate(getPose().getY(), state.poseMeters.getY());
+        double xSpeed = xController.calculate(getPose().getX(), state.positionMeters.getX());
+        double ySpeed = yController.calculate(getPose().getY(), state.positionMeters.getY());
         double thetaSpeed = thetaController.calculate(getPose().getRotation().getRadians(),
-                state.holonomicRotation.getRadians());
+                state.targetHolonomicRotation.getRadians());
         // Math
         // SmartDashboard.putNumber("theta speed", thetaSpeed);
 
@@ -478,14 +430,14 @@ public class Swerve extends Submodule {
                 ySpeed,
                 thetaSpeed,
                 getPose().getRotation());
-        PathPlannerServer.sendPathFollowingData(state.poseMeters, getPose());
+        // PathPlannerServer.sendPathFollowingData(state.poseMeters, getPose());
 
         SwerveModuleState[] desiredState = SwerveConstants.KINEMATICS.toSwerveModuleStates(desiredSpeeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredState, 1);
-        topLeftModule.setTargetState(desiredState[0], false, true, true);
-        topRightModule.setTargetState(desiredState[1], false, true, true);
-        bottomLeftModule.setTargetState(desiredState[2], false, true, true);
-        bottomRightModule.setTargetState(desiredState[3], false, true, true);
+        mTopLeftModule.setOpenLoopState(desiredState[0]);
+        mTopRightModule.setOpenLoopState(desiredState[1]);
+        mRearLeftModule.setOpenLoopState(desiredState[2]);
+        mRearRightModule.setOpenLoopState(desiredState[3]);
     }
 
     /**
@@ -514,22 +466,23 @@ public class Swerve extends Submodule {
     public void setOpenLoopSpeeds(ChassisSpeeds speeds) {
         SwerveModuleState[] desiredState = SwerveConstants.KINEMATICS.toSwerveModuleStates(speeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredState, 1);
-        topLeftModule.setTargetState(desiredState[0], false, true, true);
-        topRightModule.setTargetState(desiredState[1], false, true, true);
-        bottomLeftModule.setTargetState(desiredState[2], false, true, true);
-        bottomRightModule.setTargetState(desiredState[3], false, true, true);
+        mTopLeftModule.setOpenLoopState(desiredState[0]);
+        mTopRightModule.setOpenLoopState(desiredState[1]);
+        mRearLeftModule.setOpenLoopState(desiredState[2]);
+        mRearRightModule.setOpenLoopState(desiredState[3]);
     }
 
     public ChassisSpeeds getOpenLoopSpeeds() {
-        return SwerveConstants.KINEMATICS.toChassisSpeeds(
-                new SwerveModuleState(topLeftModule.getThrottlePercentSpeed(),
-                        Rotation2d.fromDegrees(topLeftModule.getRotorAngle())),
-                new SwerveModuleState(topRightModule.getThrottlePercentSpeed(),
-                        Rotation2d.fromDegrees(topRightModule.getRotorAngle())),
-                new SwerveModuleState(bottomLeftModule.getThrottlePercentSpeed(),
-                        Rotation2d.fromDegrees(bottomLeftModule.getRotorAngle())),
-                new SwerveModuleState(bottomRightModule.getThrottlePercentSpeed(),
-                        Rotation2d.fromDegrees(bottomRightModule.getRotorAngle())));
+        // return SwerveConstants.KINEMATICS.toChassisSpeeds(
+        //         new SwerveModuleState(mTopLeftModule.getThrottlePercentSpeed(),
+        //                 Rotation2d.fromDegrees(mTopLeftModule.getRotorAngle())),
+        //         new SwerveModuleState(mTopRightModule.getThrottlePercentSpeed(),
+        //                 Rotation2d.fromDegrees(mTopRightModule.getRotorAngle())),
+        //         new SwerveModuleState(mRearLeftModule.getThrottlePercentSpeed(),
+        //                 Rotation2d.fromDegrees(mRearLeftModule.getRotorAngle())),
+        //         new SwerveModuleState(mRearRightModule.getThrottlePercentSpeed(),
+        //                 Rotation2d.fromDegrees(mRearRightModule.getRotorAngle())));
+        return null;
     }
 
     public void setAutoAimLocation(AutoAimLocation location) {
@@ -548,11 +501,11 @@ public class Swerve extends Submodule {
     public void setFortniteAutoAimTM(double yDist, double xSpeed) {
         enableAutoAimController(true);
         Rotation2d desiredAngle = new Rotation2d();
-        if (DriverStation.getAlliance() == Alliance.Blue) {
-            desiredAngle = Rotation2d.fromDegrees(180);
-        } else {
-            desiredAngle = Rotation2d.fromDegrees(0);
-        }
+        // if (DriverStation.getAlliance() == Alliance.Blue) {
+        //     desiredAngle = Rotation2d.fromDegrees(180);
+        // } else {
+        //     desiredAngle = Rotation2d.fromDegrees(0);
+        // }
         autoAimController.setTarget(yDist, desiredAngle, xSpeed);
     }
 
@@ -565,30 +518,13 @@ public class Swerve extends Submodule {
      */
     public void testModule(int quadrant, double throttleOutput, double rotorOutput) {
         if (quadrant == 1) {
-            topLeftModule.testThrottleAndRotor(throttleOutput, rotorOutput);
+            mTopLeftModule.testThrottleAndRotor(throttleOutput, rotorOutput);
         } else if (quadrant == 2) {
-            bottomLeftModule.testThrottleAndRotor(throttleOutput, rotorOutput);
+            mRearLeftModule.testThrottleAndRotor(throttleOutput, rotorOutput);
         } else if (quadrant == 3) {
-            bottomRightModule.testThrottleAndRotor(throttleOutput, rotorOutput);
+            mRearRightModule.testThrottleAndRotor(throttleOutput, rotorOutput);
         } else {
-            topRightModule.testThrottleAndRotor(throttleOutput, rotorOutput);
+            mTopRightModule.testThrottleAndRotor(throttleOutput, rotorOutput);
         }
-    }
-
-    /**
-     * Set rotors in "brake" position
-     * 
-     * @param enable enable
-     */
-    public void rotorBrake(boolean enable) {
-        if (enable) {
-            topRightModule.setRotorAngle(-45);
-            topLeftModule.setRotorAngle(-135);
-            bottomRightModule.setRotorAngle(225);
-            bottomLeftModule.setRotorAngle(315);
-        }
-    }
-
-    public void addVisionMeasurement(Pose2d plus, double pathingTime, double d) {
     }
 }
