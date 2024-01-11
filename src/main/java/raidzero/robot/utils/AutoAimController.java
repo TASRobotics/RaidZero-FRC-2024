@@ -238,7 +238,7 @@ public class AutoAimController {
      */
     public void setTarget(Pose2d startPose, AutoAimLocation location, boolean accountForStartVel) {
         if (accountForStartVel) {
-            ChassisSpeeds speeds = SwerveConstants.KINEMATICS.toChassisSpeeds(mSwerve.getModuleStates());
+            ChassisSpeeds speeds = SwerveConstants.kKinematics.toChassisSpeeds(mSwerve.getModuleStates());
             double speedMPS = Math.abs(Math.hypot(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond));
             mTrajectoryConfig.setStartVelocity(speedMPS);
         }

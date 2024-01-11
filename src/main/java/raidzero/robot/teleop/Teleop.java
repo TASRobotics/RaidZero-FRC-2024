@@ -1,13 +1,8 @@
 package raidzero.robot.teleop;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import raidzero.robot.submodules.Swerve;
+
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 
 
@@ -17,6 +12,8 @@ public class Teleop {
     private static XboxController p1 = new XboxController(0);
     private static XboxController p2 = new XboxController(1);
     private static GenericHID p3 = new GenericHID(2);
+
+    private static Swerve mSwerve = Swerve.getInstance();
 
     public static Teleop getInstance() {
         if (instance == null) {
@@ -35,7 +32,7 @@ public class Teleop {
     }
 
     private void p1Loop(XboxController p) {
-
+        mSwerve.teleopDrive(p.getLeftY(), p.getLeftY(), p.getRightX(), true);
     }
 
     private void p2Loop(XboxController p) {

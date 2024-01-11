@@ -3,8 +3,9 @@ package raidzero.robot.submodules;
 import edu.wpi.first.wpilibj.Timer;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
-
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathPlannerTrajectory;
+import com.pathplanner.lib.util.PIDConstants;
 
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -57,9 +58,21 @@ public class Swerve extends Submodule {
 
     private Pigeon2 mPigeon = new Pigeon2(SwerveConstants.kImuID, Constants.kCANBusName);
 
-    private SwerveDrivePoseEstimator odometry;
+    private SwerveDrivePoseEstimator mOdometry;
 
-    private Pose2d currentPose;
+    private PathPlannerTrajectory mCurrentTrajectory; 
+    private PPHolonomicDriveController mHolonomicController; 
+    private Timer mTimer = new Timer();
+    private Pose2d mCurrentPose;
+
+    private ControlState mControlState = ControlState.OPEN_LOOP;
+
+
+
+
+
+
+    
     private Pose2d prevPose;
     private Field2d fieldPose = new Field2d();
 
@@ -68,7 +81,6 @@ public class Swerve extends Submodule {
     private boolean overLimit = false;
     // private Rotation2d targetAngle;
     private PIDController xController, yController, thetaController;
-    private Timer timer = new Timer();
     private Alliance alliance;
     private double beans;
     private double prevX;
@@ -79,10 +91,10 @@ public class Swerve extends Submodule {
     private TrajectoryConfig autoAimTrajectoryConfig;
     private AutoAimController autoAimController;
 
-    private ControlState controlState = ControlState.OPEN_LOOP;
+    
 
     public void onStart(double timestamp) {
-        controlState = ControlState.OPEN_LOOP;
+        mControlState = ControlState.OPEN_LOOP;
         // alliance = DriverStation.getAlliance();
         zero();
         firstPath = true;
@@ -119,13 +131,20 @@ public class Swerve extends Submodule {
             SwerveConstants.kRearRightAzimuthOffset
         );
 
-        odometry = new SwerveDrivePoseEstimator(
-            SwerveConstants.KINEMATICS,
+        mOdometry = new SwerveDrivePoseEstimator(
+            SwerveConstants.kKinematics,
             Rotation2d.fromDegrees(mPigeon.getAngle()),
             getModulePositions(),
             DriveConstants.STARTING_POSE,
             DriveConstants.STATE_STDEVS_MATRIX,
             DriveConstants.VISION_STDEVS_MATRIX
+        );
+
+        mHolonomicController = new PPHolonomicDriveController(
+            new PIDConstants(0.0, 0.0), 
+            new PIDConstants(0.0, 0.0), 
+            0.0, 
+            0.0
         );
 
         // snapController = new ProfiledPIDController(1.25, 0, 0.15, new TrapezoidProfile.Constraints(
@@ -168,22 +187,26 @@ public class Swerve extends Submodule {
 
     @Override
     public void update(double timestamp) {
+        if(mControlState == ControlState.PATHING) {
+            updatePathing();
+        }
+
         mTopRightModule.update(timestamp);
         mTopLeftModule.update(timestamp);
         mRearLeftModule.update(timestamp);
         mRearRightModule.update(timestamp);
 
-        prevPose = currentPose;
+        prevPose = mCurrentPose;
 
-        currentPose = updateOdometry(timestamp);
-        fieldPose.setRobotPose(currentPose);
+        mCurrentPose = updateOdometry(timestamp);
+        fieldPose.setRobotPose(mCurrentPose);
 
         // This needs to be moved somewhere else.....
         SmartDashboard.putData(fieldPose);
 
-        SmartDashboard.putNumber("X pose", odometry.getEstimatedPosition().getX());
-        SmartDashboard.putNumber("Y pose", odometry.getEstimatedPosition().getY());
-        SmartDashboard.putNumber("Theta pose", odometry.getEstimatedPosition().getRotation().getDegrees());
+        SmartDashboard.putNumber("X pose", mOdometry.getEstimatedPosition().getX());
+        SmartDashboard.putNumber("Y pose", mOdometry.getEstimatedPosition().getY());
+        SmartDashboard.putNumber("Theta pose", mOdometry.getEstimatedPosition().getRotation().getDegrees());
 
 
         // if(vision.getRobotPose() != null) {
@@ -191,9 +214,9 @@ public class Swerve extends Submodule {
         // }
 
         // Auto Balance Updates
-        double disp = odometry.getEstimatedPosition().getX() - prevX;
+        double disp = mOdometry.getEstimatedPosition().getX() - prevX;
         // SmartDashboard.putNumber("disp", disp);
-        prevX = odometry.getEstimatedPosition().getX();
+        prevX = mOdometry.getEstimatedPosition().getX();
         // SmartDashboard.putNumber("prevX", prevX);
     }
 
@@ -210,7 +233,7 @@ public class Swerve extends Submodule {
 
     @Override
     public void stop() {
-        controlState = ControlState.OPEN_LOOP;
+        mControlState = ControlState.OPEN_LOOP;
         mTopRightModule.stop();
         mTopLeftModule.stop();
         mRearLeftModule.stop();
@@ -296,15 +319,15 @@ public class Swerve extends Submodule {
     }
 
     public void setPose(Pose2d pose) {
-        odometry.resetPosition(Rotation2d.fromDegrees(mPigeon.getAngle()), getModulePositions(), pose);
+        mOdometry.resetPosition(Rotation2d.fromDegrees(mPigeon.getAngle()), getModulePositions(), pose);
     }
 
     public Pose2d getPose() {
-        return odometry.getEstimatedPosition();
+        return mOdometry.getEstimatedPosition();
     }
 
     public SwerveDrivePoseEstimator getPoseEstimator() {
-        return odometry;
+        return mOdometry;
     }
 
     public synchronized void addVisionMeasurement(Pose2d visionRobotPoseMeters, double timestampSeconds,
@@ -312,8 +335,8 @@ public class Swerve extends Submodule {
         try {
             // visionMeasurementStdDevs = new MatBuilder<N3, N1>(Nat.N3(),
             // Nat.N1()).fill(0.2, 0.2, 0.1);
-            // odometry.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds);
-            odometry.addVisionMeasurement(
+            // mOdometry.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds);
+            mOdometry.addVisionMeasurement(
                     visionRobotPoseMeters,
                     timestampSeconds,
                     visionMeasurementStdDevs);
@@ -335,12 +358,12 @@ public class Swerve extends Submodule {
      */
     private Pose2d updateOdometry(double timestamp) {
         try {
-            return odometry.updateWithTime(timestamp,
+            return mOdometry.updateWithTime(timestamp,
                     Rotation2d.fromDegrees(mPigeon.getAngle()),
                     getModulePositions());
         } catch (Exception e) {
             System.out.println(e);
-            return odometry.getEstimatedPosition();
+            return mOdometry.getEstimatedPosition();
         }
     }
 
@@ -352,13 +375,12 @@ public class Swerve extends Submodule {
      * @param angularSpeed  turn speed
      * @param fieldOriented
      */
-    public void drive(double xSpeed, double ySpeed, double angularSpeed, boolean fieldOriented) {
-        if (controlState == ControlState.AUTO_AIM) {
+    public void teleopDrive(double xSpeed, double ySpeed, double angularSpeed, boolean fieldOriented) {
+        if (mControlState == ControlState.AUTO_AIM) {
             return;
         }
-        controlState = ControlState.OPEN_LOOP;
-        boolean ignoreAngle = false;
-        var targetState = SwerveConstants.KINEMATICS.toSwerveModuleStates(
+        mControlState = ControlState.OPEN_LOOP;
+        var targetState = SwerveConstants.kKinematics.toSwerveModuleStates(
                 fieldOriented
                         ? ChassisSpeeds.fromFieldRelativeSpeeds(
                                 xSpeed, ySpeed, angularSpeed,
@@ -373,10 +395,10 @@ public class Swerve extends Submodule {
 
     public void drive(double xSpeed, double ySpeed, double angularSpeed, boolean fieldOriented, Rotation2d snapAngle) {
         if (Math.abs(angularSpeed) > 0.1) {
-            drive(xSpeed, ySpeed, angularSpeed, fieldOriented);
+            teleopDrive(xSpeed, ySpeed, angularSpeed, fieldOriented);
         } else {
             double thetaOutput = snapController.calculate(getPose().getRotation().getRadians(), snapAngle.getRadians());
-            drive(xSpeed, ySpeed, thetaOutput, fieldOriented);
+            teleopDrive(xSpeed, ySpeed, thetaOutput, fieldOriented);
         }
     }
 
@@ -384,9 +406,9 @@ public class Swerve extends Submodule {
         if (snap && Math.abs(angularSpeed) < 0.1) {
             double thetaOutput = snapController.calculate(getPose().getRotation().getRadians(),
                     /*DriverStation.getAlliance() == Alliance.Blue ? Math.PI :*/ 0);
-            drive(xSpeed, ySpeed, thetaOutput, fieldOriented);
+            teleopDrive(xSpeed, ySpeed, thetaOutput, fieldOriented);
         } else {
-            drive(xSpeed, ySpeed, angularSpeed, fieldOriented);
+            teleopDrive(xSpeed, ySpeed, angularSpeed, fieldOriented);
         }
     }
 
@@ -396,18 +418,18 @@ public class Swerve extends Submodule {
      * @param trajectory desired path
      */
     public void followPath(PathPlannerTrajectory trajectory) {
-        if (controlState == ControlState.PATHING) {
+        if (mControlState == ControlState.PATHING) {
             // return;
         }
         if (firstPath) {
             setPose(trajectory.getInitialTargetHolonomicPose());
             firstPath = false;
         }
-        controlState = ControlState.PATHING;
+        mControlState = ControlState.PATHING;
         currentTrajectory = trajectory;
 
-        timer.reset();
-        timer.start();
+        mTimer.reset();
+        mTimer.start();
     }
 
     /**
@@ -416,8 +438,8 @@ public class Swerve extends Submodule {
      * - actually reads turn changes from the pathplanner trajectory
      * - fully feedback, no more weird feedforward stuff that doesnt actually work
      */
-    private void updatePathing() {
-        PathPlannerTrajectory.State state = (PathPlannerTrajectory.State) currentTrajectory.sample(timer.get());
+    private void updatePathingOld() {
+        PathPlannerTrajectory.State state = (PathPlannerTrajectory.State) currentTrajectory.sample(mTimer.get());
         double xSpeed = xController.calculate(getPose().getX(), state.positionMeters.getX());
         double ySpeed = yController.calculate(getPose().getY(), state.positionMeters.getY());
         double thetaSpeed = thetaController.calculate(getPose().getRotation().getRadians(),
@@ -432,12 +454,18 @@ public class Swerve extends Submodule {
                 getPose().getRotation());
         // PathPlannerServer.sendPathFollowingData(state.poseMeters, getPose());
 
-        SwerveModuleState[] desiredState = SwerveConstants.KINEMATICS.toSwerveModuleStates(desiredSpeeds);
+        SwerveModuleState[] desiredState = SwerveConstants.kKinematics.toSwerveModuleStates(desiredSpeeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredState, 1);
         mTopLeftModule.setOpenLoopState(desiredState[0]);
         mTopRightModule.setOpenLoopState(desiredState[1]);
         mRearLeftModule.setOpenLoopState(desiredState[2]);
         mRearRightModule.setOpenLoopState(desiredState[3]);
+    }
+
+    private void updatePathing() {
+        PathPlannerTrajectory.State state = (PathPlannerTrajectory.State) mCurrentTrajectory.sample(mTimer.get());
+        ChassisSpeeds desiredSpeeds = mHolonomicController.calculateRobotRelativeSpeeds(mCurrentPose, state);
+        setOpenLoopSpeeds(desiredSpeeds);
     }
 
     /**
@@ -446,7 +474,7 @@ public class Swerve extends Submodule {
      * @return path time
      */
     public double getPathingTime() {
-        return timer.get();
+        return mTimer.get();
     }
 
     /**
@@ -456,7 +484,7 @@ public class Swerve extends Submodule {
      */
     public boolean isFinishedPathing() {
         if (xController.atSetpoint() && yController.atSetpoint() && thetaController.atSetpoint()) {
-            if (timer.hasElapsed(currentTrajectory.getTotalTimeSeconds())) {
+            if (mTimer.hasElapsed(currentTrajectory.getTotalTimeSeconds())) {
                 return true;
             }
         }
@@ -464,7 +492,7 @@ public class Swerve extends Submodule {
     }
 
     public void setOpenLoopSpeeds(ChassisSpeeds speeds) {
-        SwerveModuleState[] desiredState = SwerveConstants.KINEMATICS.toSwerveModuleStates(speeds);
+        SwerveModuleState[] desiredState = SwerveConstants.kKinematics.toSwerveModuleStates(speeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredState, 1);
         mTopLeftModule.setOpenLoopState(desiredState[0]);
         mTopRightModule.setOpenLoopState(desiredState[1]);
@@ -491,10 +519,10 @@ public class Swerve extends Submodule {
 
     public void enableAutoAimController(boolean isEnabled) {
         if (isEnabled) {
-            controlState = ControlState.AUTO_AIM;
+            mControlState = ControlState.AUTO_AIM;
             autoAimController.enable(isEnabled);
         } else {
-            controlState = ControlState.OPEN_LOOP;
+            mControlState = ControlState.OPEN_LOOP;
         }
     }
 

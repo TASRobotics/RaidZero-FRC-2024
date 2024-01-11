@@ -62,7 +62,7 @@ public class Constants {
         // 20.75 OR 22.75 inches
         public static final double kTrackwidthMeters = Units.inchesToMeters(22.75);
         public static final double kWheelbaseMeters = Units.inchesToMeters(22.75);
-        public static final SwerveDriveKinematics KINEMATICS = new SwerveDriveKinematics(
+        public static final SwerveDriveKinematics kKinematics = new SwerveDriveKinematics(
             // Front left
             new Translation2d(kTrackwidthMeters / 2.0, kWheelbaseMeters / 2.0),
             // Front right
