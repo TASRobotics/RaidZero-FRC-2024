@@ -13,8 +13,8 @@ import raidzero.robot.teleop.Teleop;
 public class Robot extends TimedRobot {
     private static final SubmoduleManager submoduleManager = SubmoduleManager.getInstance();
 
-    private static final Teleop teleop = Teleop.getInstance();
-    private static final Swerve swerve = Swerve.getInstance();
+    private static final Teleop mTeleop = Teleop.getInstance();
+    private static final Swerve mSwerve = Swerve.getInstance();
     private static final Vision vision = Vision.getInstance();
 
     private AutoRunner autoRunner;
@@ -35,7 +35,7 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         // Register all submodules here
         submoduleManager.setSubmodules(
-            swerve,
+            mSwerve,
             vision
         );
         submoduleManager.onInit();
@@ -87,7 +87,7 @@ public class Robot extends TimedRobot {
         autoRunner.stop();
 
         // Start the teleop handler
-        teleop.onStart();
+        mTeleop.onStart();
         submoduleManager.onStart(Timer.getFPGATimestamp());
     }
 
@@ -96,7 +96,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopPeriodic() {
-        teleop.onLoop();
+        mTeleop.onLoop();
         submoduleManager.onLoop(Timer.getFPGATimestamp());
     }
 }
