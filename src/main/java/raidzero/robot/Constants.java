@@ -2,8 +2,10 @@ package raidzero.robot;
 
 import java.nio.file.Path;
 
+import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.Matrix;
@@ -53,6 +55,8 @@ public class Constants {
         public static final double kRearLeftAzimuthOffset = 31.641;
         public static final double kRearRightAzimuthOffset = 63.281;
 
+
+
         public static final double kThrottleReduction = (14.0 / 50.0) * (28.0 / 16.0) * (15.0 / 45.0);
         public static final double kAzimuthReduction = (14.0 / 50.0) * (10.0 / 60.0);
         public static final double kWheelDiameterMeters = 0.1016;
@@ -85,9 +89,9 @@ public class Constants {
 
         /** 254 Module Constants */
         public static final int kAzimuthPositionPIDSlot = 0;
-        public static final double kAzimuth_kP = 1;// .75
-        public static final double kAzimuth_kI = 0;
-        public static final double kAzimuth_kD = 5;// 15
+        public static final double kAzimuth_kP = 30.0;// .75
+        public static final double kAzimuth_kI = 0.0;
+        public static final double kAzimuth_kD = 0.0;// 5.0
         public static final int kThrottleVelPIDSlot = 0;
         public static final double kThrottle_kP = 0.1;
         public static final double kThrottle_kI = 0.0;
@@ -122,6 +126,9 @@ public class Constants {
         public static final InvertedValue kAzimuthInversion = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue kThrottleNeutralMode = NeutralModeValue.Brake;
         public static final NeutralModeValue kAzimuthNeutralMode = NeutralModeValue.Brake;
+
+        public static final AbsoluteSensorRangeValue kAzimuthEncoderRange = AbsoluteSensorRangeValue.Unsigned_0To1;
+        public static final SensorDirectionValue kAzimuthEncoderDirection = SensorDirectionValue.CounterClockwise_Positive;
 
 
 
@@ -285,4 +292,6 @@ public class Constants {
     public static final String kCANBusName = "seCANdary";
 
     public static final double kMaxMotorVoltage = 12.0; 
+
+    public static final boolean kEnableFOC = true; 
 }

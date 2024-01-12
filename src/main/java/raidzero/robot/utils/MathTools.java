@@ -8,6 +8,10 @@ public class MathTools {
         return MathUtil.inputModulus(degrees, -180.0, 180.0);
     }
 
+    public static double wrapPlusMinusZeroPointFive(double val) {
+        return MathUtil.inputModulus(val, -0.5, 0.5);
+    }
+
     public static double[] toRadians(double[] degrees) {
         double[] answerRadians = new double[degrees.length];
         for(int i=0;i<degrees.length;i++){

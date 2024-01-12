@@ -1,8 +1,5 @@
 package raidzero.robot.submodules;
 
-import raidzero.robot.Constants;
-import raidzero.robot.Constants.SwerveConstants;
-
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.ClosedLoopGeneralConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
@@ -23,8 +20,11 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import raidzero.robot.Constants;
+import raidzero.robot.Constants.SwerveConstants;
 
 public class SwerveModule extends Submodule implements Sendable {
 
@@ -37,14 +37,27 @@ public class SwerveModule extends Submodule implements Sendable {
 
     private CANcoder mAzimuthEncoder; 
 
-    private SwerveModuleState mCurrentState;
-    private SwerveModuleState mDesiredState;
-    private SwerveModulePosition mCurrentPosition;
+    private VoltageOut throttleVoltageOut = new VoltageOut(0.0).withEnableFOC(Constants.kEnableFOC);
+    private VoltageOut azimuthVoltageOut = new VoltageOut(0.0).withEnableFOC(Constants.kEnableFOC);
+    private PositionVoltage azimuthPositionVoltage = new PositionVoltage(0.0)
+        .withEnableFOC(Constants.kEnableFOC)
+        .withSlot(SwerveConstants.kAzimuthPositionPIDSlot);
 
-    private double mOutputThrottlePercentSpeed;
-    private double mOutputAzimuthPercentSpeed;
 
-    private ControlState mControlState = ControlState.VELOCITY;
+    public static class PeriodicIO {
+        public SwerveModuleState currentState = new SwerveModuleState(); 
+        public SwerveModuleState desiredState = new SwerveModuleState();
+
+        public SwerveModulePosition currentPosition = new SwerveModulePosition();
+
+        public double outputThrottlePercentSpeed = 0.0;
+        public double outputAzimuthPercentSpeed = 0.0; 
+
+        public ControlState controlState = ControlState.VELOCITY;
+    }
+
+
+    private PeriodicIO mPeriodicIO = new PeriodicIO();
 
     @Override
     public void onInit() {
@@ -58,15 +71,15 @@ public class SwerveModule extends Submodule implements Sendable {
         mThrottle = new TalonFX(throttleId, Constants.kCANBusName);
         mThrottle.getConfigurator().apply(getThrottleConfig(), Constants.kLongCANTimeoutMs);
 
-        mAzimuth = new TalonFX(azimuthId, Constants.kCANBusName);
-        mAzimuth.getConfigurator().apply(getAzimuthConfig(), Constants.kLongCANTimeoutMs);
-
         mAzimuthEncoder = new CANcoder(azimuthEncoderId, Constants.kCANBusName);
         mAzimuthEncoder.getConfigurator().apply(getAzimuthEncoderConfig(forwardAngle), Constants.kLongCANTimeoutMs);
 
-        mCurrentState = new SwerveModuleState();
-        mDesiredState = new SwerveModuleState();
-        mCurrentPosition = new SwerveModulePosition(); 
+        mAzimuth = new TalonFX(azimuthId, Constants.kCANBusName);
+        mAzimuth.getConfigurator().apply(getAzimuthConfig(), Constants.kLongCANTimeoutMs);
+
+        mPeriodicIO.currentState = new SwerveModuleState();
+        mPeriodicIO.desiredState = new SwerveModuleState();
+        mPeriodicIO.currentPosition = new SwerveModulePosition(); 
 
         stop();
     }
@@ -77,21 +90,33 @@ public class SwerveModule extends Submodule implements Sendable {
      * @param timestamp
      */
     @Override
-    public void onStart(double timestamp) {}
+    public void onStart(double timestamp) {
+        mPeriodicIO.controlState = ControlState.PERCENT;
+        mPeriodicIO.outputThrottlePercentSpeed = 0.0;
+        mPeriodicIO.outputAzimuthPercentSpeed = 0.0;
+        resetToAbsolute();
+    }
 
     /**
      * Reads cached inputs & calculate outputs.
      */
     @Override
     public void update(double timestamp) {
-        mCurrentState = new SwerveModuleState(
+        Rotation2d wrappedRotation = Rotation2d.fromRadians(mAzimuthEncoder.getAbsolutePosition().getValueAsDouble() * Math.PI * 2);
+
+        mPeriodicIO.currentState = new SwerveModuleState(
             mThrottle.getVelocity().getValue(), 
-            Rotation2d.fromRadians(mAzimuth.getPosition().getValue() * Math.PI)
+            wrappedRotation
         );
 
-        mCurrentPosition = new SwerveModulePosition(
+        // mCurrentPosition = new SwerveModulePosition(
+        //     mThrottle.getPosition().getValue(), 
+        //     Rotation2d.fromRadians(mAzimuth.getPosition().getValue() * Math.PI)
+        // );
+
+        mPeriodicIO.currentPosition = new SwerveModulePosition(
             mThrottle.getPosition().getValue(), 
-            Rotation2d.fromRadians(mAzimuth.getPosition().getValue() * Math.PI)
+            wrappedRotation
         );
     }
 
@@ -107,55 +132,106 @@ public class SwerveModule extends Submodule implements Sendable {
     }
 
     public Double getNegatedAzimuthAngle() {
-        return -mCurrentState.angle.getDegrees();
+        // return -mCurrentState.angle.getDegrees();
+        return mAzimuthEncoder.getAbsolutePosition().getValue();
     }
 
     @Override
-    public void zero() {}
+    public void zero() {
+        resetToAbsolute();
+    }
 
     /** Runs components in the submodule that have continuously changing inputs. */
     public void run() {
-        switch (mControlState) {
+        switch (mPeriodicIO.controlState) {
             case VELOCITY:
-                mThrottle.setControl(new VelocityVoltage(mDesiredState.speedMetersPerSecond));
-                mAzimuth.setControl(new PositionVoltage(mDesiredState.angle.getRadians() / Math.PI));
+                mThrottle.setControl(new VelocityVoltage(mPeriodicIO.desiredState.speedMetersPerSecond));
+                mAzimuth.setControl(new PositionVoltage(mPeriodicIO.desiredState.angle.getRadians() / (Math.PI * 2)));
                 break;
             case PATHING:
                 break;
             case TESTING:
-                mThrottle.setControl(new VoltageOut(mOutputThrottlePercentSpeed * Constants.kMaxMotorVoltage));
-                mAzimuth.setControl(new VoltageOut(mOutputAzimuthPercentSpeed * Constants.kMaxMotorVoltage));
+                // mThrottle.setControl(throttleVoltageOut.withOutput(mPeriodicIO.outputThrottlePercentSpeed * Constants.kMaxMotorVoltage));
+                // mAzimuth.setControl(azimuthVoltageOut.withOutput(mPeriodicIO.outputAzimuthPercentSpeed * Constants.kMaxMotorVoltage));
                 break;
             case PERCENT:
-                mThrottle.setControl(new VoltageOut(mDesiredState.speedMetersPerSecond * Constants.kMaxMotorVoltage));
-                mAzimuth.setControl(new PositionVoltage(mDesiredState.angle.getRadians() / Math.PI));
+                // mThrottle.setControl(new VoltageOut(mDesiredState.speedMetersPerSecond * Constants.kMaxMotorVoltage));
+                // mAzimuth.setControl(new PositionVoltage(mPeriodicIO.desiredState.angle.getRadians() / Math.PI).withSlot(0));
+                // mAzimuth.setControl(azimuthPositionVoltage.withPosition(mPeriodicIO.desiredState.angle.getRadians() / (Math.PI * 2)));
+                mAzimuth.setControl(azimuthPositionVoltage.withPosition(getDesiredAzimuthOutputAngle(mPeriodicIO.desiredState.angle.getDegrees() / 360)));
                 break;
         }
     }
 
+    public void resetToAbsolute() {
+        mAzimuth.setPosition(mAzimuthEncoder.getAbsolutePosition().getValueAsDouble());
+    }
+
     public void setClosedLoopState(SwerveModuleState state) {
-        mControlState = ControlState.VELOCITY;
-        mDesiredState = state;
+        mPeriodicIO.controlState = ControlState.VELOCITY;
+
+        state = SwerveModuleState.optimize(state, mPeriodicIO.currentState.angle);
+
+        mPeriodicIO.desiredState = state;
     }
 
     public void setOpenLoopState(SwerveModuleState state) {
-        mControlState = ControlState.PERCENT;
-        mDesiredState = state; 
+        mPeriodicIO.controlState = ControlState.PERCENT;
+        state = SwerveModuleState.optimize(state, mPeriodicIO.currentState.angle);
+        mPeriodicIO.desiredState = state; 
     }
 
     public SwerveModuleState getState() {
-        return mCurrentState;
+        return mPeriodicIO.currentState;
     }
 
     public SwerveModulePosition getPosition() {
-        return mCurrentPosition;
+        return mPeriodicIO.currentPosition;
+    }
+
+    public TalonFX getAzimuthMotor() {
+        return mAzimuth;
+    }
+
+    public TalonFX getThrottleMotor() {
+        return mThrottle; 
+    }
+
+    public PeriodicIO getPeriodicIO () {
+        return mPeriodicIO;
+    }
+
+    /**
+     * Get corrected Azimuth angle
+     * 
+     * @param angle desired angle to turn to (units: rotations)
+     * @return corrected angle
+     */
+    public double getDesiredAzimuthOutputAngle(double angle) {
+        double currentAngle = mAzimuthEncoder.getPosition().getValueAsDouble();
+        double delta = angle - currentAngle;
+        delta = delta % 1.0;
+        while (delta > 0.5)
+            delta -= 1.0;
+        while (delta < -0.5)
+            delta += 1.0;
+
+        return currentAngle + delta;
+    }
+
+    public void turnToAngleTest(boolean yes) {
+        mPeriodicIO.controlState = ControlState.TESTING;
+        if(yes)
+            mAzimuth.setControl(azimuthPositionVoltage.withPosition(0.75));
+        else 
+            mAzimuth.setControl(azimuthPositionVoltage.withPosition(0));
     }
 
     public void testThrottleAndRotor(double throttleOutput, double rotorOutput) {
-        mControlState = ControlState.TESTING;
+        mPeriodicIO.controlState = ControlState.TESTING;
 
-        mOutputThrottlePercentSpeed = throttleOutput;
-        mOutputAzimuthPercentSpeed = rotorOutput;
+        mPeriodicIO.outputThrottlePercentSpeed = throttleOutput;
+        mPeriodicIO.outputAzimuthPercentSpeed = rotorOutput;
     }
 
     private TalonFXConfiguration getThrottleConfig() {
@@ -223,38 +299,26 @@ public class SwerveModule extends Submodule implements Sendable {
         
         // Feedback Configuration
         FeedbackConfigs feedbackConfigs = new FeedbackConfigs();
-        feedbackConfigs.withFeedbackRemoteSensorID(mAzimuthEncoder.getDeviceID());
-        feedbackConfigs.withFeedbackSensorSource(FeedbackSensorSourceValue.RemoteCANcoder);
-        feedbackConfigs.withRotorToSensorRatio(0.0);
+        // feedbackConfigs.withFeedbackRemoteSensorID(mAzimuthEncoder.getDeviceID());
+        // feedbackConfigs.withFeedbackSensorSource(FeedbackSensorSourceValue.FusedCANcoder);
+        // feedbackConfigs.withRotorToSensorRatio(1 / SwerveConstants.kAzimuthReduction);
+        feedbackConfigs.withSensorToMechanismRatio(1 / SwerveConstants.kAzimuthReduction);
         config.withFeedback(feedbackConfigs);
 
         // Position PID Configuration
         Slot0Configs slot0Configs = new Slot0Configs();
-        slot0Configs.withKP(0.0);
-        slot0Configs.withKI(0.0);
-        slot0Configs.withKD(0.0);
+        slot0Configs.withKP(SwerveConstants.kAzimuth_kP);
+        slot0Configs.withKI(SwerveConstants.kAzimuth_kI);
+        slot0Configs.withKD(SwerveConstants.kAzimuth_kD);
         config.withSlot0(slot0Configs);
 
         // Closed Loop General Configs
-        ClosedLoopGeneralConfigs closedLoopGeneralConfigs = new ClosedLoopGeneralConfigs();
-        closedLoopGeneralConfigs.ContinuousWrap = true; 
-        config.withClosedLoopGeneral(closedLoopGeneralConfigs);
+        // NO WRAP
+        // ClosedLoopGeneralConfigs closedLoopGeneralConfigs = new ClosedLoopGeneralConfigs();
+        // closedLoopGeneralConfigs.ContinuousWrap = true; 
+        // config.withClosedLoopGeneral(closedLoopGeneralConfigs);
 
         return config; 
-
-
-        // rotor.configFactoryDefault();
-        // rotor.setInverted(SwerveConstants.ROTOR_INVERSION);
-        // rotor.setNeutralMode(NeutralMode.Brake);
-        // rotor.configSelectedFeedbackSensor(FeedbackDevice.RemoteSensor0);
-        // rotor.setSensorPhase(SwerveConstants.ROTOR_INVERT_SENSOR_PHASE);
-        // rotor.configRemoteFeedbackFilter(encoder, 0);
-        // rotor.config_kP(SwerveConstants.ROTOR_POSITION_PID_SLOT, SwerveConstants.ROTOR_KP);
-        // rotor.config_kI(SwerveConstants.ROTOR_POSITION_PID_SLOT, SwerveConstants.ROTOR_KI);
-        // rotor.config_kD(SwerveConstants.ROTOR_POSITION_PID_SLOT, SwerveConstants.ROTOR_KD);
-        // rotor.configVoltageCompSaturation(Constants.VOLTAGE_COMP);
-        // rotor.enableVoltageCompensation(true);
-        // rotor.configSupplyCurrentLimit(SwerveConstants.ROTOR_CURRENT_LIMIT);
     }
 
     private CANcoderConfiguration getAzimuthEncoderConfig(double angleOffset) {
@@ -262,9 +326,9 @@ public class SwerveModule extends Submodule implements Sendable {
 
         // Magnet Sensor Configuration
         MagnetSensorConfigs magnetSensorConfigs = new MagnetSensorConfigs();
-        magnetSensorConfigs.withAbsoluteSensorRange(AbsoluteSensorRangeValue.Unsigned_0To1);
-        magnetSensorConfigs.withMagnetOffset(angleOffset);
-        magnetSensorConfigs.withSensorDirection(SensorDirectionValue.Clockwise_Positive);
+        magnetSensorConfigs.withAbsoluteSensorRange(SwerveConstants.kAzimuthEncoderRange);
+        // magnetSensorConfigs.withMagnetOffset(0);
+        magnetSensorConfigs.withSensorDirection(SwerveConstants.kAzimuthEncoderDirection);
         config.withMagnetSensor(magnetSensorConfigs);
 
         return config;

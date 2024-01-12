@@ -25,7 +25,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
-
+import edu.wpi.first.math.util.Units;
 import raidzero.robot.Constants;
 import raidzero.robot.Constants.DriveConstants;
 import raidzero.robot.Constants.SwerveConstants;
@@ -82,7 +82,6 @@ public class Swerve extends Submodule {
     // private Rotation2d targetAngle;
     private PIDController xController, yController, thetaController;
     private Alliance alliance;
-    private double beans;
     private double prevX;
 
     private Pose2d desiredAutoAimPose;
@@ -109,25 +108,25 @@ public class Swerve extends Submodule {
         mTopLeftModule.onInit(
             SwerveConstants.kFrontLeftThrottleID,
             SwerveConstants.kFrontLeftAzimuthID,
-            SwerveConstants.kFrontLeftAzimuthID,
+            SwerveConstants.kFrontLeftEncoderID,
             SwerveConstants.kFrontLeftAzimuthOffset
         );
         mTopRightModule.onInit(
             SwerveConstants.kFrontRightThrottleID,
             SwerveConstants.kFrontRightAzimuthID,
-            SwerveConstants.kFrontRightAzimuthID,
+            SwerveConstants.kFrontRightEncoderID,
             SwerveConstants.kFrontRightAzimuthOffset
         );
         mRearLeftModule.onInit(
             SwerveConstants.kRearLeftThrottleID,
             SwerveConstants.kRearLeftAzimuthID,
-            SwerveConstants.kRearLeftAzimuthID,
+            SwerveConstants.kRearLeftEncoderID,
             SwerveConstants.kRearLeftAzimuthOffset
         );
         mRearRightModule.onInit(
             SwerveConstants.kRearRightThrottleID,
             SwerveConstants.kRearRightAzimuthID,
-            SwerveConstants.kRearRightAzimuthID,
+            SwerveConstants.kRearRightEncoderID,
             SwerveConstants.kRearRightAzimuthOffset
         );
 
@@ -303,19 +302,20 @@ public class Swerve extends Submodule {
         };
     }
 
+    public SwerveModule[] getModules() {
+        return new SwerveModule[] {
+            mTopLeftModule, 
+            mTopRightModule, 
+            mRearLeftModule, 
+            mRearRightModule
+        };
+    }
+
     public static double deadband(double input) {
         if (Math.abs(input) < 0.7) {
             return 0.0;
         }
         return input;
-    }
-
-    public double getBeans() {
-        return beans;
-    }
-
-    public void emptyBucket() {
-        beans = 0;
     }
 
     public void setPose(Pose2d pose) {
@@ -386,6 +386,7 @@ public class Swerve extends Submodule {
                                 xSpeed, ySpeed, angularSpeed,
                                 Rotation2d.fromDegrees(mPigeon.getAngle()))
                         : new ChassisSpeeds(xSpeed, ySpeed, angularSpeed));
+
         SwerveDriveKinematics.desaturateWheelSpeeds(targetState, 1);
         mTopLeftModule.setOpenLoopState(targetState[0]);
         mTopRightModule.setOpenLoopState(targetState[1]);
