@@ -104,16 +104,17 @@ public class SwerveModule extends Submodule {
     @Override
     public void update(double timestamp) {
         // check if we should use motor position 
-        Rotation2d wrappedRotation = Rotation2d.fromRadians(mAzimuthEncoder.getAbsolutePosition().getValueAsDouble() * Math.PI * 2);
+        // Rotation2d wrappedRotation = Rotation2d.fromRadians(mAzimuthEncoder.getAbsolutePosition().getValueAsDouble() * Math.PI * 2);
+        Rotation2d rotation = Rotation2d.fromRadians(mAzimuth.getPosition().getValueAsDouble() * Math.PI * 2);
 
         mPeriodicIO.currentState = new SwerveModuleState(
             mThrottle.getVelocity().getValue(), 
-            wrappedRotation
+            rotation
         );
 
         mPeriodicIO.currentPosition = new SwerveModulePosition(
             mThrottle.getPosition().getValue(), 
-            wrappedRotation
+            rotation
         );
     }
 
@@ -125,6 +126,7 @@ public class SwerveModule extends Submodule {
     @Override
     public void zero() {
         resetToAbsolute();
+        mThrottle.setPosition(0.0);
     }
 
     /** Runs components in the submodule that have continuously changing inputs. */

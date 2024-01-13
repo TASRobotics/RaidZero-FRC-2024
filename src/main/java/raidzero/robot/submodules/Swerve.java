@@ -213,12 +213,6 @@ public class Swerve extends Submodule {
         // if(vision.getRobotPose() != null) {
         // setPose(vision.getRobotPose());
         // }
-
-        // Auto Balance Updates
-        double disp = mOdometry.getEstimatedPosition().getX() - prevX;
-        // SmartDashboard.putNumber("disp", disp);
-        prevX = mOdometry.getEstimatedPosition().getX();
-        // SmartDashboard.putNumber("prevX", prevX);
     }
 
     /**
@@ -251,6 +245,8 @@ public class Swerve extends Submodule {
         // else if (alliance == Alliance.Red)
         //     zeroHeading(0);
         // setPose(new Pose2d(new Translation2d(1.76, 1.477), new Rotation2d(Math.toRadians(pigeon.getAngle()))));
+
+        mPigeon.setYaw(0.0);
 
         mTopRightModule.zero();
         mTopLeftModule.zero();
@@ -386,7 +382,7 @@ public class Swerve extends Submodule {
                 fieldOriented
                         ? ChassisSpeeds.fromFieldRelativeSpeeds(
                                 xSpeed, ySpeed, angularSpeed,
-                                Rotation2d.fromDegrees(mPigeon.getAngle()))
+                                Rotation2d.fromDegrees(-mPigeon.getAngle()))
                         : new ChassisSpeeds(xSpeed, ySpeed, angularSpeed));
 
         SwerveDriveKinematics.desaturateWheelSpeeds(targetState, 1);

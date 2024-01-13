@@ -36,14 +36,17 @@ public class Teleop {
     int moduleNumber = 3;
 
     private void p1Loop(XboxController p) {
-        // mSwerve.teleopDrive(
-        //     JoystickUtils.applyDeadband(p.getLeftY()), 
-        //     JoystickUtils.applyDeadband(p.getLeftX()), 
-        //     JoystickUtils.applyDeadband(p.getRightX()), 
-        //     false
-        // );
+        mSwerve.teleopDrive(
+            JoystickUtils.applyDeadband(p.getLeftY()), 
+            JoystickUtils.applyDeadband(p.getLeftX()), 
+            JoystickUtils.applyDeadband(p.getRightX()), 
+            true
+        );
 
-        SmartDashboard.putNumber("Throttle Position", mSwerve.getModules()[3].getThrottleMotor().getPosition().getValueAsDouble());
+        SmartDashboard.putNumber("Throttle Position 0", mSwerve.getModules()[0].getThrottleMotor().getPosition().getValueAsDouble());
+        SmartDashboard.putNumber("Throttle Position 1", mSwerve.getModules()[1].getThrottleMotor().getPosition().getValueAsDouble());
+        SmartDashboard.putNumber("Throttle Position 2", mSwerve.getModules()[2].getThrottleMotor().getPosition().getValueAsDouble());
+        SmartDashboard.putNumber("Throttle Position 3", mSwerve.getModules()[3].getThrottleMotor().getPosition().getValueAsDouble());
 
         SmartDashboard.putNumber("CANCoder Angle", mSwerve.getModules()[moduleNumber].getAzimuthEncoder().getPosition().getValueAsDouble());
         SmartDashboard.putNumber("Motor Angle", mSwerve.getModules()[moduleNumber].getAzimuthMotor().getPosition().getValueAsDouble());
