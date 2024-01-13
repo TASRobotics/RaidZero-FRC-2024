@@ -33,19 +33,22 @@ public class Teleop {
         p2Loop(p2);
     }
 
-    int moduleNumber = 0;
+    int moduleNumber = 3;
 
     private void p1Loop(XboxController p) {
-        mSwerve.teleopDrive(
-            JoystickUtils.applyDeadband(p.getLeftY()), 
-            JoystickUtils.applyDeadband(p.getLeftX()), 
-            JoystickUtils.applyDeadband(p.getRightX()), 
-            false
-        );
+        // mSwerve.teleopDrive(
+        //     JoystickUtils.applyDeadband(p.getLeftY()), 
+        //     JoystickUtils.applyDeadband(p.getLeftX()), 
+        //     JoystickUtils.applyDeadband(p.getRightX()), 
+        //     false
+        // );
+
+        SmartDashboard.putNumber("Throttle Position", mSwerve.getModules()[3].getThrottleMotor().getPosition().getValueAsDouble());
 
         SmartDashboard.putNumber("CANCoder Angle", mSwerve.getModules()[moduleNumber].getAzimuthEncoder().getPosition().getValueAsDouble());
         SmartDashboard.putNumber("Motor Angle", mSwerve.getModules()[moduleNumber].getAzimuthMotor().getPosition().getValueAsDouble());
         SmartDashboard.putNumber("Desired Azimuth Angle", mSwerve.getModules()[moduleNumber].getPeriodicIO().desiredState.angle.getRadians()/(2*Math.PI));
+        SmartDashboard.putNumber("Desired Azimuth Angle 2", mSwerve.getModules()[0].getPeriodicIO().desiredState.angle.getRadians()/(2*Math.PI));
     }
 
     private void p2Loop(XboxController p) {

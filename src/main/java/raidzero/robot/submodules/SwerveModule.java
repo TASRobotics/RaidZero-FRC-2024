@@ -64,9 +64,9 @@ public class SwerveModule extends Submodule {
     /**
      * Called once when the submodule is initialized.
      */
-    public void onInit(int throttleId, int azimuthId, int azimuthEncoderId, double azimuthEncoderOffset) {
+    public void onInit(int throttleId, int azimuthId, int azimuthEncoderId, double azimuthEncoderOffset, boolean reverseThrottle) {
         mThrottle = new TalonFX(throttleId, Constants.kCANBusName);
-        mThrottle.getConfigurator().apply(getThrottleConfig(), Constants.kLongCANTimeoutMs);
+        mThrottle.getConfigurator().apply(getThrottleConfig(reverseThrottle), Constants.kLongCANTimeoutMs);
 
         mAzimuthEncoder = new CANcoder(azimuthEncoderId, Constants.kCANBusName);
         mAzimuthEncoder.getConfigurator().apply(getAzimuthEncoderConfig(azimuthEncoderOffset), Constants.kLongCANTimeoutMs);
@@ -79,6 +79,10 @@ public class SwerveModule extends Submodule {
         mPeriodicIO.currentPosition = new SwerveModulePosition(); 
 
         stop();
+    }
+
+    public void onInit(int throttleId, int azimuthId, int azimuthEncoderId, double azimuthEncoderOffset) {
+        onInit(throttleId, azimuthId, azimuthEncoderId, azimuthEncoderOffset, false);
     }
 
     /**
@@ -215,12 +219,17 @@ public class SwerveModule extends Submodule {
         mPeriodicIO.outputAzimuthPercentSpeed = rotorOutput;
     }
 
-    private TalonFXConfiguration getThrottleConfig() {
+    
+    private TalonFXConfiguration getThrottleConfig(boolean reverseThrottle) {
         TalonFXConfiguration config = new TalonFXConfiguration();
 
         // Motor Output Configuration
         MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
-        motorOutputConfigs.withInverted(SwerveConstants.kThrottleInversion);
+        if(!reverseThrottle) {
+            motorOutputConfigs.withInverted(SwerveConstants.kThrottleInversion);
+        } else {
+            motorOutputConfigs.withInverted(SwerveConstants.kThrottleInversionReverse);
+        }
         motorOutputConfigs.withNeutralMode(SwerveConstants.kThrottleNeutralMode);
         config.withMotorOutput(motorOutputConfigs);
 
@@ -230,7 +239,7 @@ public class SwerveModule extends Submodule {
         
         // Feedback Configuration
         FeedbackConfigs feedbackConfigs = new FeedbackConfigs();
-        feedbackConfigs.withSensorToMechanismRatio(0.0);
+        feedbackConfigs.withSensorToMechanismRatio(SwerveConstants.kThrottleRotToWheelRot * SwerveConstants.kThrottleWheelRotToMeters);
         config.withFeedback(feedbackConfigs);
 
         // Velocity PID Configuration
