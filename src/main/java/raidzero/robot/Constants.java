@@ -50,10 +50,10 @@ public class Constants {
 
         public static final int kImuID = 0;
 
-        public static final double kFrontLeftAzimuthOffset = 166.553;
-        public static final double kFrontRightAzimuthOffset = 24.082;
-        public static final double kRearLeftAzimuthOffset = 31.641;
-        public static final double kRearRightAzimuthOffset = 63.281;
+        public static final double kFrontLeftAzimuthOffset = -0.463379;
+        public static final double kFrontRightAzimuthOffset = -0.565674;
+        public static final double kRearLeftAzimuthOffset = -0.090088;
+        public static final double kRearRightAzimuthOffset = -0.674316;
 
 
 
@@ -89,9 +89,12 @@ public class Constants {
 
         /** 254 Module Constants */
         public static final int kAzimuthPositionPIDSlot = 0;
-        public static final double kAzimuth_kP = 30.0;// .75
+        public static final double kAzimuth_kP = 40.0;// .75
         public static final double kAzimuth_kI = 0.0;
         public static final double kAzimuth_kD = 0.0;// 5.0
+        public static final double kAzimuthPIDUpdateHz = 1000;
+
+
         public static final int kThrottleVelPIDSlot = 0;
         public static final double kThrottle_kP = 0.1;
         public static final double kThrottle_kI = 0.0;
@@ -276,9 +279,6 @@ public class Constants {
 
     public static final String NETWORKTABLESNAME = "SmartDashboard";
 
-    public static final double JOYSTICK_DEADBAND = 0.02;
-    public static final double XBOX_JOYSTICK_DEADBAND = 0.10;
-    public static final double AIMING_JOYSTICK_DEADBAND = 0.02;
     public static final int TIMEOUT_MS = 20;
     public static final double TIMEOUT_S = TIMEOUT_MS / 1000.0f;
     public static final int SECONDS_IN_MINUTE = 60;
@@ -294,4 +294,6 @@ public class Constants {
     public static final double kMaxMotorVoltage = 12.0; 
 
     public static final boolean kEnableFOC = true; 
+
+    public static final double kJoystickDeadband = 0.1;
 }

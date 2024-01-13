@@ -2,6 +2,7 @@ package raidzero.robot.teleop;
 
 import raidzero.robot.submodules.Swerve;
 import raidzero.robot.submodules.SwerveModule.PeriodicIO;
+import raidzero.robot.utils.JoystickUtils;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -32,16 +33,19 @@ public class Teleop {
         p2Loop(p2);
     }
 
+    int moduleNumber = 0;
+
     private void p1Loop(XboxController p) {
-        mSwerve.teleopDrive(p.getLeftY(), p.getLeftX(), p.getRightX(), false);
-        // mSwerve.testModule(1, 0, p.getRightX()*.15);
+        mSwerve.teleopDrive(
+            JoystickUtils.applyDeadband(p.getLeftY()), 
+            JoystickUtils.applyDeadband(p.getLeftX()), 
+            JoystickUtils.applyDeadband(p.getRightX()), 
+            false
+        );
 
-        // mSwerve.getModules()[0].turnToAngleTest(p.getAButton());
-
-        // SmartDashboard.putNumber("module angle", mSwerve.getModuleStates()[0].angle.getDegrees());
-        SmartDashboard.putNumber("CANCoder Angle", mSwerve.getModules()[0].getNegatedAzimuthAngle());
-        SmartDashboard.putNumber("Motor Angle", mSwerve.getModules()[0].getAzimuthMotor().getPosition().getValueAsDouble());
-        SmartDashboard.putNumber("Desired Azimuth Angle", mSwerve.getModules()[0].getPeriodicIO().desiredState.angle.getRadians()/(2*Math.PI));
+        SmartDashboard.putNumber("CANCoder Angle", mSwerve.getModules()[moduleNumber].getAzimuthEncoder().getPosition().getValueAsDouble());
+        SmartDashboard.putNumber("Motor Angle", mSwerve.getModules()[moduleNumber].getAzimuthMotor().getPosition().getValueAsDouble());
+        SmartDashboard.putNumber("Desired Azimuth Angle", mSwerve.getModules()[moduleNumber].getPeriodicIO().desiredState.angle.getRadians()/(2*Math.PI));
     }
 
     private void p2Loop(XboxController p) {

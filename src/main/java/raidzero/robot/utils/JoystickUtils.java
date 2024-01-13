@@ -10,22 +10,8 @@ public class JoystickUtils {
      * @param input joystick input in [-1.0, 1.0]
      * @return deadbanded input
      */
-    public static double deadband(double input) {
-        if (Math.abs(input) < Constants.JOYSTICK_DEADBAND) {
-            return 0.0;
-        }
-        return input;
-    }
-
-    public static double xboxDeadband(double input) {
-        if (Math.abs(input) < Constants.XBOX_JOYSTICK_DEADBAND) {
-            return 0.0;
-        }
-        return input;
-    }
-
-    public static double aimingDeadband(double input) {
-        if (Math.abs(input) < Constants.AIMING_JOYSTICK_DEADBAND) {
+    public static double applyDeadband(double input) {
+        if (Math.abs(input) < Constants.kJoystickDeadband) {
             return 0.0;
         }
         return input;
