@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import raidzero.robot.Constants;
 import raidzero.robot.Constants.SwerveConstants;
+import raidzero.robot.utils.MathTools;
 
 public class SwerveModule extends Submodule {
 
@@ -34,8 +35,12 @@ public class SwerveModule extends Submodule {
     private CANcoder mAzimuthEncoder; 
 
     private VoltageOut throttleVoltageOut = new VoltageOut(0.0).withEnableFOC(Constants.kEnableFOC);
+    private VelocityVoltage throttleVelocityVoltageOut = new VelocityVoltage(0.0)
+        .withEnableFOC(Constants.kEnableFOC)
+        .withSlot(SwerveConstants.kThrottleVelPIDSlot)
+        .withUpdateFreqHz(SwerveConstants.kThrottlePIDUpdateHz);
     private VoltageOut azimuthVoltageOut = new VoltageOut(0.0).withEnableFOC(Constants.kEnableFOC);
-    private PositionVoltage azimuthPositionVoltage = new PositionVoltage(0.0)
+    private PositionVoltage azimuthPositionVoltageOut = new PositionVoltage(0.0)
         .withEnableFOC(Constants.kEnableFOC)
         .withSlot(SwerveConstants.kAzimuthPositionPIDSlot)
         .withUpdateFreqHz(SwerveConstants.kAzimuthPIDUpdateHz);
@@ -64,9 +69,9 @@ public class SwerveModule extends Submodule {
     /**
      * Called once when the submodule is initialized.
      */
-    public void onInit(int throttleId, int azimuthId, int azimuthEncoderId, double azimuthEncoderOffset, boolean reverseThrottle) {
+    public void onInit(int throttleId, int azimuthId, int azimuthEncoderId, double azimuthEncoderOffset) {
         mThrottle = new TalonFX(throttleId, Constants.kCANBusName);
-        mThrottle.getConfigurator().apply(getThrottleConfig(reverseThrottle), Constants.kLongCANTimeoutMs);
+        mThrottle.getConfigurator().apply(getThrottleConfig(), Constants.kLongCANTimeoutMs);
 
         mAzimuthEncoder = new CANcoder(azimuthEncoderId, Constants.kCANBusName);
         mAzimuthEncoder.getConfigurator().apply(getAzimuthEncoderConfig(azimuthEncoderOffset), Constants.kLongCANTimeoutMs);
@@ -79,10 +84,6 @@ public class SwerveModule extends Submodule {
         mPeriodicIO.currentPosition = new SwerveModulePosition(); 
 
         stop();
-    }
-
-    public void onInit(int throttleId, int azimuthId, int azimuthEncoderId, double azimuthEncoderOffset) {
-        onInit(throttleId, azimuthId, azimuthEncoderId, azimuthEncoderOffset, false);
     }
 
     /**
@@ -105,15 +106,15 @@ public class SwerveModule extends Submodule {
     public void update(double timestamp) {
         // check if we should use motor position 
         // Rotation2d wrappedRotation = Rotation2d.fromRadians(mAzimuthEncoder.getAbsolutePosition().getValueAsDouble() * Math.PI * 2);
-        Rotation2d rotation = Rotation2d.fromRadians(mAzimuth.getPosition().getValueAsDouble() * Math.PI * 2);
+        Rotation2d rotation = Rotation2d.fromRotations(mAzimuth.getPosition().refresh().getValueAsDouble());
 
         mPeriodicIO.currentState = new SwerveModuleState(
-            mThrottle.getVelocity().getValue(), 
+            -mThrottle.getVelocity().refresh().getValue(), 
             rotation
         );
 
         mPeriodicIO.currentPosition = new SwerveModulePosition(
-            mThrottle.getPosition().getValue(), 
+            -mThrottle.getPosition().refresh().getValue(), 
             rotation
         );
     }
@@ -134,9 +135,9 @@ public class SwerveModule extends Submodule {
         switch (mPeriodicIO.controlState) {
             case VELOCITY:
                 if(Math.abs(mPeriodicIO.desiredState.speedMetersPerSecond) > 0.1) {
-                    mAzimuth.setControl(azimuthPositionVoltage.withPosition(getDesiredAzimuthOutputAngle(mPeriodicIO.desiredState.angle.getDegrees() / 360)));
+                    mAzimuth.setControl(azimuthPositionVoltageOut.withPosition(getDesiredAzimuthOutputAngle(mPeriodicIO.desiredState.angle.getDegrees() / 360)));
                 }
-                mThrottle.setControl(new VelocityVoltage(mPeriodicIO.desiredState.speedMetersPerSecond));
+                mThrottle.setControl(throttleVelocityVoltageOut.withVelocity(-mPeriodicIO.desiredState.speedMetersPerSecond));
                 break;
             case PATHING:
                 break;
@@ -146,7 +147,7 @@ public class SwerveModule extends Submodule {
                 break;
             case PERCENT:
                 if(Math.abs(mPeriodicIO.desiredState.speedMetersPerSecond) > 0.1) {
-                    mAzimuth.setControl(azimuthPositionVoltage.withPosition(getDesiredAzimuthOutputAngle(mPeriodicIO.desiredState.angle.getDegrees() / 360)));
+                    mAzimuth.setControl(azimuthPositionVoltageOut.withPosition(getDesiredAzimuthOutputAngle(mPeriodicIO.desiredState.angle.getDegrees() / 360)));
                 }
                 mThrottle.setControl(throttleVoltageOut.withOutput(mPeriodicIO.desiredState.speedMetersPerSecond * Constants.kMaxMotorVoltage));
                 break;
@@ -163,9 +164,11 @@ public class SwerveModule extends Submodule {
         mPeriodicIO.desiredState = state;
     }
 
+    // CHANGE 
     public void setOpenLoopState(SwerveModuleState state) {
         mPeriodicIO.controlState = ControlState.PERCENT;
         state = SwerveModuleState.optimize(state, mPeriodicIO.currentState.angle);
+        // SwerveModuleState newState = SwerveModuleState.optimize(state, MathTools.wrapRotation2d(state.angle));
         mPeriodicIO.desiredState = state; 
     }
 
@@ -200,8 +203,8 @@ public class SwerveModule extends Submodule {
      * @return corrected angle
      */
     public double getDesiredAzimuthOutputAngle(double angle) {
-        // double currentAngle = mAzimuthEncoder.getPosition().getValueAsDouble();
-        double currentAngle = mAzimuth.getPosition().getValueAsDouble();
+        // double currentAngle = mAzimuthEncoder.getPosition().refresh().getValueAsDouble();
+        double currentAngle = mAzimuth.getPosition().refresh().getValueAsDouble();
         double delta = angle - currentAngle;
         delta = delta % 1.0;
         while (delta > 0.5)
@@ -222,16 +225,12 @@ public class SwerveModule extends Submodule {
     }
 
     
-    private TalonFXConfiguration getThrottleConfig(boolean reverseThrottle) {
+    private TalonFXConfiguration getThrottleConfig() {
         TalonFXConfiguration config = new TalonFXConfiguration();
 
         // Motor Output Configuration
         MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
-        if(!reverseThrottle) {
-            motorOutputConfigs.withInverted(SwerveConstants.kThrottleInversion);
-        } else {
-            motorOutputConfigs.withInverted(SwerveConstants.kThrottleInversionReverse);
-        }
+        motorOutputConfigs.withInverted(SwerveConstants.kThrottleInversion);
         motorOutputConfigs.withNeutralMode(SwerveConstants.kThrottleNeutralMode);
         config.withMotorOutput(motorOutputConfigs);
 
@@ -246,13 +245,11 @@ public class SwerveModule extends Submodule {
 
         // Velocity PID Configuration
         Slot0Configs slot0Configs = new Slot0Configs();
-        slot0Configs.withKA(0.0);
-        slot0Configs.withKV(0.0);
-        slot0Configs.withKS(0.0);
-        slot0Configs.withKP(0.0);
-        slot0Configs.withKI(0.0);
-        slot0Configs.withKD(0.0);
-        slot0Configs.withKG(0.0);
+        slot0Configs.withKA(SwerveConstants.kThrottle_kA);
+        slot0Configs.withKV(SwerveConstants.kThrottle_kV);
+        slot0Configs.withKP(SwerveConstants.kThrottle_kP);
+        slot0Configs.withKI(SwerveConstants.kThrottle_kI);
+        slot0Configs.withKD(SwerveConstants.kThrottle_kD);
         config.withSlot0(slot0Configs);
 
         // Closed Loop General Configs

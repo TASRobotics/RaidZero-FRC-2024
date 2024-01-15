@@ -1,6 +1,7 @@
 package raidzero.robot.utils;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Rotation2d;
 
 public class MathTools {
 
@@ -10,6 +11,11 @@ public class MathTools {
 
     public static double wrapPlusMinusZeroPointFive(double val) {
         return MathUtil.inputModulus(val, -0.5, 0.5);
+    }
+
+    public static Rotation2d wrapRotation2d(Rotation2d angle) {
+        Rotation2d wrappedAngle = Rotation2d.fromDegrees(wrapDegrees(angle.getDegrees()));
+        return wrappedAngle;
     }
 
     public static double[] toRadians(double[] degrees) {

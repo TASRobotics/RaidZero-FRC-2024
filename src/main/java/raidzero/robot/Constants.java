@@ -51,9 +51,9 @@ public class Constants {
         public static final int kImuID = 0;
 
         public static final double kFrontLeftAzimuthOffset = -0.463379;
-        public static final double kFrontRightAzimuthOffset = -0.565674;
+        public static final double kFrontRightAzimuthOffset = -0.565674 + 0.5;
         public static final double kRearLeftAzimuthOffset = -0.090088;
-        public static final double kRearRightAzimuthOffset = -0.674316;
+        public static final double kRearRightAzimuthOffset = -0.674316 + 0.5;
 
 
 
@@ -62,6 +62,7 @@ public class Constants {
         public static final double kWheelDiameterMeters = 0.1016;
 
         public static final double kMaxVelMPS = 4.959668;
+        public static final double kRealisticMaxVelMPS = 4.2;
 
         // 20.75 OR 22.75 inches
         public static final double kTrackwidthMeters = Units.inchesToMeters(22.75);
@@ -92,22 +93,20 @@ public class Constants {
         public static final double kAzimuth_kP = 40.0;// .75
         public static final double kAzimuth_kI = 0.0;
         public static final double kAzimuth_kD = 0.0;// 5.0
-        public static final double kAzimuthPIDUpdateHz = 1000;
+        public static final double kAzimuthPIDUpdateHz = 1000.0;
 
 
         public static final int kThrottleVelPIDSlot = 0;
-        public static final double kThrottle_kP = 0.1;
+        public static final double kThrottle_kP = 0.5;
         public static final double kThrottle_kI = 0.0;
-        public static final double kThrottle_kD = 0.01;
-        public static final double kThrottle_kF = 1023 /
-                (kMaxVelMPS /
-                        (Math.PI * kWheelDiameterMeters * kThrottleReduction / 2048.0 * 10));
+        public static final double kThrottle_kD = 0.0;
+        public static final double kThrottle_kV = 2.4;
+        public static final double kThrottle_kA = 1.5;
+        public static final double kThrottlePIDUpdateHz = 1000.0;
 
         /** 1678 Pathing Constants */
-        public static final double kXController_kP = 1.5;
-        public static final double kYController_kP = 1.5;
-        public static final double kThetaController_kP = 0.5;
-        public static final double kThetaController_kD = 0;
+        public static final double kTranslationController_kP = 1.0;
+        public static final double kThetaController_kP = 0.0;
         public static final double kXControllerTolerance = 0.1;
         public static final double kYControllerTolerance = 0.1;
         public static final double kThetaControllerTolerance = Math.toRadians(5);
@@ -126,7 +125,6 @@ public class Constants {
         public static final double kThrottleWheelRotToMeters = 1 / (Math.PI * kWheelDiameterMeters);
         
         public static final InvertedValue kThrottleInversion = InvertedValue.Clockwise_Positive;
-        public static final InvertedValue kThrottleInversionReverse = InvertedValue.CounterClockwise_Positive;
         public static final InvertedValue kAzimuthInversion = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue kThrottleNeutralMode = NeutralModeValue.Brake;
         public static final NeutralModeValue kAzimuthNeutralMode = NeutralModeValue.Brake;

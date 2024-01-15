@@ -3,7 +3,9 @@ package raidzero.robot.submodules;
 import edu.wpi.first.wpilibj.Timer;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.PathPlannerTrajectory;
 import com.pathplanner.lib.util.PIDConstants;
 
@@ -62,10 +64,12 @@ public class Swerve extends Submodule {
 
     private PathPlannerTrajectory mCurrentTrajectory; 
     private PPHolonomicDriveController mHolonomicController; 
+    private ChassisSpeeds mDesiredPathingSpeeds; 
     private Timer mTimer = new Timer();
     private Pose2d mCurrentPose;
 
     private ControlState mControlState = ControlState.OPEN_LOOP;
+
 
 
 
@@ -115,8 +119,7 @@ public class Swerve extends Submodule {
             SwerveConstants.kFrontRightThrottleID,
             SwerveConstants.kFrontRightAzimuthID,
             SwerveConstants.kFrontRightEncoderID,
-            SwerveConstants.kFrontRightAzimuthOffset, 
-            true
+            SwerveConstants.kFrontRightAzimuthOffset
         );
         mRearLeftModule.onInit(
             SwerveConstants.kRearLeftThrottleID,
@@ -128,8 +131,7 @@ public class Swerve extends Submodule {
             SwerveConstants.kRearRightThrottleID,
             SwerveConstants.kRearRightAzimuthID,
             SwerveConstants.kRearRightEncoderID,
-            SwerveConstants.kRearRightAzimuthOffset, 
-            true
+            SwerveConstants.kRearRightAzimuthOffset
         );
 
         mOdometry = new SwerveDrivePoseEstimator(
@@ -142,11 +144,13 @@ public class Swerve extends Submodule {
         );
 
         mHolonomicController = new PPHolonomicDriveController(
-            new PIDConstants(0.05, 0.0), 
-            new PIDConstants(0.0, 0.0), 
-            4.5, 
+            new PIDConstants(SwerveConstants.kTranslationController_kP), 
+            new PIDConstants(SwerveConstants.kThetaController_kP), 
+            3.0,
             0.4
         );
+
+        mDesiredPathingSpeeds = new ChassisSpeeds();
 
         // snapController = new ProfiledPIDController(1.25, 0, 0.15, new TrapezoidProfile.Constraints(
         //         SwerveConstants.MAX_ANGULAR_VEL_RPS, SwerveConstants.MAX_ANGULAR_ACCEL_RPSPS * 2));
@@ -209,6 +213,9 @@ public class Swerve extends Submodule {
         SmartDashboard.putNumber("Y pose", mOdometry.getEstimatedPosition().getY());
         SmartDashboard.putNumber("Theta pose", mOdometry.getEstimatedPosition().getRotation().getDegrees());
 
+        SmartDashboard.putNumber("0 Swerve Module Vel", -mTopLeftModule.getState().speedMetersPerSecond);
+        SmartDashboard.putNumber("0 Desired Velocity", mDesiredPathingSpeeds.vxMetersPerSecond);
+
 
         // if(vision.getRobotPose() != null) {
         // setPose(vision.getRobotPose());
@@ -252,6 +259,8 @@ public class Swerve extends Submodule {
         mTopLeftModule.zero();
         mRearLeftModule.zero();
         mRearRightModule.zero();
+
+        mOdometry.resetPosition(mPigeon.getRotation2d(), getModulePositions(), new Pose2d());
     }
 
     /**
@@ -356,6 +365,12 @@ public class Swerve extends Submodule {
      */
     private Pose2d updateOdometry(double timestamp) {
         try {
+            // SwerveModulePosition[] reversedPositions = new SwerveModulePosition[] {
+            //     new SwerveModulePosition(-getModulePositions()[0].distanceMeters, getModulePositions()[0].angle), 
+            //     new SwerveModulePosition(-getModulePositions()[1].distanceMeters, getModulePositions()[1].angle), 
+            //     new SwerveModulePosition(-getModulePositions()[2].distanceMeters, getModulePositions()[2].angle), 
+            //     new SwerveModulePosition(-getModulePositions()[3].distanceMeters, getModulePositions()[3].angle)
+            // };
             return mOdometry.updateWithTime(timestamp,
                     Rotation2d.fromDegrees(mPigeon.getAngle()),
                     getModulePositions());
@@ -386,6 +401,7 @@ public class Swerve extends Submodule {
                         : new ChassisSpeeds(xSpeed, ySpeed, angularSpeed));
 
         SwerveDriveKinematics.desaturateWheelSpeeds(targetState, 1);
+
         mTopLeftModule.setOpenLoopState(targetState[0]);
         mTopRightModule.setOpenLoopState(targetState[1]);
         mRearLeftModule.setOpenLoopState(targetState[2]);
@@ -463,8 +479,14 @@ public class Swerve extends Submodule {
 
     private void updatePathing() {
         PathPlannerTrajectory.State state = (PathPlannerTrajectory.State) mCurrentTrajectory.sample(mTimer.get());
+        // mHolonomicController.setEnabled(false);
+        // PathPlannerPath.fromChoreoTrajectory()
         ChassisSpeeds desiredSpeeds = mHolonomicController.calculateRobotRelativeSpeeds(mCurrentPose, state);
-        setOpenLoopSpeeds(desiredSpeeds);
+        desiredSpeeds.times(-1.0);
+        mDesiredPathingSpeeds = desiredSpeeds;
+        setClosedLoopSpeeds(mDesiredPathingSpeeds);
+        // setOpenLoopSpeeds(desiredSpeeds);
+        
     }
 
     /**
@@ -503,6 +525,15 @@ public class Swerve extends Submodule {
         mTopRightModule.setOpenLoopState(desiredState[1]);
         mRearLeftModule.setOpenLoopState(desiredState[2]);
         mRearRightModule.setOpenLoopState(desiredState[3]);
+    }
+
+    public void setClosedLoopSpeeds(ChassisSpeeds speeds) {
+        SwerveModuleState[] desiredState = SwerveConstants.kKinematics.toSwerveModuleStates(speeds);
+        SwerveDriveKinematics.desaturateWheelSpeeds(desiredState, SwerveConstants.kRealisticMaxVelMPS);
+        mTopLeftModule.setClosedLoopState(desiredState[0]);
+        mTopRightModule.setClosedLoopState(desiredState[1]);
+        mRearLeftModule.setClosedLoopState(desiredState[2]);
+        mRearRightModule.setClosedLoopState(desiredState[3]);
     }
 
     public ChassisSpeeds getOpenLoopSpeeds() {
