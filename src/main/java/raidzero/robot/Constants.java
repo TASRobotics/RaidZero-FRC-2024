@@ -174,6 +174,23 @@ public class Constants {
         public static final int TRANSMIT_PERIOD_MS = 20;
     }
 
+    public static final class IntakeConstants{
+        public static final int kMotorID = 9;
+        public static final InvertedValue kMotorInversion = InvertedValue.Clockwise_Positive;
+        public static final NeutralModeValue kMotorNeutralMode = NeutralModeValue.Brake;
+    }
+
+    public static final class ShooterConstants{
+        public static final int kMotorRightID = 10;
+        public static final int kMotorLeftID = 11;
+        public static final InvertedValue kMotorLeftInversion = InvertedValue.Clockwise_Positive;
+        public static final NeutralModeValue kMotorLeftNeutralMode = NeutralModeValue.Brake;
+        public static final InvertedValue kMotorRightInversion = InvertedValue.CounterClockwise_Positive;
+        public static final NeutralModeValue kMotorRightNeutralMode = NeutralModeValue.Brake;
+        public static final double FAKE_MAX_SPEED = 50;
+        public static final double ERROR_TOLERANCE = 10;
+    }
+
     public static final class VisionConstants {
         public static final String NAME = "SmartDashboard";
         public static final String APRILTAGFAMILY = "tag16h5";

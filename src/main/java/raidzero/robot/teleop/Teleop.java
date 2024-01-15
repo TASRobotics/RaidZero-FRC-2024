@@ -1,5 +1,7 @@
 package raidzero.robot.teleop;
 
+import raidzero.robot.submodules.Intake;
+import raidzero.robot.submodules.Shooter;
 import raidzero.robot.submodules.Swerve;
 import raidzero.robot.submodules.SwerveModule.PeriodicIO;
 import raidzero.robot.utils.JoystickUtils;
@@ -16,6 +18,8 @@ public class Teleop {
     private static GenericHID p3 = new GenericHID(2);
 
     private static Swerve mSwerve = Swerve.getInstance();
+    private static final Intake intake = Intake.getInstance();
+    private static final Shooter shooter = Shooter.getInstance();
 
     public static Teleop getInstance() {
         if (instance == null) {
@@ -42,6 +46,18 @@ public class Teleop {
             JoystickUtils.applyDeadband(p.getRightX()), 
             true
         );
+        if (p.getAButton()) {
+            intake.setPercentSpeed(0.45);
+        }
+        else if(p.getYButton()){
+            intake.setPercentSpeed(-0.45);
+        }
+        if(p.getXButton()){
+            shooter.shoot(1, false);
+        }
+        else{
+            shooter.shoot(0, false);
+        }
 
         SmartDashboard.putNumber("Throttle Position 0", mSwerve.getModules()[0].getThrottleMotor().getPosition().getValueAsDouble());
         SmartDashboard.putNumber("Throttle Position 1", mSwerve.getModules()[1].getThrottleMotor().getPosition().getValueAsDouble());
