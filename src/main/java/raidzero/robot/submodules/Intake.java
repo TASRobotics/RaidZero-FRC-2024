@@ -17,7 +17,6 @@ import com.revrobotics.CANSparkBase.IdleMode;
 
 import raidzero.robot.Constants;
 import raidzero.robot.Constants.IntakeConstants;
-import raidzero.robot.Constants.SwerveConstants;
 
 public class Intake extends Submodule{
     private Intake() {
