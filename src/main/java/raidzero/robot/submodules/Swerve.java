@@ -25,7 +25,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.util.Units;
+
 import raidzero.robot.Constants;
 import raidzero.robot.Constants.DriveConstants;
 import raidzero.robot.Constants.SwerveConstants;
@@ -115,7 +115,8 @@ public class Swerve extends Submodule {
             SwerveConstants.kFrontRightThrottleID,
             SwerveConstants.kFrontRightAzimuthID,
             SwerveConstants.kFrontRightEncoderID,
-            SwerveConstants.kFrontRightAzimuthOffset
+            SwerveConstants.kFrontRightAzimuthOffset, 
+            true
         );
         mRearLeftModule.onInit(
             SwerveConstants.kRearLeftThrottleID,
@@ -127,7 +128,8 @@ public class Swerve extends Submodule {
             SwerveConstants.kRearRightThrottleID,
             SwerveConstants.kRearRightAzimuthID,
             SwerveConstants.kRearRightEncoderID,
-            SwerveConstants.kRearRightAzimuthOffset
+            SwerveConstants.kRearRightAzimuthOffset, 
+            true
         );
 
         mOdometry = new SwerveDrivePoseEstimator(
@@ -140,10 +142,10 @@ public class Swerve extends Submodule {
         );
 
         mHolonomicController = new PPHolonomicDriveController(
+            new PIDConstants(0.05, 0.0), 
             new PIDConstants(0.0, 0.0), 
-            new PIDConstants(0.0, 0.0), 
-            0.0, 
-            0.0
+            4.5, 
+            0.4
         );
 
         // snapController = new ProfiledPIDController(1.25, 0, 0.15, new TrapezoidProfile.Constraints(
@@ -211,12 +213,6 @@ public class Swerve extends Submodule {
         // if(vision.getRobotPose() != null) {
         // setPose(vision.getRobotPose());
         // }
-
-        // Auto Balance Updates
-        double disp = mOdometry.getEstimatedPosition().getX() - prevX;
-        // SmartDashboard.putNumber("disp", disp);
-        prevX = mOdometry.getEstimatedPosition().getX();
-        // SmartDashboard.putNumber("prevX", prevX);
     }
 
     /**
@@ -249,6 +245,8 @@ public class Swerve extends Submodule {
         // else if (alliance == Alliance.Red)
         //     zeroHeading(0);
         // setPose(new Pose2d(new Translation2d(1.76, 1.477), new Rotation2d(Math.toRadians(pigeon.getAngle()))));
+
+        mPigeon.setYaw(0.0);
 
         mTopRightModule.zero();
         mTopLeftModule.zero();
@@ -384,7 +382,7 @@ public class Swerve extends Submodule {
                 fieldOriented
                         ? ChassisSpeeds.fromFieldRelativeSpeeds(
                                 xSpeed, ySpeed, angularSpeed,
-                                Rotation2d.fromDegrees(mPigeon.getAngle()))
+                                Rotation2d.fromDegrees(-mPigeon.getAngle()))
                         : new ChassisSpeeds(xSpeed, ySpeed, angularSpeed));
 
         SwerveDriveKinematics.desaturateWheelSpeeds(targetState, 1);
@@ -427,7 +425,7 @@ public class Swerve extends Submodule {
             firstPath = false;
         }
         mControlState = ControlState.PATHING;
-        currentTrajectory = trajectory;
+        mCurrentTrajectory = trajectory;
 
         mTimer.reset();
         mTimer.start();
@@ -484,10 +482,16 @@ public class Swerve extends Submodule {
      * @return robot pathing state
      */
     public boolean isFinishedPathing() {
-        if (xController.atSetpoint() && yController.atSetpoint() && thetaController.atSetpoint()) {
-            if (mTimer.hasElapsed(currentTrajectory.getTotalTimeSeconds())) {
-                return true;
-            }
+        // if (xController.atSetpoint() && yController.atSetpoint() && thetaController.atSetpoint()) {
+        //     if (mTimer.hasElapsed(currentTrajectory.getTotalTimeSeconds())) {
+        //         return true;
+        //     }
+        // }
+        // return false;
+
+        if(/*mHolonomicController.getPositionalError() < 0.05 && */mTimer.hasElapsed(mCurrentTrajectory.getTotalTimeSeconds())) {
+            System.out.println("Done Pathing!");
+            return true;
         }
         return false;
     }

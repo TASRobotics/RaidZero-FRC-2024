@@ -122,10 +122,11 @@ public class Constants {
         public static final double kAAThetaControllerTolerance = Math.toRadians(0.2);
 
         // Using SDS 6.75 ratio
-        public static final double kThrottleTicksToMeters = Math.PI * kWheelDiameterMeters
-                / (2048 * (1 / kThrottleReduction));
-        public static final double kCANCoderToDegrees = 360.0 / 4096.0;
+        public static final double kThrottleRotToWheelRot = (50.0 / 14.0) * (16.0 / 28.0) * (45.0 / 15.0);
+        public static final double kThrottleWheelRotToMeters = 1 / (Math.PI * kWheelDiameterMeters);
+        
         public static final InvertedValue kThrottleInversion = InvertedValue.Clockwise_Positive;
+        public static final InvertedValue kThrottleInversionReverse = InvertedValue.CounterClockwise_Positive;
         public static final InvertedValue kAzimuthInversion = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue kThrottleNeutralMode = NeutralModeValue.Brake;
         public static final NeutralModeValue kAzimuthNeutralMode = NeutralModeValue.Brake;
