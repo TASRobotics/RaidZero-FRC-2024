@@ -175,6 +175,12 @@ public class Constants {
         public static final int TRANSMIT_PERIOD_MS = 20;
     }
 
+    public static final class IntakeConstants{
+        public static final int kMotorID = 9;
+        public static final InvertedValue kMotorInversion = InvertedValue.Clockwise_Positive;
+        public static final NeutralModeValue kMotorNeutralMode = NeutralModeValue.Brake;
+    }
+
     public static final class VisionConstants {
         public static final String NAME = "SmartDashboard";
         public static final String APRILTAGFAMILY = "tag16h5";

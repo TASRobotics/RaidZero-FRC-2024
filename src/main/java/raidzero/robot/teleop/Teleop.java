@@ -1,5 +1,6 @@
 package raidzero.robot.teleop;
 
+import raidzero.robot.submodules.Intake;
 import raidzero.robot.submodules.Swerve;
 import raidzero.robot.submodules.SwerveModule.PeriodicIO;
 import raidzero.robot.utils.JoystickUtils;
@@ -16,6 +17,7 @@ public class Teleop {
     private static GenericHID p3 = new GenericHID(2);
 
     private static Swerve mSwerve = Swerve.getInstance();
+    private static final Intake intake = Intake.getInstance();
 
     public static Teleop getInstance() {
         if (instance == null) {
@@ -42,6 +44,12 @@ public class Teleop {
             JoystickUtils.applyDeadband(p.getRightX()), 
             false
         );
+        if (p.getAButton()) {
+            intake.setPercentSpeed(0.45);
+        }
+        else if(p.getYButton()){
+            intake.setPercentSpeed(-0.45);
+        }
 
         SmartDashboard.putNumber("CANCoder Angle", mSwerve.getModules()[moduleNumber].getAzimuthEncoder().getPosition().getValueAsDouble());
         SmartDashboard.putNumber("Motor Angle", mSwerve.getModules()[moduleNumber].getAzimuthMotor().getPosition().getValueAsDouble());
