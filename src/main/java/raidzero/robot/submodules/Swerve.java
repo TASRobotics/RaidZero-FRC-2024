@@ -270,10 +270,10 @@ public class Swerve extends Submodule {
         mPigeon.setYaw(q, Constants.TIMEOUT_MS);
     }
 
-    public void zeroTele(double q) {
-        mPigeon.setYaw(q, Constants.TIMEOUT_MS);
-        setPose(new Pose2d(new Translation2d(1.76, 1.477), new Rotation2d(Math.toRadians(mPigeon.getAngle()))));
-    }
+    // public void zeroTele(double q) {
+    //     mPigeon.setYaw(q, Constants.TIMEOUT_MS);
+    //     setPose(new Pose2d(new Translation2d(1.76, 1.477), new Rotation2d(Math.toRadians(mPigeon.getAngle()))));
+    // }
 
     public double getYawRate() {
         return mPigeon.getRate();
@@ -482,6 +482,8 @@ public class Swerve extends Submodule {
         // mHolonomicController.setEnabled(false);
         // PathPlannerPath.fromChoreoTrajectory()
         ChassisSpeeds desiredSpeeds = mHolonomicController.calculateRobotRelativeSpeeds(mCurrentPose, state);
+        
+        // IMPORTANT!!
         desiredSpeeds.times(-1.0);
         mDesiredPathingSpeeds = desiredSpeeds;
         setClosedLoopSpeeds(mDesiredPathingSpeeds);
