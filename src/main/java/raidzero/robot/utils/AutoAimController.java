@@ -272,7 +272,7 @@ public class AutoAimController {
             // SmartDashboard.putData(field);
 
             ChassisSpeeds speeds = calculate(mSwerve.getPose(), currState, mEndHeading);
-            mSwerve.setOpenLoopSpeeds(speeds);
+            // mSwerve.setOpenLoopSpeeds(speeds);
         } else {
             if(firstStart) {
                 mFortniteAimAssistYController.reset(mSwerve.getPose().getY(), 0);
@@ -284,7 +284,7 @@ public class AutoAimController {
                 mFortniteAimAssistYController.calculate(mSwerve.getPose().getY(), mDesiredYPose), 
                 mThetaController.calculate(mSwerve.getPose().getRotation().getRadians(), mDesiredRotationPose.getRadians())
             );
-            mSwerve.setOpenLoopSpeeds(speeds);
+            // mSwerve.setOpenLoopSpeeds(speeds);
         }
     }
 

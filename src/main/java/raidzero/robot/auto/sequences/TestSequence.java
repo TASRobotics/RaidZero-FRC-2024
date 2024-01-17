@@ -10,7 +10,7 @@ import raidzero.robot.submodules.Swerve;
 
 public class TestSequence extends AutoSequence {
     private static final Swerve mSwerve = Swerve.getInstance();
-    private PathPlannerPath testPath = PathPlannerPath.fromPathFile("Test Path");
+    private PathPlannerPath testPath = PathPlannerPath.fromPathFile("Straight Path");
     private PathPlannerTrajectory testTrajectory;
 
     public TestSequence() {

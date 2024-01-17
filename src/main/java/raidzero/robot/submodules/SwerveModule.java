@@ -110,12 +110,12 @@ public class SwerveModule extends Submodule {
         
         // IMPORTANT!!!
         mPeriodicIO.currentState = new SwerveModuleState(
-            -mThrottle.getVelocity().refresh().getValue(), 
+            mThrottle.getVelocity().refresh().getValue(), 
             rotation
         );
 
         mPeriodicIO.currentPosition = new SwerveModulePosition(
-            -mThrottle.getPosition().refresh().getValue(), 
+            mThrottle.getPosition().refresh().getValue(), 
             rotation
         );
     }
