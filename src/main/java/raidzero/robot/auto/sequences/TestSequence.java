@@ -11,10 +11,12 @@ import raidzero.robot.submodules.Swerve;
 public class TestSequence extends AutoSequence {
     private static final Swerve mSwerve = Swerve.getInstance();
     private PathPlannerPath testPath = PathPlannerPath.fromPathFile("Straight Path");
+    private PathPlannerPath choreoTestPath = PathPlannerPath.fromChoreoTrajectory("NewPath");
     private PathPlannerTrajectory testTrajectory;
 
     public TestSequence() {
-        testTrajectory = testPath.getTrajectory(new ChassisSpeeds(), new Rotation2d());
+        // testTrajectory = testPath.getTrajectory(new ChassisSpeeds(), new Rotation2d());
+        testTrajectory = choreoTestPath.getTrajectory(new ChassisSpeeds(), new Rotation2d());
     }
 
     @Override

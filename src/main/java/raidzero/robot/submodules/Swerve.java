@@ -141,9 +141,9 @@ public class Swerve extends Submodule {
         );
 
         mHolonomicController = new PPHolonomicDriveController(
-            new PIDConstants(SwerveConstants.kTranslationController_kP), 
+            new PIDConstants(SwerveConstants.kTranslationController_kP, SwerveConstants.kTranslationController_kD), 
             new PIDConstants(SwerveConstants.kThetaController_kP), 
-            SwerveConstants.kTestingMaxVelMPS,
+            /*SwerveConstants.kTestingMaxVelMPS*/ SwerveConstants.kMaxVelMPS,
             0.4
         );
 
