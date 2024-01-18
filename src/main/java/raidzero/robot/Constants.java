@@ -151,6 +151,10 @@ public class Constants {
         //         0.1);
     }
 
+    public static final class LimelightConstants {
+        public static final String kLimelightName = "Blindlight";
+    }
+
     public static final class DriveConstants {
         public static final Rotation2d STARTING_ROTATION = new Rotation2d(0.0);
         public static final Pose2d STARTING_POSE = new Pose2d(

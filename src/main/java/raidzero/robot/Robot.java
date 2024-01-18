@@ -1,5 +1,7 @@
 package raidzero.robot;
 
+import javax.sound.sampled.LineEvent;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import raidzero.robot.auto.AutoRunner;
@@ -15,6 +17,7 @@ public class Robot extends TimedRobot {
 
     private static final Teleop mTeleop = Teleop.getInstance();
     private static final Swerve mSwerve = Swerve.getInstance();
+    private static final Limelight mLimelight = Limelight.getInstance();
     private static final Vision vision = Vision.getInstance();
 
     private AutoRunner autoRunner;

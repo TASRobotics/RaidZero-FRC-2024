@@ -1,5 +1,6 @@
 package raidzero.robot.teleop;
 
+import raidzero.robot.Constants.SwerveConstants;
 import raidzero.robot.submodules.Intake;
 import raidzero.robot.submodules.Shooter;
 import raidzero.robot.submodules.Swerve;
@@ -41,11 +42,19 @@ public class Teleop {
     int moduleNumber = 3;
 
     private void p1Loop(XboxController p) {
+        // mSwerve.teleopDrive(
+        //     JoystickUtils.applyDeadband(p.getLeftY()), 
+        //     JoystickUtils.applyDeadband(p.getLeftX()), 
+        //     JoystickUtils.applyDeadband(p.getRightX()), 
+        //     true
+        // );
+
         mSwerve.teleopDrive(
-            JoystickUtils.applyDeadband(p.getLeftY()), 
-            JoystickUtils.applyDeadband(p.getLeftX()), 
-            JoystickUtils.applyDeadband(p.getRightX()), 
-            true
+            -JoystickUtils.applyDeadband(p.getLeftY()) * SwerveConstants.kRealisticMaxVelMPS, 
+            -JoystickUtils.applyDeadband(p.getLeftX()) * SwerveConstants.kRealisticMaxVelMPS, 
+            -JoystickUtils.applyDeadband(p.getRightX()) * SwerveConstants.kRealisticMaxVelMPS, 
+            true, 
+            p.getAButton()
         );
         // if(p.getAButton()) {
         //     mSwerve.setClosedLoopSpeeds(new ChassisSpeeds(1.0, 0.0, 0.0), true);

@@ -67,6 +67,10 @@ public class Swerve extends Submodule {
 
     private ControlState mControlState = ControlState.OPEN_LOOP;
 
+    private final Limelight mLimelight = Limelight.getInstance();
+    private PIDController mAimAssistYController = new PIDController(2.0, 0.0, 0.0);
+    private boolean mEnableAimAssist = false;
+
 
 
 
@@ -191,6 +195,8 @@ public class Swerve extends Submodule {
     public void update(double timestamp) {
         if(mControlState == ControlState.PATHING) {
             updatePathing();
+        } else if(mControlState == ControlState.AUTO_AIM) {
+            
         }
 
         mTopRightModule.update(timestamp);
@@ -390,33 +396,42 @@ public class Swerve extends Submodule {
      * @param angularSpeed  turn speed
      * @param fieldOriented
      */
-    public void teleopDrive(double xSpeed, double ySpeed, double angularSpeed, boolean fieldOriented) {
+    public void teleopDrive(double xSpeed, double ySpeed, double angularSpeed, boolean fieldOriented, boolean aimAssist) {
         if (mControlState == ControlState.AUTO_AIM) {
             return;
         }
         mControlState = ControlState.OPEN_LOOP;
 
-        setOpenLoopSpeeds(new ChassisSpeeds(xSpeed, ySpeed, angularSpeed), fieldOriented);
-    }
-
-    public void drive(double xSpeed, double ySpeed, double angularSpeed, boolean fieldOriented, Rotation2d snapAngle) {
-        if (Math.abs(angularSpeed) > 0.1) {
-            teleopDrive(xSpeed, ySpeed, angularSpeed, fieldOriented);
+        // setOpenLoopSpeeds(new ChassisSpeeds(xSpeed, ySpeed, angularSpeed), fieldOriented);
+        if(aimAssist) {
+            double y = mAimAssistYController.calculate(mLimelight.getTx(), 0.0);
+            // ChassisSpeeds driverSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, 0.0, angularSpeed, mPigeon.getRotation2d());
+            // ChassisSpeeds aimAssistSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(0.0, y, 0.0, mPigeon.getRotation2d());
+            // setClosedLoopSpeeds(driverSpeeds.plus(aimAssistSpeeds), false);
+            setClosedLoopSpeeds(ChassisSpeeds.fromRobotRelativeSpeeds(0.0, y, 0.0, mPigeon.getRotation2d()), false);
         } else {
-            double thetaOutput = snapController.calculate(getPose().getRotation().getRadians(), snapAngle.getRadians());
-            teleopDrive(xSpeed, ySpeed, thetaOutput, fieldOriented);
+            setClosedLoopSpeeds(new ChassisSpeeds(xSpeed, ySpeed, angularSpeed), fieldOriented);
         }
     }
 
-    public void drive(double xSpeed, double ySpeed, double angularSpeed, boolean fieldOriented, boolean snap) {
-        if (snap && Math.abs(angularSpeed) < 0.1) {
-            double thetaOutput = snapController.calculate(getPose().getRotation().getRadians(),
-                    /*DriverStation.getAlliance() == Alliance.Blue ? Math.PI :*/ 0);
-            teleopDrive(xSpeed, ySpeed, thetaOutput, fieldOriented);
-        } else {
-            teleopDrive(xSpeed, ySpeed, angularSpeed, fieldOriented);
-        }
-    }
+    // public void drive(double xSpeed, double ySpeed, double angularSpeed, boolean fieldOriented, Rotation2d snapAngle) {
+    //     if (Math.abs(angularSpeed) > 0.1) {
+    //         teleopDrive(xSpeed, ySpeed, angularSpeed, fieldOriented);
+    //     } else {
+    //         double thetaOutput = snapController.calculate(getPose().getRotation().getRadians(), snapAngle.getRadians());
+    //         teleopDrive(xSpeed, ySpeed, thetaOutput, fieldOriented);
+    //     }
+    // }
+
+    // public void drive(double xSpeed, double ySpeed, double angularSpeed, boolean fieldOriented, boolean snap) {
+    //     if (snap && Math.abs(angularSpeed) < 0.1) {
+    //         double thetaOutput = snapController.calculate(getPose().getRotation().getRadians(),
+    //                 /*DriverStation.getAlliance() == Alliance.Blue ? Math.PI :*/ 0);
+    //         teleopDrive(xSpeed, ySpeed, thetaOutput, fieldOriented);
+    //     } else {
+    //         teleopDrive(xSpeed, ySpeed, angularSpeed, fieldOriented);
+    //     }
+    // }
 
     /**
      * Follow path
@@ -436,6 +451,10 @@ public class Swerve extends Submodule {
 
         mTimer.reset();
         mTimer.start();
+    }
+    
+    public void enableAimAssist(boolean enable) {
+        mEnableAimAssist = enable;
     }
 
     /**
@@ -524,6 +543,9 @@ public class Swerve extends Submodule {
             );
         } 
 
+        // test
+        ChassisSpeeds.discretize(speeds, 0.02);
+
         SwerveModuleState[] desiredState = SwerveConstants.kKinematics.toSwerveModuleStates(speeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredState, 1);
         mTopLeftModule.setOpenLoopState(desiredState[0]);
@@ -543,6 +565,8 @@ public class Swerve extends Submodule {
                 mPigeon.getRotation2d()
             );
         } 
+
+        // ChassisSpeeds.discretize(speeds, 0.02);
 
         SwerveModuleState[] desiredState = SwerveConstants.kKinematics.toSwerveModuleStates(speeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredState, SwerveConstants.kRealisticMaxVelMPS);
