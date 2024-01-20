@@ -17,7 +17,7 @@ public class Limelight extends Submodule {
 	}
 
 	/**
-	 * Camera modes for Limelight.
+	 * Camera modes for Limelight
 	 */
 	public static enum CameraMode {
 		Vision, Driver

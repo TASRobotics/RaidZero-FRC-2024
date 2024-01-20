@@ -39,7 +39,8 @@ public class Robot extends TimedRobot {
         // Register all submodules here
         submoduleManager.setSubmodules(
             mSwerve,
-            vision
+            vision, 
+            mLimelight
         );
         submoduleManager.onInit();
 

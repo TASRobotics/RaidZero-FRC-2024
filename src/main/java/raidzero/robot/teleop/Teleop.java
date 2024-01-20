@@ -6,6 +6,10 @@ import raidzero.robot.submodules.Shooter;
 import raidzero.robot.submodules.Swerve;
 import raidzero.robot.submodules.SwerveModule.PeriodicIO;
 import raidzero.robot.utils.JoystickUtils;
+
+import java.util.Optional;
+
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -41,6 +45,8 @@ public class Teleop {
 
     int moduleNumber = 3;
 
+    Rotation2d snapAngle = null;
+
     private void p1Loop(XboxController p) {
         // mSwerve.teleopDrive(
         //     JoystickUtils.applyDeadband(p.getLeftY()), 
@@ -48,13 +54,19 @@ public class Teleop {
         //     JoystickUtils.applyDeadband(p.getRightX()), 
         //     true
         // );
+        if(p.getBButton()) {
+            snapAngle = Rotation2d.fromDegrees(0);
+        } else {
+            snapAngle = null;
+        }
 
         mSwerve.teleopDrive(
             -JoystickUtils.applyDeadband(p.getLeftY()) * SwerveConstants.kRealisticMaxVelMPS, 
             -JoystickUtils.applyDeadband(p.getLeftX()) * SwerveConstants.kRealisticMaxVelMPS, 
             -JoystickUtils.applyDeadband(p.getRightX()) * SwerveConstants.kRealisticMaxVelMPS, 
             true, 
-            p.getAButton()
+            snapAngle,
+            /*p.getAButton()*/ false
         );
         // if(p.getAButton()) {
         //     mSwerve.setClosedLoopSpeeds(new ChassisSpeeds(1.0, 0.0, 0.0), true);

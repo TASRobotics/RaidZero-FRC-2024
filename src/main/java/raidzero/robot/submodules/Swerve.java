@@ -1,5 +1,7 @@
 package raidzero.robot.submodules;
 
+import java.util.Optional;
+
 import com.ctre.phoenix6.hardware.Pigeon2;
 
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
@@ -68,7 +70,17 @@ public class Swerve extends Submodule {
     private ControlState mControlState = ControlState.OPEN_LOOP;
 
     private final Limelight mLimelight = Limelight.getInstance();
-    private PIDController mAimAssistYController = new PIDController(2.0, 0.0, 0.0);
+    private PIDController mAimAssistYController = new PIDController(
+        SwerveConstants.kAimAssistController_kP, 
+        SwerveConstants.kAimAssistController_kI, 
+        SwerveConstants.kAimAssistController_kD
+    );
+    private ProfiledPIDController mSnapController = new ProfiledPIDController(
+        SwerveConstants.kSnapController_kP, 
+        SwerveConstants.kSnapController_kI, 
+        SwerveConstants.kSnapController_kD, 
+        SwerveConstants.kSnapControllerConstraints
+    );
     private boolean mEnableAimAssist = false;
 
 
@@ -152,6 +164,8 @@ public class Swerve extends Submodule {
         );
 
         mDesiredPathingSpeeds = new ChassisSpeeds();
+
+        mSnapController.enableContinuousInput(-180, 180);
 
         // snapController = new ProfiledPIDController(1.25, 0, 0.15, new TrapezoidProfile.Constraints(
         //         SwerveConstants.MAX_ANGULAR_VEL_RPS, SwerveConstants.MAX_ANGULAR_ACCEL_RPSPS * 2));
@@ -396,21 +410,26 @@ public class Swerve extends Submodule {
      * @param angularSpeed  turn speed
      * @param fieldOriented
      */
-    public void teleopDrive(double xSpeed, double ySpeed, double angularSpeed, boolean fieldOriented, boolean aimAssist) {
+    public void teleopDrive(double xSpeed, double ySpeed, double angularSpeed, boolean fieldOriented, Rotation2d snapAngle, boolean aimAssist) {
         if (mControlState == ControlState.AUTO_AIM) {
             return;
         }
         mControlState = ControlState.OPEN_LOOP;
 
+        if(snapAngle != null) {
+            angularSpeed = mSnapController.calculate(mPigeon.getRotation2d().getDegrees(), snapAngle.getDegrees());
+        }
+
         // setOpenLoopSpeeds(new ChassisSpeeds(xSpeed, ySpeed, angularSpeed), fieldOriented);
-        if(aimAssist) {
+        if(aimAssist && mLimelight.hasTarget()) {
             double y = mAimAssistYController.calculate(mLimelight.getTx(), 0.0);
-            // ChassisSpeeds driverSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, 0.0, angularSpeed, mPigeon.getRotation2d());
-            // ChassisSpeeds aimAssistSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(0.0, y, 0.0, mPigeon.getRotation2d());
-            // setClosedLoopSpeeds(driverSpeeds.plus(aimAssistSpeeds), false);
-            setClosedLoopSpeeds(ChassisSpeeds.fromRobotRelativeSpeeds(0.0, y, 0.0, mPigeon.getRotation2d()), false);
+            ChassisSpeeds driverSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, 0.0, angularSpeed, mPigeon.getRotation2d());
+            ChassisSpeeds aimAssistSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(0.0, y, 0.0, mPigeon.getRotation2d());
+            setClosedLoopSpeeds(driverSpeeds.plus(aimAssistSpeeds), false);
+            // setClosedLoopSpeeds(ChassisSpeeds.fromRobotRelativeSpeeds(0.0, y, 0.0, mPigeon.getRotation2d()), false);
         } else {
             setClosedLoopSpeeds(new ChassisSpeeds(xSpeed, ySpeed, angularSpeed), fieldOriented);
+            // setOpenLoopSpeeds(new ChassisSpeeds(xSpeed, ySpeed, angularSpeed), fieldOriented);
         }
     }
 
@@ -489,7 +508,7 @@ public class Swerve extends Submodule {
 
     private void updatePathing() {
         PathPlannerTrajectory.State state = (PathPlannerTrajectory.State) mCurrentTrajectory.sample(mTimer.get());
-        // mHolonomicController.setEnabled(false);
+        mHolonomicController.setEnabled(false);
         // PathPlannerPath.fromChoreoTrajectory()
         ChassisSpeeds desiredSpeeds = mHolonomicController.calculateRobotRelativeSpeeds(mCurrentPose, state);
         
@@ -566,7 +585,7 @@ public class Swerve extends Submodule {
             );
         } 
 
-        // ChassisSpeeds.discretize(speeds, 0.02);
+        ChassisSpeeds.discretize(speeds, 0.02);
 
         SwerveModuleState[] desiredState = SwerveConstants.kKinematics.toSwerveModuleStates(speeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredState, SwerveConstants.kRealisticMaxVelMPS);

@@ -55,8 +55,6 @@ public class Constants {
         public static final double kRearLeftAzimuthOffset = -0.090088;
         public static final double kRearRightAzimuthOffset = -0.674316 + 0.5;
 
-
-
         public static final double kThrottleReduction = (14.0 / 50.0) * (28.0 / 16.0) * (15.0 / 45.0);
         public static final double kAzimuthReduction = (14.0 / 50.0) * (10.0 / 60.0);
         public static final double kWheelDiameterMeters = 0.1016;
@@ -80,23 +78,14 @@ public class Constants {
             new Translation2d(-kTrackwidthMeters / 2.0, -kWheelbaseMeters / 2.0)
         );
 
-        /** 254 Pathing Constants (smooth): */
-        public static final double kMaxDriveVelMPS = kMaxVelMPS * 0.6;
-        public static final double kMaxDriveAccelMPSPS = kMaxDriveVelMPS * 1.25;
-        public static final double kMaxAngularVelRPS = 1.2 * Math.PI;
-        public static final double kMaxAngularAccelRPSPS = kMaxAngularVelRPS * 2;
-        /** 254 Pathing Constants (fast): */
-        // public static final double MAX_DRIVE_VEL = MAX_VEL_MPS;
-        // public static final double MAX_DRIVE_ACCEL = MAX_DRIVE_VEL / 0.2;
-        // public static final double MAX_STEERING_VEL = Units.degreesToRadians(1000);
+        public static final double kMaxAngularVelRPS = kMaxVelMPS * Math.sqrt(2) * kTrackwidthMeters;
 
-        /** 254 Module Constants */
+
         public static final int kAzimuthPositionPIDSlot = 0;
         public static final double kAzimuth_kP = 40.0;// .75
         public static final double kAzimuth_kI = 0.0;
         public static final double kAzimuth_kD = 0.0;// 5.0
         public static final double kAzimuthPIDUpdateHz = 1000.0;
-
 
         public static final int kThrottleVelPIDSlot = 0;
         public static final double kThrottle_kP = 0.5;
@@ -106,13 +95,23 @@ public class Constants {
         public static final double kThrottle_kA = 1.5;
         public static final double kThrottlePIDUpdateHz = 1000.0;
 
-        /** 1678 Pathing Constants */
         public static final double kTranslationController_kP = 5.0;
         public static final double kTranslationController_kD = 0.0;
         public static final double kThetaController_kP = 2.0;
         public static final double kXControllerTolerance = 0.1;
         public static final double kYControllerTolerance = 0.1;
         public static final double kThetaControllerTolerance = Math.toRadians(5);
+
+        public static final double kSnapController_kP = 0.1;
+        public static final double kSnapController_kI = 0.0;
+        public static final double kSnapController_kD = 0.0;
+        public static final TrapezoidProfile.Constraints kSnapControllerConstraints = 
+            new TrapezoidProfile.Constraints(kMaxAngularVelRPS, kMaxAngularVelRPS);
+
+        public static final double kAimAssistController_kP = 0.05;
+        public static final double kAimAssistController_kI = 0.0;
+        public static final double kAimAssistController_kD = 0.0;
+        
 
         /** AutoAim Constants */
         public static final double kAAXController_kP = 1.6;
@@ -152,7 +151,7 @@ public class Constants {
     }
 
     public static final class LimelightConstants {
-        public static final String kLimelightName = "Blindlight";
+        public static final String kLimelightName = "limelight";
     }
 
     public static final class DriveConstants {
