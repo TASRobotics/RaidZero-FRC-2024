@@ -1,32 +1,39 @@
 package raidzero.robot.auto.actions;
 
 import com.choreo.lib.*;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
-import edu.wpi.first.wpilibj2.command.Subsystem;
+import com.pathplanner.lib.path.PathPlannerTrajectory;
 
-private ChoreoTrajectory traj = Choreo.getTrajectory("NewPath"); 
-private Command toConvert;
+import raidzero.robot.submodules.Swerve;
 
-public class testChoreo implements Action{
+public class TestChoreo implements Action{
 
-    public Action(){
+    private ChoreoTrajectory traj = Choreo.getTrajectory("NewPath");
+    private static final Swerve swerve = Swerve.getInstance();
 
+    @Override
+    public boolean isFinished() {
+        if (swerve.isFinishedPathing()) {
+            System.out.println("[Auto] Path finished!");
+            return true;
+        }
+        return false;
     }
 
-// 
-Choreo.choreoSwerveCommand(
-    traj, // 
-    this::getPose // 
-    new PIDController(Constants.AutoConstants.kPXController, 0.0, 0.0), // 
-    new PIDController(Constants.AutoConstants.kPXController, 0.0, 0.0), // 
-    new PIDController(Constants.AutoConstants.kPThetaController, 0.0, 0.0), // 
-    (ChassisSpeeds speeds) -> // 
-        this.drive(new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond), ...),
-    () -> {
-        Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
-            mirror = alliance.isPresent() && alliance.get() == Alliance.Red;
-    }, // 
-    this, // 
-);
+    @Override
+    public void start() {
+        System.out.println("[Auto] Action '" + getClass().getSimpleName() + "' started!");
+        swerve.followPath(traj);
+    }
+
+    @Override
+    public void update() {
+    }
+
+    @Override
+    public void done() {
+        System.out.println("[Auto] Action '" + getClass().getSimpleName() + "' finished!");
+        swerve.stop();
+    }
+
+
 }
