@@ -66,7 +66,7 @@ public class Teleop {
             -JoystickUtils.applyDeadband(p.getRightX()) * SwerveConstants.kRealisticMaxVelMPS, 
             true, 
             snapAngle,
-            /*p.getAButton()*/ false
+            p.getAButton() /*false*/
         );
         // if(p.getAButton()) {
         //     mSwerve.setClosedLoopSpeeds(new ChassisSpeeds(1.0, 0.0, 0.0), true);

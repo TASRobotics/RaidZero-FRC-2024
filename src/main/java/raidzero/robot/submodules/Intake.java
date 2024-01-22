@@ -19,8 +19,7 @@ import raidzero.robot.Constants;
 import raidzero.robot.Constants.IntakeConstants;
 
 public class Intake extends Submodule{
-    private Intake() {
-    }
+    private Intake() {}
 
     private static Intake instance = null;
 

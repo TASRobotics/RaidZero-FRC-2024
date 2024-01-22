@@ -3,9 +3,12 @@ package raidzero.robot.submodules;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
+import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.SoftLimitDirection;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.Timer;
+
 import raidzero.robot.Constants;
 import raidzero.robot.Constants.ArmConstants;
 
@@ -28,13 +31,16 @@ public class Arm extends Submodule {
     private SparkPIDController mArmController = mLeftLeader.getPIDController();
     private TrapezoidProfile mArmMotionProfile = new TrapezoidProfile(ArmConstants.kConstraints);
 
+    private Timer mTimer = new Timer();
+
     public static class PeriodicIO {
         public double desiredPosition = 0.0;
+        public double prevDesiredPosition = 0.0;
         public double currentPosition = 0.0;
+        public double currentVelocity = 0.0;
     }
 
     private PeriodicIO mPeriodicIO = new PeriodicIO();
-
 
     @Override
     public void onInit() {
@@ -49,22 +55,34 @@ public class Arm extends Submodule {
 
     @Override
     public void update(double timestamp) {
-        // TODO Auto-generated method stub
-        super.update(timestamp);
+        mPeriodicIO.currentPosition = mEncoder.getPosition();
+        mPeriodicIO.currentVelocity = mEncoder.getVelocity();
     }
 
     @Override
     public void run() {
-        // TODO Auto-generated method stub
-        super.run();
+        TrapezoidProfile.State currentState = new TrapezoidProfile.State(mPeriodicIO.currentPosition, mPeriodicIO.currentVelocity);
+        TrapezoidProfile.State desiredState = new TrapezoidProfile.State(mPeriodicIO.desiredPosition, 0.0);
+        TrapezoidProfile.State calculatedState = mArmMotionProfile.calculate(mTimer.get(), currentState, desiredState);
+        mArmController.setReference(calculatedState.position, ControlType.kPosition);
     }
 
     @Override
-    public void stop() {}
+    public void stop() {
+        mLeftLeader.set(0.0);
+    }
 
     @Override
     public void zero() {
         mEncoder.setPosition(0.0);
+    }
+
+    public void setPosition(double position) {
+        mPeriodicIO.prevDesiredPosition = mPeriodicIO.desiredPosition;
+        mPeriodicIO.desiredPosition = position;
+        if(Math.abs(mPeriodicIO.prevDesiredPosition - mPeriodicIO.desiredPosition) < 0.00001) {
+            mTimer.restart();
+        }
     }
 
     private void configureArmMotors(CANSparkMax leader, CANSparkMax follower) {

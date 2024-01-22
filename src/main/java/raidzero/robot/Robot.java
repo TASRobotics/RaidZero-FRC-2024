@@ -18,6 +18,7 @@ public class Robot extends TimedRobot {
     private static final Teleop mTeleop = Teleop.getInstance();
     private static final Swerve mSwerve = Swerve.getInstance();
     private static final Limelight mLimelight = Limelight.getInstance();
+    private static final Arm mArm = Arm.getInstance();
     private static final Vision vision = Vision.getInstance();
 
     private AutoRunner autoRunner;
@@ -40,7 +41,8 @@ public class Robot extends TimedRobot {
         submoduleManager.setSubmodules(
             mSwerve,
             vision, 
-            mLimelight
+            mLimelight, 
+            mArm
         );
         submoduleManager.onInit();
 

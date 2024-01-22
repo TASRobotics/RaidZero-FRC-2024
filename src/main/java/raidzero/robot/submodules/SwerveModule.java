@@ -21,7 +21,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import raidzero.robot.Constants;
 import raidzero.robot.Constants.SwerveConstants;
-import raidzero.robot.utils.MathTools;
 
 public class SwerveModule extends Submodule {
 

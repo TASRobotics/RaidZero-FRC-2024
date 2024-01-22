@@ -218,6 +218,20 @@ public class Constants {
             new TrapezoidProfile.Constraints(0.0, 0.0);
     }
 
+    public static final class ClimbConstants {
+        public static final int kLeftLeaderID = 0;
+        public static final int kRightFollowerID = 0;
+
+        public static final int kPIDSlot = 0;
+        public static final double kPIDUpdateHz = 1000;
+
+        public static final InvertedValue kInversion = InvertedValue.Clockwise_Positive;
+        public static final NeutralModeValue kNeutralMode = NeutralModeValue.Brake;
+
+        public static final double kSupplyCurrentLimit = 40.0;
+        // public static final double k
+    }
+
     public static final class VisionConstants {
         public static final String NAME = "SmartDashboard";
         public static final String APRILTAGFAMILY = "tag16h5";
@@ -327,7 +341,6 @@ public class Constants {
     public static final int SECONDS_IN_MINUTE = 60;
     public static final double SQRTTWO = Math.sqrt(2);
     public static final PneumaticsModuleType PNEUMATICS_MODULE_TYPE = PneumaticsModuleType.REVPH;
-    public static final double VOLTAGE_COMP = 12.0;
 
     public static final int kCANTimeoutMs = 10; 
     public static final int kLongCANTimeoutMs = 100; // constructors
