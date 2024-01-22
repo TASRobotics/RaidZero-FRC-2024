@@ -1,14 +1,20 @@
 package raidzero.robot.auto.actions;
 
-import com.choreo.lib.*;
+import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.PathPlannerTrajectory;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import raidzero.robot.submodules.Swerve;
 
 public class TestChoreo implements Action{
 
-    private ChoreoTrajectory traj = Choreo.getTrajectory("NewPath");
+    private PathPlannerTrajectory traj = PathPlannerPath.fromChoreoTrajectory("NewPath").getTrajectory(new ChassisSpeeds(), new Rotation2d());
     private static final Swerve swerve = Swerve.getInstance();
+
+    public TestChoreo(){
+        
+    }
 
     @Override
     public boolean isFinished() {

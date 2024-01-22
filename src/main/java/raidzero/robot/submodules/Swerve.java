@@ -9,6 +9,8 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.PathPlannerTrajectory;
 import com.pathplanner.lib.util.PIDConstants;
 
+import com.choreo.lib.*;
+
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -479,17 +481,17 @@ public class Swerve extends Submodule {
 
     private void updatePathing() {
         PathPlannerTrajectory.State state = (PathPlannerTrajectory.State) mCurrentTrajectory.sample(mTimer.get());
-        // mHolonomicController.setEnabled(false);
+         mHolonomicController.setEnabled(false);
         // PathPlannerPath.fromChoreoTrajectory()
         ChassisSpeeds desiredSpeeds = mHolonomicController.calculateRobotRelativeSpeeds(mCurrentPose, state);
-        desiredSpeeds.times(-1.0);
+        //desiredSpeeds.times(-1.0);
         mDesiredPathingSpeeds = desiredSpeeds;
-        setClosedLoopSpeeds(mDesiredPathingSpeeds);
+        setClosedLoopSpeeds(mDesiredPathingSpeeds,true);
         // setOpenLoopSpeeds(desiredSpeeds);
         
     }
 
-    
+
 
     /**
      * Get total path time
@@ -530,6 +532,27 @@ public class Swerve extends Submodule {
     }
 
     public void setClosedLoopSpeeds(ChassisSpeeds speeds) {
+        SwerveModuleState[] desiredState = SwerveConstants.kKinematics.toSwerveModuleStates(speeds);
+        SwerveDriveKinematics.desaturateWheelSpeeds(desiredState, SwerveConstants.kRealisticMaxVelMPS);
+        mTopLeftModule.setClosedLoopState(desiredState[0]);
+        mTopRightModule.setClosedLoopState(desiredState[1]);
+        mRearLeftModule.setClosedLoopState(desiredState[2]);
+        mRearRightModule.setClosedLoopState(desiredState[3]);
+    }
+
+    public void setClosedLoopSpeeds(ChassisSpeeds speeds, boolean fieldOriented) {
+        if(fieldOriented) {
+            // IMPORTANT - pigeon might need * -1
+            speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+                speeds.vxMetersPerSecond, 
+                speeds.vyMetersPerSecond, 
+                speeds.omegaRadiansPerSecond,
+                mPigeon.getRotation2d()
+            );
+        } 
+
+        ChassisSpeeds.discretize(speeds, 0.02);
+
         SwerveModuleState[] desiredState = SwerveConstants.kKinematics.toSwerveModuleStates(speeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredState, SwerveConstants.kRealisticMaxVelMPS);
         mTopLeftModule.setClosedLoopState(desiredState[0]);

@@ -17,7 +17,8 @@ public class AutoRunner {
 
     private AutoSequence[] availableSequences = {
         new EmptySequence(),
-        new TestSequence()
+        new TestSequence(),
+        new ChoreoSequence()
     };
 
     public AutoRunner() {
