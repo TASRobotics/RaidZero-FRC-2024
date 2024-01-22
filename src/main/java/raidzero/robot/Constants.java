@@ -6,6 +6,8 @@ import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.revrobotics.CANSparkBase;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.Matrix;
@@ -195,6 +197,25 @@ public class Constants {
         public static final NeutralModeValue kMotorRightNeutralMode = NeutralModeValue.Brake;
         public static final double FAKE_MAX_SPEED = 50;
         public static final double ERROR_TOLERANCE = 10;
+    }
+
+    public static final class ArmConstants {
+        public static final int kLeftLeaderID = 0;
+        public static final int kRightFollowerID = 0;
+
+        public static final MotorType kMotorType = MotorType.kBrushless;
+        public static final CANSparkBase.IdleMode kMotorIdleMode = CANSparkBase.IdleMode.kBrake;
+        public static final boolean kInversion = false;
+        public static final int kCurrentLimit = 50;
+        public static final float kForwardSoftLimit = 0;
+        public static final float kReverseSoftLimit = 0;
+
+        public static final boolean kFollowerInversion = true;
+
+        public static final int kPIDSlot = 0;
+
+        public static final TrapezoidProfile.Constraints kConstraints = 
+            new TrapezoidProfile.Constraints(0.0, 0.0);
     }
 
     public static final class VisionConstants {
