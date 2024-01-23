@@ -105,8 +105,8 @@ public class Constants {
         public static final double kThrottlePIDUpdateHz = 1000.0;
 
         /** 1678 Pathing Constants */
-        public static final double kTranslationController_kP = 1.0;
-        public static final double kThetaController_kP = 0.0;
+        public static final double kTranslationController_kP = 0.5; //1.0
+        public static final double kThetaController_kP = 0;
         public static final double kXControllerTolerance = 0.1;
         public static final double kYControllerTolerance = 0.1;
         public static final double kThetaControllerTolerance = Math.toRadians(5);

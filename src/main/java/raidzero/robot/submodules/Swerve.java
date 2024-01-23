@@ -66,6 +66,7 @@ public class Swerve extends Submodule {
 
     private PathPlannerTrajectory mCurrentTrajectory; 
     private PPHolonomicDriveController mHolonomicController; 
+    private PPHolonomicDriveController testController;
     private ChassisSpeeds mDesiredPathingSpeeds; 
     private Timer mTimer = new Timer();
     private Pose2d mCurrentPose;
@@ -151,6 +152,12 @@ public class Swerve extends Submodule {
             3.0,
             0.4
         );
+        testController = new PPHolonomicDriveController(
+            new PIDConstants(SwerveConstants.kTranslationController_kP), 
+            new PIDConstants(SwerveConstants.kThetaController_kP), 
+            3.0,
+            0.4
+        ); 
 
         mDesiredPathingSpeeds = new ChassisSpeeds();
 
@@ -481,14 +488,22 @@ public class Swerve extends Submodule {
 
     private void updatePathing() {
         PathPlannerTrajectory.State state = (PathPlannerTrajectory.State) mCurrentTrajectory.sample(mTimer.get());
-         mHolonomicController.setEnabled(false);
+         mHolonomicController.setEnabled(true); //false, doesnt turn when only ff
+         testController.setEnabled(false);
         // PathPlannerPath.fromChoreoTrajectory()
         ChassisSpeeds desiredSpeeds = mHolonomicController.calculateRobotRelativeSpeeds(mCurrentPose, state);
+        ChassisSpeeds trash = testController.calculateRobotRelativeSpeeds(mCurrentPose, state);
         //desiredSpeeds.times(-1.0);
         mDesiredPathingSpeeds = desiredSpeeds;
         setClosedLoopSpeeds(mDesiredPathingSpeeds,true);
         // setOpenLoopSpeeds(desiredSpeeds);
-        
+        SmartDashboard.putNumber("desired heading", state.targetHolonomicRotation.getDegrees());
+        if(state.holonomicAngularVelocityRps.isPresent())SmartDashboard.putNumber("desired holonomicAngularVelocityRps", state.holonomicAngularVelocityRps.get());
+        SmartDashboard.putNumber("desired omegaRadiansPerSecond", desiredSpeeds.omegaRadiansPerSecond);
+        SmartDashboard.putNumber("desired xmps", desiredSpeeds.vxMetersPerSecond);
+        SmartDashboard.putNumber("desired ymps", desiredSpeeds.vyMetersPerSecond);
+        SmartDashboard.putNumber("ff xmps", trash.vxMetersPerSecond);
+        SmartDashboard.putNumber("ff ymps", trash.vyMetersPerSecond);
     }
 
 
