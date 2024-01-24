@@ -5,6 +5,7 @@ import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
@@ -36,7 +37,7 @@ public class Climb extends Submodule {
     private VoltageOut mVoltageOut = new VoltageOut(0.0).withEnableFOC(Constants.kEnableFOC);
     private MotionMagicVoltage mMotionMagicVoltage = new MotionMagicVoltage(0.0)
         .withEnableFOC(Constants.kEnableFOC)
-        .withSlot(ClimbConstants.kPIDSlot)
+        .withSlot(ClimbConstants.kPositionPIDSlot)
         .withUpdateFreqHz(ClimbConstants.kPIDUpdateHz);
 
     public static class PeriodicIO {
@@ -53,8 +54,11 @@ public class Climb extends Submodule {
     @Override
     public void onInit() {
         mLeftLeader.getConfigurator().apply(getLeaderConfig(), Constants.kLongCANTimeoutMs);
-        Follower asdf = 
-        mRightFollower.setControl(new Follower(mLeftLeader, false))
+        mRightFollower.getConfigurator().apply(getFollowerConfig(), Constants.kLongCANTimeoutMs);
+
+        Follower follower = new Follower(mLeftLeader.getDeviceID(), ClimbConstants.kFollowerOpposeLeaderInversion);
+        follower.withUpdateFreqHz(ClimbConstants.kFollowerUpdateHz);
+        mRightFollower.setControl(follower);
     }
 
     @Override
@@ -70,7 +74,7 @@ public class Climb extends Submodule {
         if(mPeriodicIO.controlState == ControlState.FEEDBACK) {
             mLeftLeader.setControl(mMotionMagicVoltage.withPosition(mPeriodicIO.desiredPosition));
         } else if(mPeriodicIO.controlState == ControlState.FEEDFORWARD) {
-            mLeftLeader.setControl(mVoltageOut.withOutput(mPeriodicIO.desiredPercentSpeed));
+            mLeftLeader.setControl(mVoltageOut.withOutput(mPeriodicIO.desiredPercentSpeed * Constants.kMaxMotorVoltage));
         }
     }
 
@@ -104,7 +108,7 @@ public class Climb extends Submodule {
 
         // Motor Output Configuration
         MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
-        motorOutputConfigs.withInverted(ClimbConstants.kInversion);
+        motorOutputConfigs.withInverted(ClimbConstants.kLeaderInversion);
         motorOutputConfigs.withNeutralMode(ClimbConstants.kNeutralMode);
         config.withMotorOutput(motorOutputConfigs);
 
@@ -123,6 +127,8 @@ public class Climb extends Submodule {
 
         // Velocity PID Configuration
         Slot0Configs slot0Configs = new Slot0Configs();
+        slot0Configs.withGravityType(ClimbConstants.kGravityCompensationType);
+        slot0Configs.withKG(ClimbConstants.kG);
         slot0Configs.withKP(ClimbConstants.kP);
         slot0Configs.withKI(ClimbConstants.kI);
         slot0Configs.withKD(ClimbConstants.kD);
@@ -134,6 +140,33 @@ public class Climb extends Submodule {
         motionMagicConfigs.withMotionMagicAcceleration(ClimbConstants.kMotionMagicAccel);
         motionMagicConfigs.withMotionMagicJerk(ClimbConstants.kMotionMagicJerk);
         config.withMotionMagic(motionMagicConfigs);
+
+        // Software Limit Switch Configuration 
+        SoftwareLimitSwitchConfigs softLimitConfigs = new SoftwareLimitSwitchConfigs();
+        softLimitConfigs.withForwardSoftLimitEnable(ClimbConstants.kForwardSoftLimitEnabled);
+        softLimitConfigs.withForwardSoftLimitThreshold(ClimbConstants.kForwardSoftLimit);
+        softLimitConfigs.withReverseSoftLimitEnable(ClimbConstants.kReverseSoftLimitEnabled);
+        softLimitConfigs.withReverseSoftLimitThreshold(ClimbConstants.kReverseSoftLimit);
+        config.withSoftwareLimitSwitch(softLimitConfigs);
+
+        return config;
+    }
+
+    private TalonFXConfiguration getFollowerConfig() {
+        TalonFXConfiguration config = new TalonFXConfiguration();
+        
+        // Motor Output Configuration
+        MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
+        motorOutputConfigs.withNeutralMode(ClimbConstants.kNeutralMode);
+        config.withMotorOutput(motorOutputConfigs);
+
+        // Current Limit Configuration
+        CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
+        currentLimitsConfigs.withSupplyCurrentLimit(ClimbConstants.kSupplyCurrentLimit);
+        currentLimitsConfigs.withSupplyCurrentLimitEnable(ClimbConstants.kSupplyCurrentEnable);
+        currentLimitsConfigs.withSupplyCurrentThreshold(ClimbConstants.kSupplyCurrentThreshold);
+        currentLimitsConfigs.withSupplyTimeThreshold(ClimbConstants.kSupplyTimeThreshold);
+        config.withCurrentLimits(currentLimitsConfigs);
 
         return config;
     }

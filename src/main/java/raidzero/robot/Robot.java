@@ -1,7 +1,5 @@
 package raidzero.robot;
 
-import javax.sound.sampled.LineEvent;
-
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import raidzero.robot.auto.AutoRunner;
@@ -25,15 +23,6 @@ public class Robot extends TimedRobot {
     private static final Vision vision = Vision.getInstance();
 
     private AutoRunner autoRunner;
-
-    // private NetworkTableEntry shouldCheckGSCEntry =
-    // Shuffleboard.getTab(Tab.SELECTION).add("Scan Path",
-    // 0).withWidget(BuiltInWidgets.kBooleanBox)
-    // .withSize(1, 1).withPosition(0, 0).getEntry();
-    // private NetworkTableEntry foundPathEntry =
-    // Shuffleboard.getTab(Tab.SELECTION).add("Chosen Path",
-    // 0).withWidget(BuiltInWidgets.kTextView)
-    // .withSize(2, 1).withPosition(0, 1).getEntry();
 
     /**
      * Runs only once at the start of robot code execution.
@@ -60,8 +49,6 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void disabledInit() {
-        // Limelight.getInstance().setLedMode(LedMode.Off);
-
         // Stop autonomous
         autoRunner.stop();
         submoduleManager.onStop(Timer.getFPGATimestamp());
@@ -72,7 +59,6 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
-
         autoRunner.readSendableSequence();
         autoRunner.start();
         submoduleManager.onStart(Timer.getFPGATimestamp());

@@ -18,6 +18,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import raidzero.robot.Constants;
 import raidzero.robot.Constants.ArmConstants;
 
+// DONE (as of 1/24/2024)
+
 public class Arm extends Submodule {
     private enum ControlState {
         FEEDBACK, FEEDFORWARD
@@ -79,7 +81,7 @@ public class Arm extends Submodule {
         if(mPeriodicIO.controlState == ControlState.FEEDBACK) {
             mLeftLeader.setControl(mMotionMagicVoltage.withPosition(mPeriodicIO.desiredPosition.getRotations()));
         } else if(mPeriodicIO.controlState == ControlState.FEEDFORWARD) {
-            mLeftLeader.setControl(mVoltageOut.withOutput(mPeriodicIO.desiredPercentSpeed));
+            mLeftLeader.setControl(mVoltageOut.withOutput(mPeriodicIO.desiredPercentSpeed * Constants.kMaxMotorVoltage));
         }
     }
 
