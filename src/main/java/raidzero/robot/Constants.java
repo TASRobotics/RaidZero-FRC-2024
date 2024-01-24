@@ -2,7 +2,10 @@ package raidzero.robot;
 
 import java.nio.file.Path;
 
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
@@ -202,20 +205,43 @@ public class Constants {
     public static final class ArmConstants {
         public static final int kLeftLeaderID = 0;
         public static final int kRightFollowerID = 0;
+        public static final int kEncoderID = 0;
 
-        public static final MotorType kMotorType = MotorType.kBrushless;
-        public static final CANSparkBase.IdleMode kMotorIdleMode = CANSparkBase.IdleMode.kBrake;
-        public static final boolean kInversion = false;
-        public static final int kCurrentLimit = 50;
-        public static final float kForwardSoftLimit = 0;
-        public static final float kReverseSoftLimit = 0;
+        // Motor Output Constants
+        public static final InvertedValue kLeaderInversion = InvertedValue.Clockwise_Positive;
+        public static final NeutralModeValue kNeutralMode = NeutralModeValue.Brake;
+        public static final boolean kFollowerOpposeLeaderInversion = true;
+        public static final double kFollowerUpdateHz = 1000;
 
-        public static final boolean kFollowerInversion = true;
+        // Current Limit Constants
+        public static final double kSupplyCurrentLimit = 40.0;
+        public static final boolean kSupplyCurrentEnable = true;
+        public static final double kSupplyCurrentThreshold = 60.0;
+        public static final double kSupplyTimeThreshold = 0.2;
 
-        public static final int kPIDSlot = 0;
+        // Feedback Constants
+        public static final double kSensorToMechanismRatio = 1.0;
+        public static final FeedbackSensorSourceValue kFeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
 
-        public static final TrapezoidProfile.Constraints kConstraints = 
-            new TrapezoidProfile.Constraints(0.0, 0.0);
+        // Position PID Constants
+        public static final int kPositionPIDSlot = 0;
+        public static final GravityTypeValue kGravityCompensationType = GravityTypeValue.Arm_Cosine;
+        public static final double kG = 0.0;
+        public static final double kP = 0.0;
+        public static final double kI = 0.0;
+        public static final double kD = 0.0;
+        public static final double kPIDUpdateHz = 1000;
+
+        // Motion Magic Constants
+        public static final double kMotionMagicVelocity = 0.0;
+        public static final double kMotionMagicAccel = 0.0;
+        public static final double kMotionMagicJerk = 0.0;
+
+        // Software Limit Switch Constants
+        public static final boolean kForwardSoftLimitEnabled = true;
+        public static final double kForwardSoftLimit = 0.0;
+        public static final boolean kReverseSoftLimitEnabled = true;
+        public static final double kReverseSoftLimit = 0.0;
     }
 
     public static final class ClimbConstants {
@@ -229,7 +255,19 @@ public class Constants {
         public static final NeutralModeValue kNeutralMode = NeutralModeValue.Brake;
 
         public static final double kSupplyCurrentLimit = 40.0;
-        // public static final double k
+        public static final double kSupplyCurrentThreshold = 60.0;
+        public static final boolean kSupplyCurrentEnable = true;
+        public static final double kSupplyTimeThreshold = 0.2;
+
+        public static final double kSensorToMechanismRatio = 1.0;
+
+        public static final double kP = 0.0;
+        public static final double kI = 0.0;
+        public static final double kD = 0.0;
+
+        public static final double kMotionMagicVelocity = 0.0;
+        public static final double kMotionMagicAccel = 0.0;
+        public static final double kMotionMagicJerk = 0.0;
     }
 
     public static final class VisionConstants {

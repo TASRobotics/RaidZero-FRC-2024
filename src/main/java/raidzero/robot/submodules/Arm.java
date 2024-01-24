@@ -1,18 +1,28 @@
 package raidzero.robot.submodules;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkPIDController;
-import com.revrobotics.CANSparkBase.ControlType;
-import com.revrobotics.CANSparkBase.SoftLimitDirection;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.TalonFX;
 
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.math.geometry.Rotation2d;
 
 import raidzero.robot.Constants;
 import raidzero.robot.Constants.ArmConstants;
 
 public class Arm extends Submodule {
+    private enum ControlState {
+        FEEDBACK, FEEDFORWARD
+    }
+
     private static Arm instance = null;
 
     public static Arm getInstance() {
@@ -24,91 +34,145 @@ public class Arm extends Submodule {
 
     private Arm() {}
 
-    private CANSparkMax mLeftLeader = new CANSparkMax(ArmConstants.kLeftLeaderID, ArmConstants.kMotorType);
-    private CANSparkMax mRightFollower = new CANSparkMax(ArmConstants.kRightFollowerID, ArmConstants.kMotorType);
+    private TalonFX mLeftLeader = new TalonFX(ArmConstants.kLeftLeaderID, Constants.kCANBusName);
+    private TalonFX mRightFollower = new TalonFX(ArmConstants.kRightFollowerID, Constants.kCANBusName);
 
-    private RelativeEncoder mEncoder = mLeftLeader.getEncoder();
-    private SparkPIDController mArmController = mLeftLeader.getPIDController();
-    private TrapezoidProfile mArmMotionProfile = new TrapezoidProfile(ArmConstants.kConstraints);
+    private CANcoder mEncoder = new CANcoder(ArmConstants.kEncoderID, Constants.kCANBusName);
 
-    private Timer mTimer = new Timer();
+    private VoltageOut mVoltageOut = new VoltageOut(0.0).withEnableFOC(Constants.kEnableFOC);
+    private MotionMagicVoltage mMotionMagicVoltage = new MotionMagicVoltage(0.0)
+        .withEnableFOC(Constants.kEnableFOC)
+        .withSlot(ArmConstants.kPositionPIDSlot)
+        .withUpdateFreqHz(ArmConstants.kPIDUpdateHz);
 
     public static class PeriodicIO {
-        public double desiredPosition = 0.0;
-        public double prevDesiredPosition = 0.0;
-        public double currentPosition = 0.0;
-        public double currentVelocity = 0.0;
+        public Rotation2d desiredPosition = new Rotation2d();
+        public Rotation2d currentPosition = new Rotation2d();
+
+        public double desiredPercentSpeed = 0.0;
+
+        public ControlState controlState = ControlState.FEEDFORWARD;
     }
 
     private PeriodicIO mPeriodicIO = new PeriodicIO();
 
     @Override
     public void onInit() {
-        configureArmMotors(mLeftLeader, mRightFollower);
-        configureArmController(mArmController, mEncoder);
+        mLeftLeader.getConfigurator().apply(getLeaderConfig(mEncoder), Constants.kLongCANTimeoutMs);
+        mRightFollower.getConfigurator().apply(getFollowerConfig(), Constants.kLongCANTimeoutMs);
+        
+        Follower follower = new Follower(mLeftLeader.getDeviceID(), ArmConstants.kFollowerOpposeLeaderInversion);
+        follower.withUpdateFreqHz(ArmConstants.kFollowerUpdateHz);
+        mRightFollower.setControl(follower);
     }
 
     @Override
-    public void onStart(double timestamp) {
-        zero();
-    }
+    public void onStart(double timestamp) {}
 
     @Override
     public void update(double timestamp) {
-        mPeriodicIO.currentPosition = mEncoder.getPosition();
-        mPeriodicIO.currentVelocity = mEncoder.getVelocity();
+        mPeriodicIO.currentPosition = Rotation2d.fromRotations(mLeftLeader.getPosition().refresh().getValueAsDouble());
     }
 
     @Override
     public void run() {
-        TrapezoidProfile.State currentState = new TrapezoidProfile.State(mPeriodicIO.currentPosition, mPeriodicIO.currentVelocity);
-        TrapezoidProfile.State desiredState = new TrapezoidProfile.State(mPeriodicIO.desiredPosition, 0.0);
-        TrapezoidProfile.State calculatedState = mArmMotionProfile.calculate(mTimer.get(), currentState, desiredState);
-        mArmController.setReference(calculatedState.position, ControlType.kPosition);
+        if(mPeriodicIO.controlState == ControlState.FEEDBACK) {
+            mLeftLeader.setControl(mMotionMagicVoltage.withPosition(mPeriodicIO.desiredPosition.getRotations()));
+        } else if(mPeriodicIO.controlState == ControlState.FEEDFORWARD) {
+            mLeftLeader.setControl(mVoltageOut.withOutput(mPeriodicIO.desiredPercentSpeed));
+        }
     }
 
     @Override
     public void stop() {
-        mLeftLeader.set(0.0);
+        mLeftLeader.stopMotor();
+        mRightFollower.stopMotor();
     }
 
     @Override
-    public void zero() {
-        mEncoder.setPosition(0.0);
+    public void zero() {}
+
+    public void setAngle(Rotation2d angle) {
+        mPeriodicIO.controlState = ControlState.FEEDBACK;
+        mPeriodicIO.desiredPosition = angle;
     }
 
-    public void setPosition(double position) {
-        mPeriodicIO.prevDesiredPosition = mPeriodicIO.desiredPosition;
-        mPeriodicIO.desiredPosition = position;
-        if(Math.abs(mPeriodicIO.prevDesiredPosition - mPeriodicIO.desiredPosition) < 0.00001) {
-            mTimer.restart();
-        }
+    public Rotation2d getAngle() {
+        return mPeriodicIO.currentPosition;
     }
 
-    private void configureArmMotors(CANSparkMax leader, CANSparkMax follower) {
-        leader.restoreFactoryDefaults();
-        leader.enableVoltageCompensation(Constants.kMaxMotorVoltage);
-        leader.setIdleMode(ArmConstants.kMotorIdleMode);
-        leader.setInverted(ArmConstants.kInversion);
-        leader.setSmartCurrentLimit(ArmConstants.kCurrentLimit);
-        leader.setSoftLimit(SoftLimitDirection.kForward, ArmConstants.kForwardSoftLimit);
-        leader.setSoftLimit(SoftLimitDirection.kReverse, ArmConstants.kReverseSoftLimit);
-
-        follower.restoreFactoryDefaults();
-        follower.enableVoltageCompensation(Constants.kMaxMotorVoltage);
-        follower.setIdleMode(ArmConstants.kMotorIdleMode);
-        follower.setSmartCurrentLimit(ArmConstants.kCurrentLimit);
-        follower.follow(leader, ArmConstants.kFollowerInversion);
+    public void setPercentSpeed(double speed) {
+        mPeriodicIO.controlState = ControlState.FEEDFORWARD;
+        mPeriodicIO.desiredPercentSpeed = speed;
     }
 
-    private void configureArmController(SparkPIDController controller, RelativeEncoder encoder) {
-        encoder.setPositionConversionFactor(0.0);
-        encoder.setVelocityConversionFactor(0.0);
+    private TalonFXConfiguration getLeaderConfig(CANcoder encoder) {
+        TalonFXConfiguration config = new TalonFXConfiguration();
 
-        controller.setFeedbackDevice(encoder);
-        controller.setFF(0, ArmConstants.kPIDSlot);
-        controller.setP(0, ArmConstants.kPIDSlot);
-        controller.setI(0, ArmConstants.kPIDSlot);
-        controller.setD(0, ArmConstants.kPIDSlot);
+        // Motor Output Configuration
+        MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
+        motorOutputConfigs.withInverted(ArmConstants.kLeaderInversion);
+        motorOutputConfigs.withNeutralMode(ArmConstants.kNeutralMode);
+        config.withMotorOutput(motorOutputConfigs);
+
+        // Current Limit Configuration
+        CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
+        currentLimitsConfigs.withSupplyCurrentLimit(ArmConstants.kSupplyCurrentLimit);
+        currentLimitsConfigs.withSupplyCurrentLimitEnable(ArmConstants.kSupplyCurrentEnable);
+        currentLimitsConfigs.withSupplyCurrentThreshold(ArmConstants.kSupplyCurrentThreshold);
+        currentLimitsConfigs.withSupplyTimeThreshold(ArmConstants.kSupplyTimeThreshold);
+        config.withCurrentLimits(currentLimitsConfigs);
+        
+        // Feedback Configuration
+        FeedbackConfigs feedbackConfigs = new FeedbackConfigs();
+        feedbackConfigs.withSensorToMechanismRatio(ArmConstants.kSensorToMechanismRatio);
+        feedbackConfigs.withFeedbackRemoteSensorID(encoder.getDeviceID());
+        feedbackConfigs.withFeedbackSensorSource(ArmConstants.kFeedbackSensorSource);
+        config.withFeedback(feedbackConfigs);
+
+        // Velocity PID Configuration
+        Slot0Configs slot0Configs = new Slot0Configs();
+        slot0Configs.withGravityType(ArmConstants.kGravityCompensationType);
+        slot0Configs.withKG(ArmConstants.kG);
+        slot0Configs.withKP(ArmConstants.kP);
+        slot0Configs.withKI(ArmConstants.kI);
+        slot0Configs.withKD(ArmConstants.kD);
+        config.withSlot0(slot0Configs);
+
+        // Motion Magic Configuration
+        MotionMagicConfigs motionMagicConfigs = new MotionMagicConfigs();
+        motionMagicConfigs.withMotionMagicCruiseVelocity(ArmConstants.kMotionMagicVelocity);
+        motionMagicConfigs.withMotionMagicAcceleration(ArmConstants.kMotionMagicAccel);
+        motionMagicConfigs.withMotionMagicJerk(ArmConstants.kMotionMagicJerk);
+        config.withMotionMagic(motionMagicConfigs);
+
+        // Software Limit Switch Configuration 
+        SoftwareLimitSwitchConfigs softLimitConfigs = new SoftwareLimitSwitchConfigs();
+        softLimitConfigs.withForwardSoftLimitEnable(ArmConstants.kForwardSoftLimitEnabled);
+        softLimitConfigs.withForwardSoftLimitThreshold(ArmConstants.kForwardSoftLimit);
+        softLimitConfigs.withReverseSoftLimitEnable(ArmConstants.kReverseSoftLimitEnabled);
+        softLimitConfigs.withReverseSoftLimitThreshold(ArmConstants.kReverseSoftLimit);
+        config.withSoftwareLimitSwitch(softLimitConfigs);
+
+        return config;
+    }
+
+    private TalonFXConfiguration getFollowerConfig() {
+        TalonFXConfiguration config = new TalonFXConfiguration();
+        
+        // Motor Output Configuration
+        MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
+        motorOutputConfigs.withNeutralMode(ArmConstants.kNeutralMode);
+        config.withMotorOutput(motorOutputConfigs);
+
+        // Current Limit Configuration
+        CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
+        currentLimitsConfigs.withSupplyCurrentLimit(ArmConstants.kSupplyCurrentLimit);
+        currentLimitsConfigs.withSupplyCurrentLimitEnable(ArmConstants.kSupplyCurrentEnable);
+        currentLimitsConfigs.withSupplyCurrentThreshold(ArmConstants.kSupplyCurrentThreshold);
+        currentLimitsConfigs.withSupplyTimeThreshold(ArmConstants.kSupplyTimeThreshold);
+        config.withCurrentLimits(currentLimitsConfigs);
+
+        return config;
     }
 }
