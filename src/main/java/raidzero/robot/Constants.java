@@ -180,7 +180,12 @@ public class Constants {
     }
 
     public static final class IntakeConstants{
-        public static final int kMotorID = 9;
+        public static final int kLeaderID = 0;
+        public static final int kFollowerID = 0;
+
+
+
+
         public static final InvertedValue kMotorInversion = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue kMotorNeutralMode = NeutralModeValue.Brake;
     }

@@ -13,14 +13,13 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.IdleMode;
 
 import raidzero.robot.Constants;
 import raidzero.robot.Constants.IntakeConstants;
 
 public class Intake extends Submodule{
-    private Intake() {}
-
     private static Intake instance = null;
 
     public static Intake getInstance() {
@@ -30,17 +29,13 @@ public class Intake extends Submodule{
         return instance;
     }
 
-    private enum ControlState {
-        OPEN_LOOP, CLOSED_LOOP
+    private Intake() {}
+
+    private CANSparkMax mLeader = new CANSparkMax(0, null)
+
+    public static class PeriodicIO {
+        public double desiredPercentSpeed = 0.0;
     }
-
-    private ControlState mControlState = ControlState.OPEN_LOOP;
-
-    private double mPercentOut = 0.0;
-    private double mDesiredPosition = 0.0;
-    private double mPrevOpenLoopPosition = 0.0;
-
-    private TalonFX mMotor;
 
     @Override
     public void onInit() {
