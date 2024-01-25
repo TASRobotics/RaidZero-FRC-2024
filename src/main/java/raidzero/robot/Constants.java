@@ -218,6 +218,43 @@ public class Constants {
         public static final double kErrorTolerance = 1.0;
     }
 
+    public static final class AngleAdjusterConstants {
+        public static final int kMotorID = 0;
+        public static final int kEncoderID = 0;
+
+        // Motor Output Constants
+        public static final InvertedValue kInversion = InvertedValue.Clockwise_Positive;
+        public static final NeutralModeValue kNeutralMode = NeutralModeValue.Brake;
+
+        // Current Limit Constants
+        public static final double kSupplyCurrentLimit = 40.0;
+        public static final boolean kSupplyCurrentEnable = true;
+        public static final double kSupplyCurrentThreshold = 60.0;
+        public static final double kSupplyTimeThreshold = 0.2;
+
+        // Feedback Constants
+        public static final double kSensorToMechanismRatio = 1.0;
+        public static final FeedbackSensorSourceValue kFeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+
+        // Position PID Constants
+        public static final int kPositionPIDSlot = 0;
+        public static final double kP = 0.0;
+        public static final double kI = 0.0;
+        public static final double kD = 0.0;
+        public static final double kPIDUpdateHz = 1000;
+
+        // Motion Magic Constants
+        public static final double kMotionMagicVelocity = 0.0;
+        public static final double kMotionMagicAccel = 0.0;
+        public static final double kMotionMagicJerk = 0.0;
+
+        // Software Limit Switch Constants
+        public static final boolean kForwardSoftLimitEnabled = true;
+        public static final double kForwardSoftLimit = 0.0;
+        public static final boolean kReverseSoftLimitEnabled = true;
+        public static final double kReverseSoftLimit = 0.0;
+    }
+
     public static final class ArmConstants {
         public static final int kLeftLeaderID = 0;
         public static final int kRightFollowerID = 0;
@@ -243,6 +280,43 @@ public class Constants {
         public static final int kPositionPIDSlot = 0;
         public static final GravityTypeValue kGravityCompensationType = GravityTypeValue.Arm_Cosine;
         public static final double kG = 0.0;
+        public static final double kP = 0.0;
+        public static final double kI = 0.0;
+        public static final double kD = 0.0;
+        public static final double kPIDUpdateHz = 1000;
+
+        // Motion Magic Constants
+        public static final double kMotionMagicVelocity = 0.0;
+        public static final double kMotionMagicAccel = 0.0;
+        public static final double kMotionMagicJerk = 0.0;
+
+        // Software Limit Switch Constants
+        public static final boolean kForwardSoftLimitEnabled = true;
+        public static final double kForwardSoftLimit = 0.0;
+        public static final boolean kReverseSoftLimitEnabled = true;
+        public static final double kReverseSoftLimit = 0.0;
+    }
+
+    public static final class WristConstants {
+        public static final int kMotorID = 0;
+        public static final int kEncoderID = 0;
+
+        // Motor Output Constants
+        public static final InvertedValue kInversion = InvertedValue.Clockwise_Positive;
+        public static final NeutralModeValue kNeutralMode = NeutralModeValue.Brake;
+
+        // Current Limit Constants
+        public static final double kSupplyCurrentLimit = 40.0;
+        public static final boolean kSupplyCurrentEnable = true;
+        public static final double kSupplyCurrentThreshold = 60.0;
+        public static final double kSupplyTimeThreshold = 0.2;
+
+        // Feedback Constants
+        public static final double kSensorToMechanismRatio = 1.0;
+        public static final FeedbackSensorSourceValue kFeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+
+        // Position PID Constants
+        public static final int kPositionPIDSlot = 0;
         public static final double kP = 0.0;
         public static final double kI = 0.0;
         public static final double kD = 0.0;

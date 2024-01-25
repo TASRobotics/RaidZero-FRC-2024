@@ -1,39 +1,37 @@
 package raidzero.robot.submodules;
 
-import java.io.Console;
-
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import raidzero.robot.Constants;
-import raidzero.robot.Constants.WristConstants;
+import raidzero.robot.Constants.AngleAdjusterConstants;
 
-public class Wrist extends Submodule {
+public class AngleAdjuster extends Submodule {
     private enum ControlState {
         FEEDBACK, FEEDFORWARD
     }
 
-    private static Wrist instance = null;
+    private static AngleAdjuster instance = null;
 
-    public static Wrist getInstance() {
+    public static AngleAdjuster getInstance() {
         if (instance == null) {
-            instance = new Wrist();
+            instance = new AngleAdjuster();
         }
         return instance;
     }
 
-    private Wrist() {}
+    private AngleAdjuster() {}
 
-    private TalonFX mMotor = new TalonFX(WristConstants.kMotorID, Constants.kCANBusName);
-    private CANcoder mEncoder = new CANcoder(WristConstants.kEncoderID, Constants.kCANBusName);
+    private TalonFX mMotor = new TalonFX(AngleAdjusterConstants.kMotorID, Constants.kCANBusName);
+    private CANcoder mEncoder = new CANcoder(AngleAdjusterConstants.kEncoderID, Constants.kCANBusName);
 
     private VoltageOut mVoltageOut = new VoltageOut(0.0).withEnableFOC(Constants.kEnableFOC);
     private MotionMagicVoltage mMotionMagicVoltage = new MotionMagicVoltage(0.0)
         .withEnableFOC(Constants.kEnableFOC)
-        .withSlot(WristConstants.kPositionPIDSlot)
-        .withUpdateFreqHz(WristConstants.kPIDUpdateHz);
+        .withSlot(AngleAdjusterConstants.kPositionPIDSlot)
+        .withUpdateFreqHz(AngleAdjusterConstants.kPIDUpdateHz);
 
     public static class PeriodicIO {
         
@@ -76,6 +74,4 @@ public class Wrist extends Submodule {
         // TODO Auto-generated method stub
         super.zero();
     }
-
-    
 }
