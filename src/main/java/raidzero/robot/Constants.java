@@ -8,6 +8,7 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.Matrix;
@@ -183,11 +184,8 @@ public class Constants {
         public static final int kLeaderID = 0;
         public static final int kFollowerID = 0;
 
-
-
-
-        public static final InvertedValue kMotorInversion = InvertedValue.Clockwise_Positive;
-        public static final NeutralModeValue kMotorNeutralMode = NeutralModeValue.Brake;
+        public static final int kCurrentLimit = 30;
+        public static final IdleMode kIdleMode = IdleMode.kBrake;
     }
 
     public static final class ShooterConstants{
