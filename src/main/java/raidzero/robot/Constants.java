@@ -189,14 +189,33 @@ public class Constants {
     }
 
     public static final class ShooterConstants{
-        public static final int kMotorRightID = 10;
-        public static final int kMotorLeftID = 11;
-        public static final InvertedValue kMotorLeftInversion = InvertedValue.Clockwise_Positive;
-        public static final NeutralModeValue kMotorLeftNeutralMode = NeutralModeValue.Brake;
-        public static final InvertedValue kMotorRightInversion = InvertedValue.CounterClockwise_Positive;
-        public static final NeutralModeValue kMotorRightNeutralMode = NeutralModeValue.Brake;
-        public static final double FAKE_MAX_SPEED = 50;
-        public static final double ERROR_TOLERANCE = 10;
+        public static final int kLeftLeaderID = 0;
+        public static final int kRightFollowerID = 0;
+        public static final int kEncoderID = 0;
+
+        // Motor Output Constants
+        public static final InvertedValue kLeaderInversion = InvertedValue.Clockwise_Positive;
+        public static final NeutralModeValue kNeutralMode = NeutralModeValue.Brake;
+        public static final boolean kFollowerOpposeLeaderInversion = true;
+        public static final double kFollowerUpdateHz = 1000;
+
+        // Current Limit Constants
+        public static final double kSupplyCurrentLimit = 40.0;
+        public static final boolean kSupplyCurrentEnable = true;
+        public static final double kSupplyCurrentThreshold = 60.0;
+        public static final double kSupplyTimeThreshold = 0.2;
+
+        // Feedback Constants
+        public static final double kSensorToMechanismRatio = 1.0;
+
+        // Position PID Constants
+        public static final int kVelocityPIDSlot = 0;
+        public static final double kV = 0.0;
+        public static final double kP = 0.0;
+        public static final double kI = 0.0;
+        public static final double kD = 0.0;
+        public static final double kPIDUpdateHz = 1000;
+        public static final double kErrorTolerance = 1.0;
     }
 
     public static final class ArmConstants {

@@ -1,6 +1,5 @@
 package raidzero.robot.submodules;
 
-import com.ctre.phoenix6.configs.ClosedLoopGeneralConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
@@ -11,16 +10,15 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import raidzero.robot.Constants;
 import raidzero.robot.Constants.ShooterConstants;
-import raidzero.robot.dashboard.Tab;
 
 public class Shooter extends Submodule {
+    private enum ControlState {
+        FEEDBACK, FEEDFORWARD
+    }
 
     private static Shooter instance = null;
 
@@ -31,70 +29,85 @@ public class Shooter extends Submodule {
         return instance;
     }
 
-    private Shooter() {
+    private Shooter() {}
+
+    private TalonFX mLeftLeader = new TalonFX(ShooterConstants.kLeftLeaderID, Constants.kCANBusName);
+    private TalonFX mRightFollower = new TalonFX(ShooterConstants.kRightFollowerID, Constants.kCANBusName);
+
+    private VoltageOut mVoltageOut = new VoltageOut(0.0).withEnableFOC(Constants.kEnableFOC);
+    private VelocityVoltage mVelocityVoltage = new VelocityVoltage(0.0)
+        .withEnableFOC(Constants.kEnableFOC)
+        .withSlot(ShooterConstants.kVelocityPIDSlot)
+        .withUpdateFreqHz(ShooterConstants.kPIDUpdateHz);
+
+    public static class PeriodicIO {
+        public double desiredVelocity = 0.0;
+        public double currentVelocity = 0.0;
+
+        public double desiredPercentSpeed = 0.0;
+        public ControlState controlState = ControlState.FEEDFORWARD;
     }
 
-    private TalonFX motorLeft;
-    private TalonFX motorRight;
-    final VelocityVoltage m_velocity = new VelocityVoltage(0);
-    final VoltageOut m_request = new VoltageOut(0);
-    private double outputPercentSpeed = 0.0;
+    private PeriodicIO mPeriodicIO = new PeriodicIO();
 
     @Override
     public void onInit() {
-        motorLeft = new TalonFX(ShooterConstants.kMotorLeftID, Constants.kCANBusName);
-        motorLeft.getConfigurator().apply(getMotorLeftConfig(),Constants.kLongCANTimeoutMs);
+        mLeftLeader.getConfigurator().apply(getLeaderConfig(), Constants.kLongCANTimeoutMs);
+        mRightFollower.getConfigurator().apply(getFollowerConfig(), Constants.kLongCANTimeoutMs);
 
-        Follower follower = new Follower(ShooterConstants.kMotorLeftID,true);
-        motorRight.getConfigurator().apply(getMotorRightConfig(),Constants.kLongCANTimeoutMs);
-        motorRight = new TalonFX(ShooterConstants.kMotorRightID, Constants.kCANBusName);
-        motorRight.setControl(follower);
-        zero();
+        Follower follower = new Follower(mLeftLeader.getDeviceID(), ShooterConstants.kFollowerOpposeLeaderInversion);
+        follower.withUpdateFreqHz(ShooterConstants.kFollowerUpdateHz);
+        mRightFollower.setControl(follower);
     }
 
     @Override
     public void onStart(double timestamp) {
-        outputPercentSpeed = 0.0;
-        zero();
+        mPeriodicIO.desiredVelocity = 0.0;
+        mPeriodicIO.desiredPercentSpeed = 0.0;
     }
 
     @Override
     public void update(double timestamp) {
-        SmartDashboard.putNumber("left shooter current velocity", motorLeft.getVelocity().getValueAsDouble());
+        mPeriodicIO.currentVelocity = mLeftLeader.getVelocity().refresh().getValueAsDouble();
+
+        SmartDashboard.putNumber("left shooter current velocity", mLeftLeader.getVelocity().getValueAsDouble());
     }
 
     @Override
     public void run() {
-        if (Math.abs(outputPercentSpeed) < 0.1) {
-            stop();
-        } else {
-            m_velocity.Slot = 0;
-            motorLeft.setControl(m_velocity.withVelocity(outputPercentSpeed * ShooterConstants.FAKE_MAX_SPEED));
+        if(mPeriodicIO.controlState == ControlState.FEEDBACK) {
+            mLeftLeader.setControl(mVelocityVoltage.withVelocity(mPeriodicIO.desiredVelocity));
+        } else if(mPeriodicIO.controlState == ControlState.FEEDFORWARD) {
+            mLeftLeader.setControl(mVoltageOut.withOutput(mPeriodicIO.desiredPercentSpeed * Constants.kMaxMotorVoltage));
         }
     }
 
     @Override
     public void stop() {
-        outputPercentSpeed = 0.0;
-        motorLeft.setControl(m_request.withOutput(12.0));
+        mLeftLeader.stopMotor();
+        mRightFollower.stopMotor();
     }
 
     @Override
-    public void zero() {
-        motorLeft.setPosition(0.0, Constants.TIMEOUT_MS);
+    public void zero() {}
+
+    public void setVelocity(double vel) {
+        mPeriodicIO.controlState = ControlState.FEEDBACK;
+        mPeriodicIO.desiredVelocity = vel;
+    }
+
+    public double getVelocity() {
+        return mPeriodicIO.currentVelocity;
     }
 
     /**
-     * Fires up the shooter.
+     * Set shooter duty cycle
      * 
-     * @param percentSpeed speed of the shooter in [-1.0, 1.0]
-     * @param freeze       whether to disregard the speed and keep the previous speed
+     * @param speed speed in [-1.0, 1.0]
      */
-    public void shoot(double percentSpeed, boolean freeze) {
-        if (freeze) {
-            return;
-        }
-        outputPercentSpeed = percentSpeed;
+    public void setPercentSpeed(double speed) {
+        mPeriodicIO.controlState = ControlState.FEEDFORWARD;
+        mPeriodicIO.desiredPercentSpeed = speed;
     }
 
     /**
@@ -103,79 +116,59 @@ public class Shooter extends Submodule {
      * @return whether the shooter is up to speed
      */
     public boolean isUpToSpeed() {
-        return Math.abs(outputPercentSpeed) > 0.1
-                && Math.abs(motorLeft.getClosedLoopError().getValueAsDouble()) < ShooterConstants.ERROR_TOLERANCE;
+        return Math.abs(mPeriodicIO.desiredVelocity) > 1
+                && Math.abs(mPeriodicIO.currentVelocity - mPeriodicIO.desiredVelocity) < ShooterConstants.kErrorTolerance;
     }
     /** Configure intake motor & integrated encoder/PID controller */
-    private TalonFXConfiguration getMotorLeftConfig() {
+    private TalonFXConfiguration getLeaderConfig() {
         TalonFXConfiguration config = new TalonFXConfiguration();
 
         // Motor Output Configuration
         MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
-        motorOutputConfigs.withInverted(ShooterConstants.kMotorLeftInversion);
-        motorOutputConfigs.withNeutralMode(ShooterConstants.kMotorLeftNeutralMode);
+        motorOutputConfigs.withInverted(ShooterConstants.kLeaderInversion);
+        motorOutputConfigs.withNeutralMode(ShooterConstants.kNeutralMode);
         config.withMotorOutput(motorOutputConfigs);
 
         // Current Limit Configuration
         CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
+        currentLimitsConfigs.withSupplyCurrentLimit(ShooterConstants.kSupplyCurrentLimit);
+        currentLimitsConfigs.withSupplyCurrentLimitEnable(ShooterConstants.kSupplyCurrentEnable);
+        currentLimitsConfigs.withSupplyCurrentThreshold(ShooterConstants.kSupplyCurrentThreshold);
+        currentLimitsConfigs.withSupplyTimeThreshold(ShooterConstants.kSupplyTimeThreshold);
         config.withCurrentLimits(currentLimitsConfigs);
         
         // Feedback Configuration
         FeedbackConfigs feedbackConfigs = new FeedbackConfigs();
-        feedbackConfigs.withSensorToMechanismRatio(0.0);
+        feedbackConfigs.withSensorToMechanismRatio(ShooterConstants.kSensorToMechanismRatio);
         config.withFeedback(feedbackConfigs);
 
         // Velocity PID Configuration
         Slot0Configs slot0Configs = new Slot0Configs();
-        slot0Configs.withKA(0.0);
-        slot0Configs.withKV(0.0);
-        slot0Configs.withKS(0.0);
-        slot0Configs.withKP(0.0);
-        slot0Configs.withKI(0.0);
-        slot0Configs.withKD(0.0);
-        slot0Configs.withKG(0.0);
+        slot0Configs.withKV(ShooterConstants.kV);
+        slot0Configs.withKP(ShooterConstants.kP);
+        slot0Configs.withKI(ShooterConstants.kI);
+        slot0Configs.withKD(ShooterConstants.kD);
         config.withSlot0(slot0Configs);
-
-        // Closed Loop General Configs
-        ClosedLoopGeneralConfigs closedLoopGeneralConfigs = new ClosedLoopGeneralConfigs();
-        config.withClosedLoopGeneral(closedLoopGeneralConfigs);
 
         return config; 
     }
 
-    private TalonFXConfiguration getMotorRightConfig() {
+    private TalonFXConfiguration getFollowerConfig() {
         TalonFXConfiguration config = new TalonFXConfiguration();
-
+        
         // Motor Output Configuration
         MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
-        //motorOutputConfigs.withInverted(ShooterConstants.kMotorRightInversion);
-        motorOutputConfigs.withNeutralMode(ShooterConstants.kMotorRightNeutralMode);
+        motorOutputConfigs.withNeutralMode(ShooterConstants.kNeutralMode);
         config.withMotorOutput(motorOutputConfigs);
 
         // Current Limit Configuration
         CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
+        currentLimitsConfigs.withSupplyCurrentLimit(ShooterConstants.kSupplyCurrentLimit);
+        currentLimitsConfigs.withSupplyCurrentLimitEnable(ShooterConstants.kSupplyCurrentEnable);
+        currentLimitsConfigs.withSupplyCurrentThreshold(ShooterConstants.kSupplyCurrentThreshold);
+        currentLimitsConfigs.withSupplyTimeThreshold(ShooterConstants.kSupplyTimeThreshold);
         config.withCurrentLimits(currentLimitsConfigs);
-        
-        // Feedback Configuration
-        FeedbackConfigs feedbackConfigs = new FeedbackConfigs();
-        feedbackConfigs.withSensorToMechanismRatio(0.0);
-        config.withFeedback(feedbackConfigs);
 
-        // Velocity PID Configuration
-        Slot0Configs slot0Configs = new Slot0Configs();
-        slot0Configs.withKA(0.0);
-        slot0Configs.withKV(0.0);
-        slot0Configs.withKS(0.0);
-        slot0Configs.withKP(0.0);
-        slot0Configs.withKI(0.0);
-        slot0Configs.withKD(0.0);
-        slot0Configs.withKG(0.0);
-        config.withSlot0(slot0Configs);
-
-        // Closed Loop General Configs
-        ClosedLoopGeneralConfigs closedLoopGeneralConfigs = new ClosedLoopGeneralConfigs();
-        config.withClosedLoopGeneral(closedLoopGeneralConfigs);
-
-        return config; 
+        return config;
     }
 }
