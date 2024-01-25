@@ -14,12 +14,15 @@ public class Robot extends TimedRobot {
     private static final SubmoduleManager submoduleManager = SubmoduleManager.getInstance();
 
     private static final Teleop mTeleop = Teleop.getInstance();
-    private static final Swerve mSwerve = Swerve.getInstance();
-    private static final Limelight mLimelight = Limelight.getInstance();
+    private static final AngleAdjuster mAngleAdjuster = AngleAdjuster.getInstance();
     private static final Arm mArm = Arm.getInstance();
     private static final Climb mClimb = Climb.getInstance();
-    private static final Shooter mShooter = Shooter.getInstance();
     private static final Intake mIntake = Intake.getInstance();
+    private static final Limelight mLimelight = Limelight.getInstance();
+    private static final Shooter mShooter = Shooter.getInstance();
+    private static final Swerve mSwerve = Swerve.getInstance();
+    private static final Wrist mWrist = Wrist.getInstance();
+    
     private static final Vision vision = Vision.getInstance();
 
     private AutoRunner autoRunner;
@@ -37,7 +40,9 @@ public class Robot extends TimedRobot {
             mArm, 
             mClimb, 
             mShooter, 
-            mIntake
+            mIntake, 
+            mWrist, 
+            mAngleAdjuster
         );
         submoduleManager.onInit();
 
