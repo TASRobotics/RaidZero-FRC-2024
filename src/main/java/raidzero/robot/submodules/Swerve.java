@@ -214,7 +214,7 @@ public class Swerve extends Submodule {
      * Zeroes the heading of the swerve at set Yaw
      */
     public void zeroHeading(double q) {
-        mPigeon.setYaw(q, Constants.TIMEOUT_MS);
+        mPigeon.setYaw(q, Constants.kCANTimeoutMs);
     }
 
     // public void zeroTele(double q) {

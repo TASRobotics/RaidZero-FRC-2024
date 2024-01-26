@@ -23,15 +23,12 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
 public class Constants {
     /**
      * Swerve Constants
      */
     public static final class SwerveConstants {
-        public static final double kOpenLoopRampRate = 0.25;
-        public static final double kClosedLoopRampRate = 0.0;
         /** Device IDs */
         public static final int kFrontLeftThrottleID = 1;
         public static final int kFrontRightThrottleID = 7;
@@ -113,15 +110,6 @@ public class Constants {
         public static final double kAimAssistController_kD = 0.0;
         
 
-        /** AutoAim Constants */
-        public static final double kAAXController_kP = 1.6;
-        public static final double kAAYController_kP = 1.6;
-        public static final double kAAThetaController_kP = 1.0;
-        public static final double kAAThetaController_kD = 0.1;
-        public static final double kAAXControllerTolerance = 0.01;
-        public static final double kAAYControllerTolerance = 0.01;
-        public static final double kAAThetaControllerTolerance = Math.toRadians(0.2);
-
         // Using SDS 6.75 ratio
         public static final double kThrottleRotToWheelRot = (50.0 / 14.0) * (16.0 / 28.0) * (45.0 / 15.0);
         public static final double kThrottleWheelRotToMeters = 1 / (Math.PI * kWheelDiameterMeters);
@@ -133,21 +121,6 @@ public class Constants {
 
         public static final AbsoluteSensorRangeValue kAzimuthEncoderRange = AbsoluteSensorRangeValue.Unsigned_0To1;
         public static final SensorDirectionValue kAzimuthEncoderDirection = SensorDirectionValue.CounterClockwise_Positive;
-
-
-
-        public static final boolean kRotorInvertSensorPhase = true;
-        /** Current Limits */
-        // public static final SupplyCurrentLimitConfiguration kRotorCurrentLimit = new SupplyCurrentLimitConfiguration(
-        //         true,
-        //         25,
-        //         40,
-        //         0.1);
-        // public static final SupplyCurrentLimitConfiguration kThrottleCurrentLimit = new SupplyCurrentLimitConfiguration(
-        //         true,
-        //         35,
-        //         60,
-        //         0.1);
     }
 
     public static final class LimelightConstants {
@@ -162,7 +135,7 @@ public class Constants {
                 STARTING_ROTATION);
         // private static final double MAX_ACCEL_DISTANCE = 6.0 * Math.pow(TIMEOUT_S, 2);
         private static final double MAX_ACCEL_DISTANCE = 0.01;
-        private static final double GYRO_ERROR_DEGREES_TIMEOUT = (0.4 / SECONDS_IN_MINUTE) * TIMEOUT_S;
+        private static final double GYRO_ERROR_DEGREES_TIMEOUT = (0.4 / 60) * kCANTimeoutMs;
         public static final double CONFIDENCE_TO_ERROR = 1.0;
         public static final Matrix<N3, N1> STATE_STDEVS_MATRIX = new MatBuilder<N3, N1>(
                 Nat.N3(),
@@ -172,12 +145,6 @@ public class Constants {
                 Nat.N3(),
                 Nat.N1())
                 .fill(1.0, 1.0, 1.0);
-    }
-
-    public class PathingConstants {
-        public static final int BASE_TRAJ_PERIOD_MS = 0;
-        public static final int MIN_POINTS_IN_TALON = 10;
-        public static final int TRANSMIT_PERIOD_MS = 20;
     }
 
     public static final class IntakeConstants{
@@ -412,57 +379,6 @@ public class Constants {
         public static final double OMEGA_RESET_TOLERANCE = 0.2;
         
         public static final int NUM_THREADS = 10;
-
-        /**
-         * Auto Alignment Constants
-         */
-        // Blue Alliance
-        // public static final Pose2d BLL = new Pose2d(1.66, 4.57, Rotation2d.fromDegrees(155));
-        // public static final Pose2d BLM = new Pose2d(1.85, 4.66, Rotation2d.fromDegrees(180));
-        // public static final Pose2d BLR = new Pose2d(1.85, 4.08, Rotation2d.fromDegrees(180));
-        // public static final Pose2d BML = new Pose2d(1.85, 3.53, Rotation2d.fromDegrees(180));
-        // public static final Pose2d BMM = new Pose2d(1.85, 2.94, Rotation2d.fromDegrees(180));
-        // public static final Pose2d BMR = new Pose2d(1.85, 2.34, Rotation2d.fromDegrees(180));
-        // public static final Pose2d BRL = new Pose2d(1.85, 1.90, Rotation2d.fromDegrees(180));
-        // public static final Pose2d BRM = new Pose2d(1.85, 1.36, Rotation2d.fromDegrees(180));
-        // public static final Pose2d BRR = new Pose2d(1.85, 0.52, Rotation2d.fromDegrees(180));
-        // // Red Alliance
-        // public static final Pose2d RLL = new Pose2d(14.79, 0.97, Rotation2d.fromDegrees(-22));
-        // public static final Pose2d RLM = new Pose2d(14.65, 0.94, Rotation2d.fromDegrees(0));
-        // public static final Pose2d RLR = new Pose2d(14.65, 1.53, Rotation2d.fromDegrees(0));
-        // public static final Pose2d RML = new Pose2d(14.65, 2.12, Rotation2d.fromDegrees(0));
-        // public static final Pose2d RMM = new Pose2d(14.65, 2.64, Rotation2d.fromDegrees(0));
-        // public static final Pose2d RMR = new Pose2d(14.65, 3.25, Rotation2d.fromDegrees(0));
-        // public static final Pose2d RRL = new Pose2d(14.65, 3.82, Rotation2d.fromDegrees(0));
-        // public static final Pose2d RRM = new Pose2d(14.65, 4.26, Rotation2d.fromDegrees(0));
-        // public static final Pose2d RRR = new Pose2d(14.65, 4.72, Rotation2d.fromDegrees(0));
-        // // Human Pickup Station
-        // public static final Pose2d BL_LOAD = new Pose2d(15.73, 7.67, Rotation2d.fromDegrees(0));
-        // public static final Pose2d BR_LOAD = new Pose2d(15.73, 5.99, Rotation2d.fromDegrees(0));
-        // public static final Pose2d RL_LOAD = new Pose2d(0.79, 5.99, Rotation2d.fromDegrees(180));
-        // public static final Pose2d RR_LOAD = new Pose2d(0.79, 7.67, Rotation2d.fromDegrees(180));
-
-        //Blue Alliance
-        public static final double BLL = 5.20;
-        public static final double BLM = 4.66;
-        public static final double BLR = 4.08;
-        public static final double BML = 3.53;
-        public static final double BMM = 2.94;
-        public static final double BMR = 2.34;
-        public static final double BRL = 1.90;
-        public static final double BRM = 1.36;
-        public static final double BRR = 0.52;
-        
-        //Red Alliance
-        public static final double RLL = 1.03;
-        public static final double RLM = 0.99;
-        public static final double RLR = 1.46;
-        public static final double RML = 2.17;
-        public static final double RMM = 2.64;
-        public static final double RMR = 3.23;
-        public static final double RRL = 3.79;
-        public static final double RRM = 4.26;
-        public static final double RRR = 4.77;
     }
 
     public static final class LightsConstants {
@@ -475,14 +391,6 @@ public class Constants {
 
         public static final int PRIMARY_ANIMATION_SLOT = 0;
     }
-
-    public static final String NETWORKTABLESNAME = "SmartDashboard";
-
-    public static final int TIMEOUT_MS = 20;
-    public static final double TIMEOUT_S = TIMEOUT_MS / 1000.0f;
-    public static final int SECONDS_IN_MINUTE = 60;
-    public static final double SQRTTWO = Math.sqrt(2);
-    public static final PneumaticsModuleType PNEUMATICS_MODULE_TYPE = PneumaticsModuleType.REVPH;
 
     public static final int kCANTimeoutMs = 10; 
     public static final int kLongCANTimeoutMs = 100; // constructors
