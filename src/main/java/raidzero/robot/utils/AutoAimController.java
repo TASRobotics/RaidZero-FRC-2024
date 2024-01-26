@@ -272,7 +272,7 @@ public class AutoAimController {
             // SmartDashboard.putData(field);
 
             ChassisSpeeds speeds = calculate(mSwerve.getPose(), currState, mEndHeading);
-            mSwerve.setOpenLoopSpeeds(speeds);
+            // mSwerve.setOpenLoopSpeeds(speeds);
         } else {
             if(firstStart) {
                 mFortniteAimAssistYController.reset(mSwerve.getPose().getY(), 0);
@@ -284,7 +284,7 @@ public class AutoAimController {
                 mFortniteAimAssistYController.calculate(mSwerve.getPose().getY(), mDesiredYPose), 
                 mThetaController.calculate(mSwerve.getPose().getRotation().getRadians(), mDesiredRotationPose.getRadians())
             );
-            mSwerve.setOpenLoopSpeeds(speeds);
+            // mSwerve.setOpenLoopSpeeds(speeds);
         }
     }
 
@@ -373,29 +373,30 @@ public class AutoAimController {
 
     private double getYOfAutoAimLocation(AutoAimLocation location) {
         // Alliance alliance = DriverStation.getAlliance();
-        Alliance alliance = null; 
-        switch (location) {
-            case LL:
-                return alliance == Alliance.Blue ? VisionConstants.BLL : VisionConstants.RLL;
-            case LM:
-                return alliance == Alliance.Blue ? VisionConstants.BLM : VisionConstants.RLM;
-            case LR:
-                return alliance == Alliance.Blue ? VisionConstants.BLR : VisionConstants.RLR;
-            case ML:
-                return alliance == Alliance.Blue ? VisionConstants.BML : VisionConstants.RML;
-            case MM:
-                return alliance == Alliance.Blue ? VisionConstants.BMM : VisionConstants.RMM;
-            case MR:
-                return alliance == Alliance.Blue ? VisionConstants.BMR : VisionConstants.RMR;
-            case RL:
-                return alliance == Alliance.Blue ? VisionConstants.BRL : VisionConstants.RRL;
-            case RM:
-                return alliance == Alliance.Blue ? VisionConstants.BRM : VisionConstants.RRM;
-            case RR:
-                return alliance == Alliance.Blue ? VisionConstants.BRR : VisionConstants.RRR;
-            default:
-                return 0;
-        }
+        // Alliance alliance = null; 
+        // switch (location) {
+        //     case LL:
+        //         return alliance == Alliance.Blue ? VisionConstants.BLL : VisionConstants.RLL;
+        //     case LM:
+        //         return alliance == Alliance.Blue ? VisionConstants.BLM : VisionConstants.RLM;
+        //     case LR:
+        //         return alliance == Alliance.Blue ? VisionConstants.BLR : VisionConstants.RLR;
+        //     case ML:
+        //         return alliance == Alliance.Blue ? VisionConstants.BML : VisionConstants.RML;
+        //     case MM:
+        //         return alliance == Alliance.Blue ? VisionConstants.BMM : VisionConstants.RMM;
+        //     case MR:
+        //         return alliance == Alliance.Blue ? VisionConstants.BMR : VisionConstants.RMR;
+        //     case RL:
+        //         return alliance == Alliance.Blue ? VisionConstants.BRL : VisionConstants.RRL;
+        //     case RM:
+        //         return alliance == Alliance.Blue ? VisionConstants.BRM : VisionConstants.RRM;
+        //     case RR:
+        //         return alliance == Alliance.Blue ? VisionConstants.BRR : VisionConstants.RRR;
+        //     default:
+        //         return 0;
+        // }
+        return 0;
     }
 
     private Rotation2d getAutoAimHeading (AutoAimLocation location) {

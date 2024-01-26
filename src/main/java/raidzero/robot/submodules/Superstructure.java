@@ -13,6 +13,10 @@ public class Superstructure extends Submodule {
 
     private Superstructure() {}
 
+    private static final Intake mIntake = Intake.getInstance();
+    private static final Shooter mShooter = Shooter.getInstance();
+    private static final Arm mArm = Arm.getInstance();
+
     @Override
     public void onStart(double timestamp) {}
 
@@ -20,5 +24,11 @@ public class Superstructure extends Submodule {
     public void update(double timestamp) {}
 
     @Override
+    public void run() {}
+
+    @Override
     public void stop() {}
+
+    @Override
+    public void zero() {}
 }

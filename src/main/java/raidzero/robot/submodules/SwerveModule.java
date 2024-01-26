@@ -21,7 +21,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import raidzero.robot.Constants;
 import raidzero.robot.Constants.SwerveConstants;
-import raidzero.robot.utils.MathTools;
 
 public class SwerveModule extends Submodule {
 
@@ -107,14 +106,15 @@ public class SwerveModule extends Submodule {
         // check if we should use motor position 
         // Rotation2d wrappedRotation = Rotation2d.fromRadians(mAzimuthEncoder.getAbsolutePosition().getValueAsDouble() * Math.PI * 2);
         Rotation2d rotation = Rotation2d.fromRotations(mAzimuth.getPosition().refresh().getValueAsDouble());
-
+        
+        // IMPORTANT!!!
         mPeriodicIO.currentState = new SwerveModuleState(
-            -mThrottle.getVelocity().refresh().getValue(), 
+            mThrottle.getVelocity().refresh().getValue(), 
             rotation
         );
 
         mPeriodicIO.currentPosition = new SwerveModulePosition(
-            -mThrottle.getPosition().refresh().getValue(), 
+            mThrottle.getPosition().refresh().getValue(), 
             rotation
         );
     }
