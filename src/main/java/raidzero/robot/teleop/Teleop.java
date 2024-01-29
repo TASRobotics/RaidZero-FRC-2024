@@ -1,7 +1,7 @@
 package raidzero.robot.teleop;
 
 import raidzero.robot.Constants.SwerveConstants;
-import raidzero.robot.submodules.Intake;
+//import raidzero.robot.submodules.Intake;
 import raidzero.robot.submodules.Shooter;
 import raidzero.robot.submodules.Swerve;
 import raidzero.robot.submodules.SwerveModule.PeriodicIO;
@@ -24,7 +24,7 @@ public class Teleop {
     private static GenericHID p3 = new GenericHID(2);
 
     private static Swerve mSwerve = Swerve.getInstance();
-    private static final Intake intake = Intake.getInstance();
+    //private static final Intake intake = Intake.getInstance();
     private static final Shooter shooter = Shooter.getInstance();
 
     public static Teleop getInstance() {
