@@ -385,13 +385,13 @@ public class Swerve extends Submodule {
         PathPlannerTrajectory.State state = (PathPlannerTrajectory.State) mCurrentTrajectory.sample(mTimer.get());
 
          mHolonomicController.setEnabled(true); //false, doesnt turn when only ff
-         testController.setEnabled(false);
+         testController.setEnabled(true);
         // PathPlannerPath.fromChoreoTrajectory()
         ChassisSpeeds desiredSpeeds = mHolonomicController.calculateRobotRelativeSpeeds(mCurrentPose, state);
         ChassisSpeeds trash = testController.calculateRobotRelativeSpeeds(mCurrentPose, state);
         //desiredSpeeds.times(-1.0);
         mDesiredPathingSpeeds = desiredSpeeds;
-        setClosedLoopSpeeds(mDesiredPathingSpeeds,true);
+        setClosedLoopSpeeds(mDesiredPathingSpeeds,false); //true
 
         // setOpenLoopSpeeds(desiredSpeeds);
         SmartDashboard.putNumber("desired heading", state.targetHolonomicRotation.getDegrees());
