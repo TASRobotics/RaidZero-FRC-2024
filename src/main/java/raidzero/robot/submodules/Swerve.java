@@ -486,26 +486,26 @@ public class Swerve extends Submodule {
     //     autoAimController.setTarget(getPose(), location, true);
     // }
 
-    public void setClosedLoopSpeeds(ChassisSpeeds speeds, boolean fieldOriented) {
-        if(fieldOriented) {
-            // IMPORTANT - pigeon might need * -1
-            speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                speeds.vxMetersPerSecond, 
-                speeds.vyMetersPerSecond, 
-                speeds.omegaRadiansPerSecond,
-                mPigeon.getRotation2d()
-            );
-        } 
+    // public void setClosedLoopSpeeds(ChassisSpeeds speeds, boolean fieldOriented) {
+    //     if(fieldOriented) {
+    //         // IMPORTANT - pigeon might need * -1
+    //         speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+    //             speeds.vxMetersPerSecond, 
+    //             speeds.vyMetersPerSecond, 
+    //             speeds.omegaRadiansPerSecond,
+    //             mPigeon.getRotation2d()
+    //         );
+    //     } 
 
-        ChassisSpeeds.discretize(speeds, 0.02);
+    //     ChassisSpeeds.discretize(speeds, 0.02);
 
-        SwerveModuleState[] desiredState = SwerveConstants.kKinematics.toSwerveModuleStates(speeds);
-        SwerveDriveKinematics.desaturateWheelSpeeds(desiredState, SwerveConstants.kRealisticMaxVelMPS);
-        mTopLeftModule.setClosedLoopState(desiredState[0]);
-        mTopRightModule.setClosedLoopState(desiredState[1]);
-        mRearLeftModule.setClosedLoopState(desiredState[2]);
-        mRearRightModule.setClosedLoopState(desiredState[3]);
-    }
+    //     SwerveModuleState[] desiredState = SwerveConstants.kKinematics.toSwerveModuleStates(speeds);
+    //     SwerveDriveKinematics.desaturateWheelSpeeds(desiredState, SwerveConstants.kRealisticMaxVelMPS);
+    //     mTopLeftModule.setClosedLoopState(desiredState[0]);
+    //     mTopRightModule.setClosedLoopState(desiredState[1]);
+    //     mRearLeftModule.setClosedLoopState(desiredState[2]);
+    //     mRearRightModule.setClosedLoopState(desiredState[3]);
+    // }
 
     public ChassisSpeeds getOpenLoopSpeeds() {
         // return SwerveConstants.KINEMATICS.toChassisSpeeds(
@@ -520,9 +520,9 @@ public class Swerve extends Submodule {
         return null;
     }
 
-    public void setAutoAimLocation(AutoAimLocation location) {
-        autoAimController.setTarget(getPose(), location, true);
-    }
+    // public void setAutoAimLocation(AutoAimLocation location) {
+    //     autoAimController.setTarget(getPose(), location, true);
+    // }
     // public void enableAutoAimController(boolean isEnabled) {
     //     if (isEnabled) {
     //         mControlState = ControlState.AUTO_AIM;
