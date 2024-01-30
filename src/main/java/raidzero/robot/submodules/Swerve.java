@@ -6,6 +6,9 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathPlannerTrajectory;
 import com.pathplanner.lib.util.PIDConstants;
 
+import com.choreo.lib.*;
+
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -57,6 +60,7 @@ public class Swerve extends Submodule {
 
     private PathPlannerTrajectory mCurrentTrajectory; 
     private PPHolonomicDriveController mHolonomicController; 
+    private PPHolonomicDriveController testController;
     private ChassisSpeeds mDesiredPathingSpeeds; 
     private Timer mTimer = new Timer();
     private Pose2d mCurrentPose;
@@ -135,6 +139,12 @@ public class Swerve extends Submodule {
             /*SwerveConstants.kTestingMaxVelMPS*/ SwerveConstants.kMaxVelMPS,
             0.4
         );
+        testController = new PPHolonomicDriveController(
+            new PIDConstants(SwerveConstants.kTranslationController_kP), 
+            new PIDConstants(SwerveConstants.kThetaController_kP), 
+            3.0,
+            0.4
+        ); 
 
         mDesiredPathingSpeeds = new ChassisSpeeds();
 
@@ -375,17 +385,27 @@ public class Swerve extends Submodule {
 
     private void updatePathing() {
         PathPlannerTrajectory.State state = (PathPlannerTrajectory.State) mCurrentTrajectory.sample(mTimer.get());
-        mHolonomicController.setEnabled(false);
+
+         mHolonomicController.setEnabled(true); //false, doesnt turn when only ff
+         testController.setEnabled(false);
         // PathPlannerPath.fromChoreoTrajectory()
         ChassisSpeeds desiredSpeeds = mHolonomicController.calculateRobotRelativeSpeeds(mCurrentPose, state);
-        
-        // IMPORTANT!!
-        // desiredSpeeds.times(-1.0);
+        ChassisSpeeds trash = testController.calculateRobotRelativeSpeeds(mCurrentPose, state);
+        //desiredSpeeds.times(-1.0);
         mDesiredPathingSpeeds = desiredSpeeds;
-        setClosedLoopSpeeds(mDesiredPathingSpeeds, true);
+        setClosedLoopSpeeds(mDesiredPathingSpeeds,true);
+
         // setOpenLoopSpeeds(desiredSpeeds);
-        
+        SmartDashboard.putNumber("desired heading", state.targetHolonomicRotation.getDegrees());
+        if(state.holonomicAngularVelocityRps.isPresent())SmartDashboard.putNumber("desired holonomicAngularVelocityRps", state.holonomicAngularVelocityRps.get());
+        SmartDashboard.putNumber("desired omegaRadiansPerSecond", desiredSpeeds.omegaRadiansPerSecond);
+        SmartDashboard.putNumber("desired xmps", desiredSpeeds.vxMetersPerSecond);
+        SmartDashboard.putNumber("desired ymps", desiredSpeeds.vyMetersPerSecond);
+        SmartDashboard.putNumber("ff xmps", trash.vxMetersPerSecond);
+        SmartDashboard.putNumber("ff ymps", trash.vyMetersPerSecond);
     }
+
+
 
     /**
      * Get total path time
@@ -466,6 +486,43 @@ public class Swerve extends Submodule {
     //     autoAimController.setTarget(getPose(), location, true);
     // }
 
+    public void setClosedLoopSpeeds(ChassisSpeeds speeds, boolean fieldOriented) {
+        if(fieldOriented) {
+            // IMPORTANT - pigeon might need * -1
+            speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+                speeds.vxMetersPerSecond, 
+                speeds.vyMetersPerSecond, 
+                speeds.omegaRadiansPerSecond,
+                mPigeon.getRotation2d()
+            );
+        } 
+
+        ChassisSpeeds.discretize(speeds, 0.02);
+
+        SwerveModuleState[] desiredState = SwerveConstants.kKinematics.toSwerveModuleStates(speeds);
+        SwerveDriveKinematics.desaturateWheelSpeeds(desiredState, SwerveConstants.kRealisticMaxVelMPS);
+        mTopLeftModule.setClosedLoopState(desiredState[0]);
+        mTopRightModule.setClosedLoopState(desiredState[1]);
+        mRearLeftModule.setClosedLoopState(desiredState[2]);
+        mRearRightModule.setClosedLoopState(desiredState[3]);
+    }
+
+    public ChassisSpeeds getOpenLoopSpeeds() {
+        // return SwerveConstants.KINEMATICS.toChassisSpeeds(
+        //         new SwerveModuleState(mTopLeftModule.getThrottlePercentSpeed(),
+        //                 Rotation2d.fromDegrees(mTopLeftModule.getRotorAngle())),
+        //         new SwerveModuleState(mTopRightModule.getThrottlePercentSpeed(),
+        //                 Rotation2d.fromDegrees(mTopRightModule.getRotorAngle())),
+        //         new SwerveModuleState(mRearLeftModule.getThrottlePercentSpeed(),
+        //                 Rotation2d.fromDegrees(mRearLeftModule.getRotorAngle())),
+        //         new SwerveModuleState(mRearRightModule.getThrottlePercentSpeed(),
+        //                 Rotation2d.fromDegrees(mRearRightModule.getRotorAngle())));
+        return null;
+    }
+
+    public void setAutoAimLocation(AutoAimLocation location) {
+        autoAimController.setTarget(getPose(), location, true);
+    }
     // public void enableAutoAimController(boolean isEnabled) {
     //     if (isEnabled) {
     //         mControlState = ControlState.AUTO_AIM;
