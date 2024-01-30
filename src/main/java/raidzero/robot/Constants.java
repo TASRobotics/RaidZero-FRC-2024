@@ -47,10 +47,17 @@ public class Constants {
 
         public static final int kImuID = 0;
 
+        /* Red Arm Offsets */
         public static final double kFrontLeftAzimuthOffset = -0.463379;
         public static final double kFrontRightAzimuthOffset = -0.565674 + 0.5;
         public static final double kRearLeftAzimuthOffset = -0.090088;
         public static final double kRearRightAzimuthOffset = -0.674316 + 0.5;
+
+        /* Alpha Offsets */
+        // public static final double kFrontLeftAzimuthOffset = 0.192383;
+        // public static final double kFrontRightAzimuthOffset = 0.397949 + 0.5;
+        // public static final double kRearLeftAzimuthOffset = 0.255615;
+        // public static final double kRearRightAzimuthOffset = -0.205811 + 0.5;
 
         public static final double kThrottleReduction = (14.0 / 50.0) * (28.0 / 16.0) * (15.0 / 45.0);
         public static final double kAzimuthReduction = (14.0 / 50.0) * (10.0 / 60.0);
@@ -105,9 +112,11 @@ public class Constants {
         public static final TrapezoidProfile.Constraints kSnapControllerConstraints = 
             new TrapezoidProfile.Constraints(kMaxAngularVelRPS, kMaxAngularVelRPS);
 
-        public static final double kAimAssistController_kP = 0.05;
+        public static final double kAimAssistController_kP = 0.1;
         public static final double kAimAssistController_kI = 0.0;
         public static final double kAimAssistController_kD = 0.0;
+        public static final TrapezoidProfile.Constraints kAimAssistControllerConstraints = 
+            new TrapezoidProfile.Constraints(kRealisticMaxVelMPS, kRealisticMaxVelMPS);
         
 
         // Using SDS 6.75 ratio
@@ -148,7 +157,7 @@ public class Constants {
     }
 
     public static final class IntakeConstants{
-        public static final int kLeaderID = 0;
+        public static final int kLeaderID = 16;
         public static final int kFollowerID = 0;
 
         public static final int kCurrentLimit = 30;

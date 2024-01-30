@@ -24,7 +24,7 @@ public class Teleop {
     private static GenericHID p3 = new GenericHID(2);
 
     private static Swerve mSwerve = Swerve.getInstance();
-    private static final Intake intake = Intake.getInstance();
+    // private static final Intake mIntake = Intake.getInstance();
     private static final Shooter shooter = Shooter.getInstance();
 
     public static Teleop getInstance() {
@@ -68,6 +68,8 @@ public class Teleop {
             snapAngle,
             p.getAButton() /*false*/
         );
+
+        // mIntake.setPercentSpeed(p.getLeftTriggerAxis() - p.getRightTriggerAxis());
         // if(p.getAButton()) {
         //     mSwerve.setClosedLoopSpeeds(new ChassisSpeeds(1.0, 0.0, 0.0), true);
         // }

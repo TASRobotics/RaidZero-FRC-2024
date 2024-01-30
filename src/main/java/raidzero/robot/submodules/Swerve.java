@@ -64,10 +64,12 @@ public class Swerve extends Submodule {
     private ControlState mControlState = ControlState.OPEN_LOOP;
 
     private final Limelight mLimelight = Limelight.getInstance();
-    private PIDController mAimAssistYController = new PIDController(
+    private ProfiledPIDController mAimAssistYController = new ProfiledPIDController(
         SwerveConstants.kAimAssistController_kP, 
         SwerveConstants.kAimAssistController_kI, 
-        SwerveConstants.kAimAssistController_kD
+        SwerveConstants.kAimAssistController_kD, 
+        SwerveConstants.kAimAssistControllerConstraints
+
     );
     private ProfiledPIDController mSnapController = new ProfiledPIDController(
         SwerveConstants.kSnapController_kP, 

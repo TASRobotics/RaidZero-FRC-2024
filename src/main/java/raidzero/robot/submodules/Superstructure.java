@@ -13,9 +13,17 @@ public class Superstructure extends Submodule {
 
     private Superstructure() {}
 
-    private static final Intake mIntake = Intake.getInstance();
-    private static final Shooter mShooter = Shooter.getInstance();
+    private static final AngleAdjuster mAngleAdjuster = AngleAdjuster.getInstance();
     private static final Arm mArm = Arm.getInstance();
+    private static final Climb mClimb = Climb.getInstance();
+    private static final Intake mIntake = Intake.getInstance();
+    private static final Limelight mLimelight = Limelight.getInstance();
+    private static final Shooter mShooter = Shooter.getInstance();
+    private static final Swerve mSwerve = Swerve.getInstance();
+    private static final Wrist mWrist = Wrist.getInstance();
+
+    @Override
+    public void onInit() {}
 
     @Override
     public void onStart(double timestamp) {}

@@ -19,7 +19,7 @@ public class Intake extends Submodule{
     private Intake() {}
 
     private CANSparkMax mLeader = new CANSparkMax(IntakeConstants.kLeaderID, MotorType.kBrushless);
-    private CANSparkMax mFollower = new CANSparkMax(IntakeConstants.kFollowerID, MotorType.kBrushless);
+    // private CANSparkMax mFollower = new CANSparkMax(IntakeConstants.kFollowerID, MotorType.kBrushless);
 
     public static class PeriodicIO {
         public double desiredPercentSpeed = 0.0;
@@ -34,12 +34,12 @@ public class Intake extends Submodule{
         mLeader.setSmartCurrentLimit(IntakeConstants.kCurrentLimit);
         mLeader.setIdleMode(IntakeConstants.kIdleMode);
 
-        mFollower.restoreFactoryDefaults();
-        mFollower.enableVoltageCompensation(Constants.kMaxMotorVoltage);
-        mFollower.setSmartCurrentLimit(IntakeConstants.kCurrentLimit);
-        mFollower.setIdleMode(IntakeConstants.kIdleMode);
+        // mFollower.restoreFactoryDefaults();
+        // mFollower.enableVoltageCompensation(Constants.kMaxMotorVoltage);
+        // mFollower.setSmartCurrentLimit(IntakeConstants.kCurrentLimit);
+        // mFollower.setIdleMode(IntakeConstants.kIdleMode);
 
-        mFollower.follow(mLeader);
+        // mFollower.follow(mLeader);
     }
 
     @Override
@@ -67,7 +67,7 @@ public class Intake extends Submodule{
     @Override
     public void stop() {
         mLeader.stopMotor();
-        mFollower.stopMotor();
+        // mFollower.stopMotor();
     }
 
     @Override
