@@ -33,11 +33,13 @@ public class SeriesAction implements Action {
             }
             currentAction = remainingActions.remove(0);
             currentAction.start();
+            System.out.println("series action new action");
         }
 
         currentAction.update();
 
         if (currentAction.isFinished()) {
+            System.out.println("series action isFinished");
             currentAction.done();
             currentAction = null;
         }
@@ -45,6 +47,7 @@ public class SeriesAction implements Action {
 
     @Override
     public void done() {
+        System.out.println("series action done");
         if (currentAction != null) {
             currentAction.done();
         }
