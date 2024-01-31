@@ -427,10 +427,10 @@ public class Swerve extends Submodule {
         // }
         // return false;
 
-        // if(/*mHolonomicController.getPositionalError() < 0.05 && */mTimer.hasElapsed(mCurrentTrajectory.getTotalTimeSeconds())) {
-        //     System.out.println("Done Pathing!");
-        //     return true;
-        // }
+         if(/*mHolonomicController.getPositionalError() < 0.05 && */mTimer.hasElapsed(mCurrentTrajectory.getTotalTimeSeconds())) {
+             System.out.println("Done Pathing!");
+             return true;
+         }
         return false;
     }
 

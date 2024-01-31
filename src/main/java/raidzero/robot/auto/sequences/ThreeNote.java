@@ -30,12 +30,10 @@ public class ThreeNote extends AutoSequence {
     public void sequence() {
         List<Action> idk = new ArrayList();
         idk.add(new DrivePath(trajectory1));
-        idk.add(new WaitAction(3));
+        //idk.add(new WaitAction(3));
         idk.add(new DrivePath(trajectory2));
-        SeriesAction tgt = new SeriesAction(idk);
-
         addAction(
-            tgt
+            new SeriesAction(idk)
         );
     }
 
