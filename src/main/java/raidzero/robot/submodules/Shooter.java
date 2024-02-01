@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import raidzero.robot.Constants;
 import raidzero.robot.Constants.ShooterConstants;
+import raidzero.robot.utils.requests.Request;
 
 public class Shooter extends Submodule {
     private enum ControlState {
@@ -119,6 +120,21 @@ public class Shooter extends Submodule {
         return Math.abs(mPeriodicIO.desiredVelocity) > 1
                 && Math.abs(mPeriodicIO.currentVelocity - mPeriodicIO.desiredVelocity) < ShooterConstants.kErrorTolerance;
     }
+
+    public Request shooterRequest(double velocity) {
+        return new Request() {
+            @Override
+            public void act() {
+                setVelocity(velocity);
+            }
+
+            @Override
+            public boolean isFinished() {
+                return isUpToSpeed();
+            }
+        };
+    }
+
     /** Configure intake motor & integrated encoder/PID controller */
     private TalonFXConfiguration getLeaderConfig() {
         TalonFXConfiguration config = new TalonFXConfiguration();

@@ -22,6 +22,7 @@ public class Robot extends TimedRobot {
     private static final Shooter mShooter = Shooter.getInstance();
     private static final Swerve mSwerve = Swerve.getInstance();
     private static final Wrist mWrist = Wrist.getInstance();
+    private static final Conveyor mConveyor = Conveyor.getInstance();
     
     private static final Vision vision = Vision.getInstance();
 
@@ -42,7 +43,8 @@ public class Robot extends TimedRobot {
             // mShooter, 
             // mIntake
             // mWrist, 
-            // mAngleAdjuster
+            // mAngleAdjuster, 
+            // mConveyor
         );
         submoduleManager.onInit();
 

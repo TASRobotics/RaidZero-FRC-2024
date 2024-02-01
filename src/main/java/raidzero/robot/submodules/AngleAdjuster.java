@@ -16,6 +16,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 
 import raidzero.robot.Constants;
 import raidzero.robot.Constants.AngleAdjusterConstants;
+import raidzero.robot.utils.requests.Request;
 
 public class AngleAdjuster extends Submodule {
     private enum ControlState {
@@ -82,6 +83,34 @@ public class AngleAdjuster extends Submodule {
 
     @Override
     public void zero() {}
+
+    public void setPercentSpeed(double speed) {
+        mPeriodicIO.controlState = ControlState.FEEDFORWARD;
+        mPeriodicIO.desiredPercentSpeed = speed;
+    }
+
+    public void setAngle(Rotation2d angle) {
+        mPeriodicIO.controlState = ControlState.FEEDBACK;
+        mPeriodicIO.desiredPosition = angle;
+    }
+
+    public Rotation2d getAngle() {
+        return mPeriodicIO.currentPosition;
+    }
+
+    public Request angleAdjusterRequest(Rotation2d angle, boolean waitUntilSettled) {
+        return new Request() {
+            @Override
+            public void act() {
+                setAngle(angle);
+            }
+
+            @Override
+            public boolean isFinished() {
+                return waitUntilSettled ? Math.abs(mMotor.getClosedLoopError().refresh().getValueAsDouble()) < AngleAdjusterConstants.kTolerance : true;
+            }
+        };
+    }
 
     private TalonFXConfiguration getMotorConfig(CANcoder encoder) {
         TalonFXConfiguration config = new TalonFXConfiguration();

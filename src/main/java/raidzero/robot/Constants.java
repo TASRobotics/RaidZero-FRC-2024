@@ -24,6 +24,9 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Filesystem;
 
+import raidzero.robot.utils.InterpolatingDouble;
+import raidzero.robot.utils.InterpolatingTreeMap;
+
 public class Constants {
     /**
      * Swerve Constants
@@ -157,11 +160,21 @@ public class Constants {
     }
 
     public static final class IntakeConstants{
-        public static final int kLeaderID = 16;
-        public static final int kFollowerID = 0;
+        public static final int kFrontMotorID = 16;
+        public static final int kRearMotorID = 0;
 
         public static final int kCurrentLimit = 30;
         public static final IdleMode kIdleMode = IdleMode.kBrake;
+        public static final boolean kFrontInversion = false;
+        public static final boolean kRearInversion = false;
+    }
+
+    public static final class ConveyorConstants {
+        public static final int kMotorID = 0;
+
+        public static final int kCurrentLimit = 30;
+        public static final IdleMode kIdleMode = IdleMode.kBrake;
+        public static final boolean kInversion = false;
     }
 
     public static final class ShooterConstants{
@@ -219,6 +232,8 @@ public class Constants {
         public static final double kD = 0.0;
         public static final double kPIDUpdateHz = 1000;
 
+        public static final double kTolerance = 0.01;
+
         // Motion Magic Constants
         public static final double kMotionMagicVelocity = 0.0;
         public static final double kMotionMagicAccel = 0.0;
@@ -229,6 +244,13 @@ public class Constants {
         public static final double kForwardSoftLimit = 0.0;
         public static final boolean kReverseSoftLimitEnabled = true;
         public static final double kReverseSoftLimit = 0.0;
+
+        public static final InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble> 
+            kAimMap = new InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble>(20);
+        static {
+            kAimMap.put(new InterpolatingDouble(0.0), new InterpolatingDouble(0.0));
+            // ...
+        }
     }
 
     public static final class ArmConstants {
@@ -260,6 +282,8 @@ public class Constants {
         public static final double kI = 0.0;
         public static final double kD = 0.0;
         public static final double kPIDUpdateHz = 1000;
+        
+        public static final double kTolerance = 0.01;
 
         // Motion Magic Constants
         public static final double kMotionMagicVelocity = 0.0;
@@ -297,6 +321,8 @@ public class Constants {
         public static final double kI = 0.0;
         public static final double kD = 0.0;
         public static final double kPIDUpdateHz = 1000;
+
+        public static final double kTolerance = 0.01;
 
         // Motion Magic Constants
         public static final double kMotionMagicVelocity = 0.0;
@@ -348,6 +374,17 @@ public class Constants {
         public static final double kForwardSoftLimit = 0.0;
         public static final boolean kReverseSoftLimitEnabled = true;
         public static final double kReverseSoftLimit = 0.0;
+    }
+
+    public static final class SuperstructureConstants {
+        // Arm
+        public static final Rotation2d kArmStowAngle = Rotation2d.fromDegrees(0.0);
+        public static final Rotation2d kArmAmpAngle = Rotation2d.fromDegrees(1.0);
+
+        // Wrist
+        public static final Rotation2d kWristStowAngle = Rotation2d.fromDegrees(0.0);
+        public static final Rotation2d kWristIntakingAngle = Rotation2d.fromDegrees(1.0);
+        public static final Rotation2d kWristAmpAngle = Rotation2d.fromDegrees(2.0);
     }
 
     public static final class VisionConstants {

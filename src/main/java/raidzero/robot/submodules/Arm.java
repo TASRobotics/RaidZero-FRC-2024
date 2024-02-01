@@ -17,6 +17,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 
 import raidzero.robot.Constants;
 import raidzero.robot.Constants.ArmConstants;
+import raidzero.robot.utils.requests.Request;
 
 // DONE (as of 1/24/2024)
 
@@ -106,6 +107,20 @@ public class Arm extends Submodule {
     public void setPercentSpeed(double speed) {
         mPeriodicIO.controlState = ControlState.FEEDFORWARD;
         mPeriodicIO.desiredPercentSpeed = speed;
+    }
+
+    public Request armRequest(Rotation2d angle, boolean waitUntilSettled) {
+        return new Request() {
+            @Override
+            public void act() {
+                setAngle(angle);
+            }
+
+            @Override
+            public boolean isFinished() {
+                return waitUntilSettled ? Math.abs(mLeftLeader.getClosedLoopError().refresh().getValueAsDouble()) < ArmConstants.kTolerance : true;
+            }
+        };
     }
 
     private TalonFXConfiguration getLeaderConfig(CANcoder encoder) {

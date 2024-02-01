@@ -5,6 +5,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import raidzero.robot.Constants;
 import raidzero.robot.Constants.IntakeConstants;
+import raidzero.robot.utils.requests.Request;
 
 public class Intake extends Submodule{
     private static Intake instance = null;
@@ -18,28 +19,29 @@ public class Intake extends Submodule{
 
     private Intake() {}
 
-    private CANSparkMax mLeader = new CANSparkMax(IntakeConstants.kLeaderID, MotorType.kBrushless);
-    // private CANSparkMax mFollower = new CANSparkMax(IntakeConstants.kFollowerID, MotorType.kBrushless);
+    private CANSparkMax mFrontMotor = new CANSparkMax(IntakeConstants.kFrontMotorID, MotorType.kBrushless);
+    private CANSparkMax mRearMotor = new CANSparkMax(IntakeConstants.kRearMotorID, MotorType.kBrushless);
 
     public static class PeriodicIO {
-        public double desiredPercentSpeed = 0.0;
+        public double desiredFrontPercentSpeed = 0.0;
+        public double desiredRearPercentSpeed = 0.0;
     }
 
     private PeriodicIO mPeriodicIO = new PeriodicIO();
 
     @Override
     public void onInit() {
-        mLeader.restoreFactoryDefaults();
-        mLeader.enableVoltageCompensation(Constants.kMaxMotorVoltage);
-        mLeader.setSmartCurrentLimit(IntakeConstants.kCurrentLimit);
-        mLeader.setIdleMode(IntakeConstants.kIdleMode);
+        mFrontMotor.restoreFactoryDefaults();
+        mFrontMotor.enableVoltageCompensation(Constants.kMaxMotorVoltage);
+        mFrontMotor.setSmartCurrentLimit(IntakeConstants.kCurrentLimit);
+        mFrontMotor.setIdleMode(IntakeConstants.kIdleMode);
+        mFrontMotor.setInverted(IntakeConstants.kFrontInversion);
 
-        // mFollower.restoreFactoryDefaults();
-        // mFollower.enableVoltageCompensation(Constants.kMaxMotorVoltage);
-        // mFollower.setSmartCurrentLimit(IntakeConstants.kCurrentLimit);
-        // mFollower.setIdleMode(IntakeConstants.kIdleMode);
-
-        // mFollower.follow(mLeader);
+        mRearMotor.restoreFactoryDefaults();
+        mRearMotor.enableVoltageCompensation(Constants.kMaxMotorVoltage);
+        mRearMotor.setSmartCurrentLimit(IntakeConstants.kCurrentLimit);
+        mRearMotor.setIdleMode(IntakeConstants.kIdleMode);
+        mRearMotor.setInverted(IntakeConstants.kRearInversion);
     }
 
     @Override
@@ -61,13 +63,14 @@ public class Intake extends Submodule{
         // } else if (mControlState == ControlState.CLOSED_LOOP) {
             
         // }
-        mLeader.set(mPeriodicIO.desiredPercentSpeed);
+        mFrontMotor.set(mPeriodicIO.desiredFrontPercentSpeed);
+        mRearMotor.set(mPeriodicIO.desiredRearPercentSpeed);
     }
 
     @Override
     public void stop() {
-        mLeader.stopMotor();
-        // mFollower.stopMotor();
+        mFrontMotor.stopMotor();
+        mRearMotor.stopMotor();
     }
 
     @Override
@@ -78,8 +81,23 @@ public class Intake extends Submodule{
      * 
      * @param speed percent speed
      */
-    public void setPercentSpeed(double speed) {
-        mPeriodicIO.desiredPercentSpeed = speed;
+    public void setPercentSpeed(double frontSpeed, double rearSpeed) {
+        mPeriodicIO.desiredFrontPercentSpeed = frontSpeed;
+        mPeriodicIO.desiredRearPercentSpeed = rearSpeed;
+    }
+
+    public Request intakeRequest(double frontSpeed, double rearSpeed) {
+        return new Request() {
+            @Override
+            public void act() {
+                setPercentSpeed(frontSpeed, rearSpeed);
+            }
+
+            @Override
+            public boolean isFinished() {
+                return true;
+            }
+        };
     }
 
     /** Hold position of intake */
