@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 7.907220607596571,
-        "y": 7.213875312204752
+        "x": 8.281967377058862,
+        "y": 7.401248696933913
       },
       "prevControl": {
-        "x": 5.775848356264335,
-        "y": 6.616622648369895
+        "x": 6.1505951257266265,
+        "y": 6.8039960330990565
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "fourend"
     }
   ],
   "rotationTargets": [],
@@ -39,7 +39,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -160.0,
+    "rotation": 0.0,
     "rotateFast": false
   },
   "reversed": false,

@@ -84,6 +84,10 @@ public class Swerve extends Submodule {
 
     private boolean firstPath = true;    
 
+    public void first(){
+        firstPath = true;
+    }
+
     public void onStart(double timestamp) {
         mControlState = ControlState.OPEN_LOOP;
         // alliance = DriverStation.getAlliance();
@@ -401,6 +405,7 @@ public class Swerve extends Submodule {
         SmartDashboard.putNumber("desired ymps", desiredSpeeds.vyMetersPerSecond);
         SmartDashboard.putNumber("ff xmps", trash.vxMetersPerSecond);
         SmartDashboard.putNumber("ff ymps", trash.vyMetersPerSecond);
+        SmartDashboard.putNumber("trottle dist from ideal", Constants.SwerveConstants.kMetersToThrottleRot*4-mTopRightModule.throttlePosTravelled());
     }
 
 
@@ -427,7 +432,7 @@ public class Swerve extends Submodule {
         // }
         // return false;
 
-         if(/*mHolonomicController.getPositionalError() < 0.05 && */mTimer.hasElapsed(mCurrentTrajectory.getTotalTimeSeconds()+1)) {
+         if(/*mHolonomicController.getPositionalError() < 0.05 && */mTimer.hasElapsed(mCurrentTrajectory.getTotalTimeSeconds()+0.2)) {
              System.out.println("Done Pathing!");
              return true;
          }

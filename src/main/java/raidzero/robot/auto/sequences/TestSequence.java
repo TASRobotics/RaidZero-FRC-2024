@@ -8,11 +8,11 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import raidzero.robot.auto.actions.DrivePath;
 
 public class TestSequence extends AutoSequence {
-    private PathPlannerPath testPath = PathPlannerPath.fromPathFile("3 note path");
+    private PathPlannerPath testPath = PathPlannerPath.fromPathFile("line");
     private PathPlannerTrajectory testTrajectory;
 
     public TestSequence() {
-        Rotation2d test = new Rotation2d(Math.toRadians(-90));
+        Rotation2d test = new Rotation2d(Math.toRadians(0));
         testTrajectory = testPath.getTrajectory(new ChassisSpeeds(), test);
     }
 
