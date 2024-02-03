@@ -5,7 +5,6 @@ import java.util.List;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import raidzero.robot.Constants.SuperstructureConstants;
-import raidzero.robot.utils.requests.LambdaRequest;
 import raidzero.robot.utils.requests.ParallelRequest;
 import raidzero.robot.utils.requests.Request;
 import raidzero.robot.utils.requests.SequentialRequest;
