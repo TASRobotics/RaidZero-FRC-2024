@@ -13,9 +13,12 @@ import raidzero.robot.auto.actions.DrivePath;
 import raidzero.robot.auto.actions.Res;
 import raidzero.robot.auto.actions.SeriesAction;
 import raidzero.robot.auto.actions.WaitAction;
+import raidzero.robot.submodules.Swerve;
 
 public class ThreeNote extends AutoSequence {
-    private PathPlannerPath path1 = PathPlannerPath.fromPathFile("first note");
+    private static final Swerve mSwerve = Swerve.getInstance();
+
+    private PathPlannerPath path1 = PathPlannerPath.fromPathFile("first note").flipPath();
     private PathPlannerTrajectory trajectory1;
     private PathPlannerPath path2 = PathPlannerPath.fromPathFile("2nd note");
     private PathPlannerTrajectory trajectory2;
@@ -32,6 +35,8 @@ public class ThreeNote extends AutoSequence {
 
     public ThreeNote() {
         Rotation2d test1 = new Rotation2d(Math.toRadians(0));
+        // Rotation2d test1 = path1.getPoint(0).rotationTarget.getTarget();
+        // Rotation2d test1 = mSwerve.getPose().getRotation();
         trajectory1 = path1.getTrajectory(new ChassisSpeeds(), test1);
         Rotation2d test2 = new Rotation2d(Math.toRadians(0)); 
         trajectory2 = path2.getTrajectory(new ChassisSpeeds(), test2);

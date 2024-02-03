@@ -24,8 +24,9 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
-
+import edu.wpi.first.wpilibj.ADXL345_I2C.AllAxes;
 import raidzero.robot.Constants;
 import raidzero.robot.Constants.DriveConstants;
 import raidzero.robot.Constants.SwerveConstants;
@@ -208,13 +209,13 @@ public class Swerve extends Submodule {
      */
     @Override
     public void zero() {
-        // if (alliance == Alliance.Blue)
-        //     zeroHeading(180);
-        // else if (alliance == Alliance.Red)
-        //     zeroHeading(0);
+        if (DriverStation.getAlliance().get() == Alliance.Blue)
+            zeroHeading(0);
+        else if (DriverStation.getAlliance().get() == Alliance.Red)
+            zeroHeading(180);
         // setPose(new Pose2d(new Translation2d(1.76, 1.477), new Rotation2d(Math.toRadians(pigeon.getAngle()))));
 
-        mPigeon.setYaw(0.0);
+        // mPigeon.setYaw(0.0);
 
         mTopRightModule.zero();
         mTopLeftModule.zero();
@@ -449,6 +450,7 @@ public class Swerve extends Submodule {
                 speeds.vyMetersPerSecond, 
                 speeds.omegaRadiansPerSecond,
                 mPigeon.getRotation2d()
+                // DriverStation.getAlliance().get() == Alliance.Blue ? mPigeon.getRotation2d() : mPigeon.getRotation2d().minus(Rotation2d.fromDegrees(180))
             );
         } 
 
@@ -472,6 +474,7 @@ public class Swerve extends Submodule {
                 speeds.vyMetersPerSecond, 
                 speeds.omegaRadiansPerSecond,
                 mPigeon.getRotation2d()
+                // DriverStation.getAlliance().get() == Alliance.Blue ? mPigeon.getRotation2d() : mPigeon.getRotation2d().minus(Rotation2d.fromDegrees(180))
             );
         } 
 
@@ -485,31 +488,6 @@ public class Swerve extends Submodule {
         mRearRightModule.setClosedLoopState(desiredState[3]);
     }
 
-    // public void setAutoAimLocation(AutoAimLocation location) {
-    //     autoAimController.setTarget(getPose(), location, true);
-    // }
-
-    /*
-    public void setClosedLoopSpeeds(ChassisSpeeds speeds, boolean fieldOriented) {
-        if(fieldOriented) {
-            // IMPORTANT - pigeon might need * -1
-            speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                speeds.vxMetersPerSecond, 
-                speeds.vyMetersPerSecond, 
-                speeds.omegaRadiansPerSecond,
-                mPigeon.getRotation2d()
-            );
-        } 
-
-        ChassisSpeeds.discretize(speeds, 0.02);
-
-        SwerveModuleState[] desiredState = SwerveConstants.kKinematics.toSwerveModuleStates(speeds);
-        SwerveDriveKinematics.desaturateWheelSpeeds(desiredState, SwerveConstants.kRealisticMaxVelMPS);
-        mTopLeftModule.setClosedLoopState(desiredState[0]);
-        mTopRightModule.setClosedLoopState(desiredState[1]);
-        mRearLeftModule.setClosedLoopState(desiredState[2]);
-        mRearRightModule.setClosedLoopState(desiredState[3]);
-    }*/
 
     public ChassisSpeeds getOpenLoopSpeeds() {
         // return SwerveConstants.KINEMATICS.toChassisSpeeds(

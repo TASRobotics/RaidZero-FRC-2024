@@ -7,12 +7,15 @@ import raidzero.robot.submodules.Swerve;
 import raidzero.robot.submodules.SwerveModule.PeriodicIO;
 import raidzero.robot.utils.JoystickUtils;
 
+import java.sql.Driver;
 import java.util.Optional;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
@@ -27,6 +30,9 @@ public class Teleop {
     //private static final Intake intake = Intake.getInstance();
     private static final Shooter shooter = Shooter.getInstance();
 
+    private boolean mBlue = false;
+    private int mReverse = 1;
+
     public static Teleop getInstance() {
         if (instance == null) {
             instance = new Teleop();
@@ -35,9 +41,12 @@ public class Teleop {
     }
 
     public void onStart() {
+        mBlue = DriverStation.getAlliance().get() == Alliance.Blue;
+        mReverse = mBlue ? 1 : -1;
     }
 
     public void onLoop() {
+        SmartDashboard.putBoolean("Blue Alliance?", mBlue);
         p1Loop(p1);
         
         p2Loop(p2);
@@ -55,14 +64,19 @@ public class Teleop {
         //     true
         // );
         if(p.getBButton()) {
-            snapAngle = Rotation2d.fromDegrees(0);
+            // if(mBlue) {
+            //     snapAngle = Rotation2d.fromDegrees(0);
+            // } else {
+            //     snapAngle = Rotation2d.fromDegrees(180);
+            // }
+            snapAngle = Rotation2d.fromDegrees(90.0);
         } else {
             snapAngle = null;
         }
 
         mSwerve.teleopDrive(
-            -JoystickUtils.applyDeadband(p.getLeftY()) * SwerveConstants.kRealisticMaxVelMPS, 
-            -JoystickUtils.applyDeadband(p.getLeftX()) * SwerveConstants.kRealisticMaxVelMPS, 
+            -JoystickUtils.applyDeadband(p.getLeftY()) * SwerveConstants.kRealisticMaxVelMPS * mReverse, 
+            -JoystickUtils.applyDeadband(p.getLeftX()) * SwerveConstants.kRealisticMaxVelMPS * mReverse, 
             -JoystickUtils.applyDeadband(p.getRightX()) * SwerveConstants.kRealisticMaxVelMPS, 
             true, 
             snapAngle,
