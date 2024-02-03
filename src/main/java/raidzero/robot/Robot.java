@@ -14,19 +14,18 @@ public class Robot extends TimedRobot {
     private static final SubmoduleManager submoduleManager = SubmoduleManager.getInstance();
 
     private static final Teleop mTeleop = Teleop.getInstance();
+    private static final AngleAdjuster mAngleAdjuster = AngleAdjuster.getInstance();
+    private static final Arm mArm = Arm.getInstance();
+    private static final Climb mClimb = Climb.getInstance();
+    //private static final Intake mIntake = Intake.getInstance();
+    private static final Limelight mLimelight = Limelight.getInstance();
+    private static final Shooter mShooter = Shooter.getInstance();
     private static final Swerve mSwerve = Swerve.getInstance();
+    private static final Wrist mWrist = Wrist.getInstance();
+    
     private static final Vision vision = Vision.getInstance();
 
     private AutoRunner autoRunner;
-
-    // private NetworkTableEntry shouldCheckGSCEntry =
-    // Shuffleboard.getTab(Tab.SELECTION).add("Scan Path",
-    // 0).withWidget(BuiltInWidgets.kBooleanBox)
-    // .withSize(1, 1).withPosition(0, 0).getEntry();
-    // private NetworkTableEntry foundPathEntry =
-    // Shuffleboard.getTab(Tab.SELECTION).add("Chosen Path",
-    // 0).withWidget(BuiltInWidgets.kTextView)
-    // .withSize(2, 1).withPosition(0, 1).getEntry();
 
     /**
      * Runs only once at the start of robot code execution.
@@ -35,8 +34,15 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         // Register all submodules here
         submoduleManager.setSubmodules(
-            mSwerve,
-            vision
+            mSwerve
+            // vision, 
+            // mLimelight, 
+            // mArm, 
+            // mClimb, 
+            // mShooter, 
+            // //mIntake, 
+            // mWrist, 
+            // mAngleAdjuster
         );
         submoduleManager.onInit();
 
@@ -48,8 +54,6 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void disabledInit() {
-        // Limelight.getInstance().setLedMode(LedMode.Off);
-
         // Stop autonomous
         autoRunner.stop();
         submoduleManager.onStop(Timer.getFPGATimestamp());
@@ -60,7 +64,6 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
-
         autoRunner.readSendableSequence();
         autoRunner.start();
         submoduleManager.onStart(Timer.getFPGATimestamp());

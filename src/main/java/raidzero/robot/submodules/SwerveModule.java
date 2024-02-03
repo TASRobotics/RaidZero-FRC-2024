@@ -21,9 +21,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import raidzero.robot.Constants;
 import raidzero.robot.Constants.SwerveConstants;
-import raidzero.robot.utils.MathTools;
 
 public class SwerveModule extends Submodule {
+
 
     private enum ControlState {
         VELOCITY, PATHING, TESTING, PERCENT
@@ -33,6 +33,7 @@ public class SwerveModule extends Submodule {
     private TalonFX mAzimuth; 
 
     private CANcoder mAzimuthEncoder; 
+    private double throttleStart;
 
     private VoltageOut throttleVoltageOut = new VoltageOut(0.0).withEnableFOC(Constants.kEnableFOC);
     private VelocityVoltage throttleVelocityVoltageOut = new VelocityVoltage(0.0)
@@ -82,7 +83,6 @@ public class SwerveModule extends Submodule {
         mPeriodicIO.currentState = new SwerveModuleState();
         mPeriodicIO.desiredState = new SwerveModuleState();
         mPeriodicIO.currentPosition = new SwerveModulePosition(); 
-
         stop();
     }
 
@@ -97,6 +97,11 @@ public class SwerveModule extends Submodule {
         mPeriodicIO.outputThrottlePercentSpeed = 0.0;
         mPeriodicIO.outputAzimuthPercentSpeed = 0.0;
         resetToAbsolute();
+        throttleStart = mThrottle.getPosition().refresh().getValue();
+    }
+
+    public double throttlePosTravelled(){
+        return mThrottle.getPosition().refresh().getValue() - throttleStart;
     }
 
     /**
@@ -105,16 +110,20 @@ public class SwerveModule extends Submodule {
     @Override
     public void update(double timestamp) {
         // check if we should use motor position 
-        // Rotation2d wrappedRotation = Rotation2d.fromRadians(mAzimuthEncoder.getAbsolutePosition().getValueAsDouble() * Math.PI * 2);
+        Rotation2d wrappedRotation = Rotation2d.fromRadians(mAzimuthEncoder.getAbsolutePosition().getValueAsDouble() * Math.PI * 2);
         Rotation2d rotation = Rotation2d.fromRotations(mAzimuth.getPosition().refresh().getValueAsDouble());
+        SmartDashboard.putNumber("azi enc pos", wrappedRotation.getDegrees());
+        SmartDashboard.putNumber("azi pos", rotation.getDegrees());
+        SmartDashboard.putNumber("throttle pos", mThrottle.getPosition().refresh().getValue());
 
+        // IMPORTANT!!!
         mPeriodicIO.currentState = new SwerveModuleState(
-            -mThrottle.getVelocity().refresh().getValue(), 
+            mThrottle.getVelocity().refresh().getValue(), 
             rotation
         );
 
         mPeriodicIO.currentPosition = new SwerveModulePosition(
-            -mThrottle.getPosition().refresh().getValue(), 
+            mThrottle.getPosition().refresh().getValue(), 
             rotation
         );
     }

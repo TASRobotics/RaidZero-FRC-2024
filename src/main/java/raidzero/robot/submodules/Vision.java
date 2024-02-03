@@ -357,13 +357,14 @@ public class Vision extends Submodule {
                         }
                         SmartDashboard.putNumber("Active Threads", blockingQueue.size());
 
-                    } else if (zTranslationNT[aTagID] < VisionConstants.DISTANCE_RESET_TOLERANCE
-                            && Math.hypot(robotDrive.getOpenLoopSpeeds().vxMetersPerSecond, robotDrive
-                                    .getOpenLoopSpeeds().vyMetersPerSecond) < VisionConstants.SPEED_RESET_TOLERANCE
-                            && robotDrive
-                                    .getOpenLoopSpeeds().omegaRadiansPerSecond < VisionConstants.OMEGA_RESET_TOLERANCE) {
-                        robotDrive.setPose(newRobotPose);
-                    }
+                    } 
+                    // else if (zTranslationNT[aTagID] < VisionConstants.DISTANCE_RESET_TOLERANCE
+                    //         && Math.hypot(robotDrive.getOpenLoopSpeeds().vxMetersPerSecond, robotDrive
+                    //                 .getOpenLoopSpeeds().vyMetersPerSecond) < VisionConstants.SPEED_RESET_TOLERANCE
+                    //         && robotDrive
+                    //                 .getOpenLoopSpeeds().omegaRadiansPerSecond < VisionConstants.OMEGA_RESET_TOLERANCE) {
+                    //     robotDrive.setPose(newRobotPose);
+                    // }
 
                     // if (!blockingQueue.offer(addThread)){
                     // Thread removeThread = blockingQueue.poll();
