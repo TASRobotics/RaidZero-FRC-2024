@@ -18,7 +18,7 @@ import raidzero.robot.submodules.Swerve;
 public class ThreeNote extends AutoSequence {
     private static final Swerve mSwerve = Swerve.getInstance();
 
-    private PathPlannerPath path1 = PathPlannerPath.fromPathFile("first note").flipPath();
+    private PathPlannerPath path1 = PathPlannerPath.fromPathFile("first note")  .flipPath();
     private PathPlannerTrajectory trajectory1;
     private PathPlannerPath path2 = PathPlannerPath.fromPathFile("2nd note");
     private PathPlannerTrajectory trajectory2;
