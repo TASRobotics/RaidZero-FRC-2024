@@ -24,7 +24,7 @@ public class RunIntakeAction implements Action {
     public void start() {
         timer.reset();
         timer.start();
-        mIntake.setPercentSpeed(mSpeed);
+        // mIntake.setPercentSpeed(mSpeed);
         System.out.println("[Auto] Action '" + getClass().getSimpleName() + "' started!");
     }
 
@@ -36,6 +36,6 @@ public class RunIntakeAction implements Action {
     public void done() {
         System.out.println("[Auto] Action '" + getClass().getSimpleName() + "' finished!");
         timer.stop();
-        mIntake.setPercentSpeed(0);
+        // mIntake.setPercentSpeed(0);
     }
 }

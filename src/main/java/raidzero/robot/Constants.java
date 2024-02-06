@@ -298,40 +298,40 @@ public class Constants {
     }
 
     public static final class WristConstants {
-        public static final int kMotorID = 0;
-        public static final int kEncoderID = 0;
+        public static final int kMotorID = 21;
+
+        public static final double kTheoreticalMaxSpeed = 600; // 6000*(1/25)(20/48)/60*360 degrees per second
 
         // Motor Output Constants
-        public static final InvertedValue kInversion = InvertedValue.Clockwise_Positive;
+        public static final InvertedValue kInversion = InvertedValue.CounterClockwise_Positive;
         public static final NeutralModeValue kNeutralMode = NeutralModeValue.Brake;
 
         // Current Limit Constants
         public static final double kSupplyCurrentLimit = 40.0;
         public static final boolean kSupplyCurrentEnable = true;
-        public static final double kSupplyCurrentThreshold = 60.0;
+        public static final double kSupplyCurrentThreshold = 50.0;
         public static final double kSupplyTimeThreshold = 0.2;
 
         // Feedback Constants
-        public static final double kSensorToMechanismRatio = 1.0;
-        public static final FeedbackSensorSourceValue kFeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+        public static final double kSensorToMechanismRatio = 25.0 * (48.0 / 20.0) * 360.0; // rotor rotations to wrist degrees
 
         // Position PID Constants
         public static final int kPositionPIDSlot = 0;
-        public static final double kP = 0.0;
+        public static final double kP = 0.01;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
         public static final double kPIDUpdateHz = 1000;
 
-        public static final double kTolerance = 0.01;
+        public static final double kTolerance = 0.1;
 
         // Motion Magic Constants
-        public static final double kMotionMagicVelocity = 0.0;
-        public static final double kMotionMagicAccel = 0.0;
+        public static final double kMotionMagicVelocity = 300.0;
+        public static final double kMotionMagicAccel = 500.0;
         public static final double kMotionMagicJerk = 0.0;
 
         // Software Limit Switch Constants
         public static final boolean kForwardSoftLimitEnabled = true;
-        public static final double kForwardSoftLimit = 0.0;
+        public static final double kForwardSoftLimit = 400.0;
         public static final boolean kReverseSoftLimitEnabled = true;
         public static final double kReverseSoftLimit = 0.0;
     }

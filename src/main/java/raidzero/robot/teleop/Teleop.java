@@ -1,7 +1,6 @@
 package raidzero.robot.teleop;
 
 import raidzero.robot.Constants.SwerveConstants;
-import raidzero.robot.submodules.Intake;
 import raidzero.robot.submodules.Shooter;
 import raidzero.robot.submodules.Swerve;
 import raidzero.robot.submodules.SwerveModule.PeriodicIO;
