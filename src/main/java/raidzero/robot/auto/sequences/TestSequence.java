@@ -8,7 +8,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import raidzero.robot.auto.actions.DrivePath;
 
 public class TestSequence extends AutoSequence {
-    private PathPlannerPath testPath = PathPlannerPath.fromPathFile("Test Path").flipPath();
+    private PathPlannerPath testPath = PathPlannerPath.fromPathFile("Test Path");
     private PathPlannerTrajectory testTrajectory;
 
     public TestSequence() {

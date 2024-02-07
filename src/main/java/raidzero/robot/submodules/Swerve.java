@@ -65,6 +65,7 @@ public class Swerve extends Submodule {
     private ChassisSpeeds mDesiredPathingSpeeds; 
     private Timer mTimer = new Timer();
     private Pose2d mCurrentPose;
+    private Pose2d mCurrentAutoPose;
 
     private ControlState mControlState = ControlState.OPEN_LOOP;
 
@@ -170,14 +171,24 @@ public class Swerve extends Submodule {
         mRearRightModule.update(timestamp);
 
         mCurrentPose = updateOdometry(timestamp);
+        mCurrentAutoPose = mCurrentPose;
+        if (DriverStation.getAlliance().get() == Alliance.Red){
+            mCurrentAutoPose = new Pose2d(-mCurrentPose.getX(),mCurrentPose.getY(),Rotation2d.fromDegrees(-mCurrentPose.getRotation().getDegrees()));
+        }
+
+        SmartDashboard.putNumber("X pose", mCurrentAutoPose.getX());
+        SmartDashboard.putNumber("Y pose", mCurrentAutoPose.getY());
+        SmartDashboard.putNumber("Theta pose", mCurrentAutoPose.getRotation().getDegrees());
+
+        
         fieldPose.setRobotPose(mCurrentPose);
 
         // This needs to be moved somewhere else.....
         SmartDashboard.putData(fieldPose);
 
-        SmartDashboard.putNumber("X pose", mOdometry.getEstimatedPosition().getX());
-        SmartDashboard.putNumber("Y pose", mOdometry.getEstimatedPosition().getY());
-        SmartDashboard.putNumber("Theta pose", mOdometry.getEstimatedPosition().getRotation().getDegrees());
+        //SmartDashboard.putNumber("X pose", mOdometry.getEstimatedPosition().getX());
+        //SmartDashboard.putNumber("Y pose", mOdometry.getEstimatedPosition().getY());
+        //SmartDashboard.putNumber("Theta pose", mOdometry.getEstimatedPosition().getRotation().getDegrees());
 
         // if(vision.getRobotPose() != null) {
         // setPose(vision.getRobotPose());
@@ -212,7 +223,11 @@ public class Swerve extends Submodule {
         if (DriverStation.getAlliance().get() == Alliance.Blue)
             zeroHeading(0);
         else if (DriverStation.getAlliance().get() == Alliance.Red)
-            zeroHeading(180);
+            //zeroHeading(180);
+            zeroHeading(0);
+
+
+
         // setPose(new Pose2d(new Translation2d(1.76, 1.477), new Rotation2d(Math.toRadians(pigeon.getAngle()))));
 
         // mPigeon.setYaw(0.0);
@@ -392,9 +407,15 @@ public class Swerve extends Submodule {
          mHolonomicController.setEnabled(true); //false, doesnt turn when only ff
          testController.setEnabled(true);
         // PathPlannerPath.fromChoreoTrajectory()
-        ChassisSpeeds desiredSpeeds = mHolonomicController.calculateRobotRelativeSpeeds(mCurrentPose, state);
-        ChassisSpeeds trash = testController.calculateRobotRelativeSpeeds(mCurrentPose, state);
+        ChassisSpeeds desiredSpeeds = mHolonomicController.calculateRobotRelativeSpeeds(mCurrentAutoPose, state);
+        //ChassisSpeeds trash = testController.calculateRobotRelativeSpeeds(mCurrentPose, state);
         //desiredSpeeds.times(-1.0);
+        
+        if(DriverStation.getAlliance().get() == Alliance.Red){
+            desiredSpeeds.vxMetersPerSecond = -desiredSpeeds.vxMetersPerSecond;
+            desiredSpeeds.omegaRadiansPerSecond = -desiredSpeeds.omegaRadiansPerSecond;
+        }
+
         mDesiredPathingSpeeds = desiredSpeeds;
         setClosedLoopSpeeds(mDesiredPathingSpeeds,false); //true
 
@@ -404,8 +425,8 @@ public class Swerve extends Submodule {
         SmartDashboard.putNumber("desired omegaRadiansPerSecond", desiredSpeeds.omegaRadiansPerSecond);
         SmartDashboard.putNumber("desired xmps", desiredSpeeds.vxMetersPerSecond);
         SmartDashboard.putNumber("desired ymps", desiredSpeeds.vyMetersPerSecond);
-        SmartDashboard.putNumber("ff xmps", trash.vxMetersPerSecond);
-        SmartDashboard.putNumber("ff ymps", trash.vyMetersPerSecond);
+        //SmartDashboard.putNumber("ff xmps", trash.vxMetersPerSecond);
+        //SmartDashboard.putNumber("ff ymps", trash.vyMetersPerSecond);
         SmartDashboard.putNumber("trottle dist from ideal", Constants.SwerveConstants.kMetersToThrottleRot*4-mTopRightModule.throttlePosTravelled());
     }
 
