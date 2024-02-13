@@ -1,5 +1,7 @@
 package raidzero.robot.submodules;
 
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.ForwardLimitValue;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
@@ -22,9 +24,13 @@ public class Intake extends Submodule{
     private CANSparkMax mFrontMotor = new CANSparkMax(IntakeConstants.kFrontMotorID, MotorType.kBrushless);
     private CANSparkMax mRearMotor = new CANSparkMax(IntakeConstants.kRearMotorID, MotorType.kBrushless);
 
+    private TalonFX mWristMotor = Wrist.getInstance().getMotor();
+
     public static class PeriodicIO {
         public double desiredFrontPercentSpeed = 0.0;
         public double desiredRearPercentSpeed = 0.0;
+
+        public boolean limitTriggered = false;
     }
 
     private PeriodicIO mPeriodicIO = new PeriodicIO();
@@ -50,6 +56,7 @@ public class Intake extends Submodule{
     @Override
     public void update(double timestamp) {
         // SmartDashboard.putNumber("Intake current draw", mMotor.getOutputCurrent());
+        mPeriodicIO.limitTriggered = mWristMotor.getForwardLimit().refresh().getValue() == ForwardLimitValue.ClosedToGround;
     }
 
     @Override
@@ -86,15 +93,30 @@ public class Intake extends Submodule{
         mPeriodicIO.desiredRearPercentSpeed = rearSpeed;
     }
 
-    public Request intakeRequest(double frontSpeed, double rearSpeed) {
+    public void setPercentSpeed(double frontSpeed, double rearSpeed, boolean stopIfLimitIsTriggered) {
+        if(stopIfLimitIsTriggered && mPeriodicIO.limitTriggered) {
+            setPercentSpeed(0, 0);
+        } else {
+            setPercentSpeed(frontSpeed, rearSpeed);
+        }
+    }
+
+    public boolean ringPresent() {
+        return mPeriodicIO.limitTriggered;
+    }
+
+    public Request intakeRequest(double frontSpeed, double rearSpeed, boolean stopIfLimitIsTriggered, boolean waitUntilSettled) {
         return new Request() {
             @Override
             public void act() {
-                setPercentSpeed(frontSpeed, rearSpeed);
+                setPercentSpeed(frontSpeed, rearSpeed, stopIfLimitIsTriggered);
             }
 
             @Override
             public boolean isFinished() {
+                if(stopIfLimitIsTriggered && !mPeriodicIO.limitTriggered && waitUntilSettled) {
+                    return false;
+                }
                 return true;
             }
         };

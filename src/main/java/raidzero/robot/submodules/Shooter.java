@@ -32,8 +32,8 @@ public class Shooter extends Submodule {
 
     private Shooter() {}
 
-    private TalonFX mLeftLeader = new TalonFX(ShooterConstants.kLeftLeaderID, Constants.kCANBusName);
-    private TalonFX mRightFollower = new TalonFX(ShooterConstants.kRightFollowerID, Constants.kCANBusName);
+    private TalonFX mLeftLeader = new TalonFX(ShooterConstants.kOuterLeaderID, Constants.kCANBusName);
+    private TalonFX mRightFollower = new TalonFX(ShooterConstants.kInnerFollowerID, Constants.kCANBusName);
 
     private VoltageOut mVoltageOut = new VoltageOut(0.0).withEnableFOC(Constants.kEnableFOC);
     private VelocityVoltage mVelocityVoltage = new VelocityVoltage(0.0)

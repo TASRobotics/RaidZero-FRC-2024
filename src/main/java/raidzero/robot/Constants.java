@@ -4,9 +4,12 @@ import java.nio.file.Path;
 
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.ForwardLimitSourceValue;
+import com.ctre.phoenix6.signals.ForwardLimitTypeValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.ReverseLimitSourceValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.revrobotics.CANSparkBase.IdleMode;
 
@@ -160,17 +163,17 @@ public class Constants {
     }
 
     public static final class IntakeConstants{
-        public static final int kFrontMotorID = 16;
-        public static final int kRearMotorID = 0;
+        public static final int kFrontMotorID = 1;
+        public static final int kRearMotorID = 2;
 
         public static final int kCurrentLimit = 30;
         public static final IdleMode kIdleMode = IdleMode.kBrake;
-        public static final boolean kFrontInversion = false;
+        public static final boolean kFrontInversion = true;
         public static final boolean kRearInversion = false;
     }
 
     public static final class ConveyorConstants {
-        public static final int kMotorID = 0;
+        public static final int kMotorID = 11;
 
         public static final int kCurrentLimit = 30;
         public static final IdleMode kIdleMode = IdleMode.kBrake;
@@ -178,18 +181,17 @@ public class Constants {
     }
 
     public static final class ShooterConstants{
-        public static final int kLeftLeaderID = 0;
-        public static final int kRightFollowerID = 0;
-        public static final int kEncoderID = 0;
+        public static final int kOuterLeaderID = 31;
+        public static final int kInnerFollowerID = 32;
 
         // Motor Output Constants
         public static final InvertedValue kLeaderInversion = InvertedValue.Clockwise_Positive;
-        public static final NeutralModeValue kNeutralMode = NeutralModeValue.Brake;
-        public static final boolean kFollowerOpposeLeaderInversion = true;
+        public static final NeutralModeValue kNeutralMode = NeutralModeValue.Coast;
+        public static final boolean kFollowerOpposeLeaderInversion = false;
         public static final double kFollowerUpdateHz = 1000;
 
         // Current Limit Constants
-        public static final double kSupplyCurrentLimit = 40.0;
+        public static final double kSupplyCurrentLimit = 30.0;
         public static final boolean kSupplyCurrentEnable = true;
         public static final double kSupplyCurrentThreshold = 60.0;
         public static final double kSupplyTimeThreshold = 0.2;
@@ -197,7 +199,7 @@ public class Constants {
         // Feedback Constants
         public static final double kSensorToMechanismRatio = 1.0;
 
-        // Position PID Constants
+        // Velocity PID Constants
         public static final int kVelocityPIDSlot = 0;
         public static final double kV = 0.0;
         public static final double kP = 0.0;
@@ -208,11 +210,11 @@ public class Constants {
     }
 
     public static final class AngleAdjusterConstants {
-        public static final int kMotorID = 0;
+        public static final int kMotorID = 51;
         public static final int kEncoderID = 0;
 
         // Motor Output Constants
-        public static final InvertedValue kInversion = InvertedValue.Clockwise_Positive;
+        public static final InvertedValue kInversion = InvertedValue.CounterClockwise_Positive;
         public static final NeutralModeValue kNeutralMode = NeutralModeValue.Brake;
 
         // Current Limit Constants
@@ -245,9 +247,16 @@ public class Constants {
         public static final boolean kReverseSoftLimitEnabled = true;
         public static final double kReverseSoftLimit = 0.0;
 
+        // Magnet Sensor Constants
+        public static final SensorDirectionValue kSensorDirection = SensorDirectionValue.Clockwise_Positive;
+        public static final double kMagnetOffset = 0.0;
+        public static final AbsoluteSensorRangeValue kAbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
+
+        // Aiming Constants
         public static final InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble> 
             kAimMap = new InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble>(20);
         static {
+            // kAimMap.put(new InterpolatingDouble(ROBOT_DISTANCE_FROM_GOAL), new InterpolatingDouble(DESIRED_ANGLE));
             kAimMap.put(new InterpolatingDouble(0.0), new InterpolatingDouble(0.0));
             // ...
         }
@@ -283,7 +292,7 @@ public class Constants {
         public static final double kD = 0.0;
         public static final double kPIDUpdateHz = 1000;
         
-        public static final double kTolerance = 0.01;
+        public static final double kTolerance = 5.0;
 
         // Motion Magic Constants
         public static final double kMotionMagicVelocity = 0.0;
@@ -295,15 +304,21 @@ public class Constants {
         public static final double kForwardSoftLimit = 0.0;
         public static final boolean kReverseSoftLimitEnabled = true;
         public static final double kReverseSoftLimit = 0.0;
+
+        // Magnet Sensor Constants
+        public static final SensorDirectionValue kSensorDirection = SensorDirectionValue.Clockwise_Positive;
+        public static final double kMagnetOffset = 0.0;
+        public static final AbsoluteSensorRangeValue kAbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
     }
 
     public static final class WristConstants {
         public static final int kMotorID = 21;
 
         public static final double kTheoreticalMaxSpeed = 600; // 6000*(1/25)(20/48)/60*360 degrees per second
+        public static final double kResetAngleDegrees = 128.0;
 
         // Motor Output Constants
-        public static final InvertedValue kInversion = InvertedValue.CounterClockwise_Positive;
+        public static final InvertedValue kInversion = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue kNeutralMode = NeutralModeValue.Brake;
 
         // Current Limit Constants
@@ -322,7 +337,7 @@ public class Constants {
         public static final double kD = 0.0;
         public static final double kPIDUpdateHz = 1000;
 
-        public static final double kTolerance = 0.1;
+        public static final double kTolerance = 5.0;
 
         // Motion Magic Constants
         public static final double kMotionMagicVelocity = 300.0;
@@ -334,11 +349,18 @@ public class Constants {
         public static final double kForwardSoftLimit = 400.0;
         public static final boolean kReverseSoftLimitEnabled = true;
         public static final double kReverseSoftLimit = 0.0;
+
+        // Hardware Limit Switch Constants
+        public static final ForwardLimitSourceValue kForwardLimitSource = ForwardLimitSourceValue.LimitSwitchPin;
+        public static final ForwardLimitTypeValue kForwardLimitType = ForwardLimitTypeValue.NormallyClosed;
+        public static final boolean kForwardLimitEnabled = false;
+        public static final ReverseLimitSourceValue kReverseLimitSource = ReverseLimitSourceValue.Disabled;
+        public static final boolean kReverseLimitEnabled = false;
     }
 
     public static final class ClimbConstants {
-        public static final int kLeftLeaderID = 0;
-        public static final int kRightFollowerID = 0;
+        public static final int kLeftLeaderID = 41;
+        public static final int kRightFollowerID = 42;
 
         // Motor Output Constants
         public static final InvertedValue kLeaderInversion = InvertedValue.Clockwise_Positive;
@@ -382,9 +404,9 @@ public class Constants {
         public static final Rotation2d kArmAmpAngle = Rotation2d.fromDegrees(1.0);
 
         // Wrist
-        public static final Rotation2d kWristStowAngle = Rotation2d.fromDegrees(0.0);
-        public static final Rotation2d kWristIntakingAngle = Rotation2d.fromDegrees(1.0);
-        public static final Rotation2d kWristAmpAngle = Rotation2d.fromDegrees(2.0);
+        public static final Rotation2d kWristStowAngle = Rotation2d.fromDegrees(110.0);
+        public static final Rotation2d kWristIntakingAngle = Rotation2d.fromDegrees(0.0);
+        // public static final Rotation2d kWristAmpAngle = Rotation2d.fromDegrees(2.0);
     }
 
     public static final class VisionConstants {

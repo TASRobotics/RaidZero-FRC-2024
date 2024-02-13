@@ -1,7 +1,9 @@
 package raidzero.robot.submodules;
 
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -56,6 +58,8 @@ public class AngleAdjuster extends Submodule {
 
     @Override
     public void onInit() {
+        mEncoder.getConfigurator().apply(getCANCoderConfig(), Constants.kLongCANTimeoutMs);
+
         mMotor.getConfigurator().apply(getMotorConfig(mEncoder), Constants.kLongCANTimeoutMs);
     }
 
@@ -157,6 +161,19 @@ public class AngleAdjuster extends Submodule {
         softLimitConfigs.withReverseSoftLimitEnable(AngleAdjusterConstants.kReverseSoftLimitEnabled);
         softLimitConfigs.withReverseSoftLimitThreshold(AngleAdjusterConstants.kReverseSoftLimit);
         config.withSoftwareLimitSwitch(softLimitConfigs);
+
+        return config;
+    }
+
+    private CANcoderConfiguration getCANCoderConfig() {
+        CANcoderConfiguration config = new CANcoderConfiguration();
+
+        // Magnet Sensor Configuration
+        MagnetSensorConfigs magnetSensorConfigs = new MagnetSensorConfigs();
+        magnetSensorConfigs.withSensorDirection(AngleAdjusterConstants.kSensorDirection);
+        magnetSensorConfigs.withMagnetOffset(AngleAdjusterConstants.kMagnetOffset);
+        magnetSensorConfigs.withAbsoluteSensorRange(AngleAdjusterConstants.kAbsoluteSensorRange);
+        config.withMagnetSensor(magnetSensorConfigs);
 
         return config;
     }

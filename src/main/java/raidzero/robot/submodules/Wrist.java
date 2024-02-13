@@ -2,6 +2,7 @@ package raidzero.robot.submodules;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.HardwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -58,7 +59,9 @@ public class Wrist extends Submodule {
     }
 
     @Override
-    public void onStart(double timestamp) {}
+    public void onStart(double timestamp) {
+        zero();
+    }
 
     @Override
     public void update(double timestamp) {
@@ -81,7 +84,11 @@ public class Wrist extends Submodule {
 
     @Override
     public void zero() {
-        mMotor.setPosition(0.0);
+        mMotor.setPosition(WristConstants.kResetAngleDegrees);
+    }
+
+    public TalonFX getMotor() {
+        return mMotor;
     }
 
     public void setAngle(Rotation2d angle) {
@@ -155,6 +162,14 @@ public class Wrist extends Submodule {
         softLimitConfigs.withReverseSoftLimitEnable(WristConstants.kReverseSoftLimitEnabled);
         softLimitConfigs.withReverseSoftLimitThreshold(WristConstants.kReverseSoftLimit);
         config.withSoftwareLimitSwitch(softLimitConfigs);
+
+        // Hardware Limit Switch Configuration
+        HardwareLimitSwitchConfigs hardwareLimitConfigs = new HardwareLimitSwitchConfigs();
+        hardwareLimitConfigs.withForwardLimitSource(WristConstants.kForwardLimitSource);
+        hardwareLimitConfigs.withForwardLimitType(WristConstants.kForwardLimitType);
+        hardwareLimitConfigs.withForwardLimitEnable(WristConstants.kForwardLimitEnabled);
+        hardwareLimitConfigs.withReverseLimitSource(WristConstants.kReverseLimitSource);
+        hardwareLimitConfigs.withReverseLimitEnable(WristConstants.kReverseLimitEnabled);
 
         return config;
     }

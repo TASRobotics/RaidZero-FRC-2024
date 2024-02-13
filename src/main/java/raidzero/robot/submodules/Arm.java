@@ -1,7 +1,9 @@
 package raidzero.robot.submodules;
 
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -61,6 +63,8 @@ public class Arm extends Submodule {
 
     @Override
     public void onInit() {
+        mEncoder.getConfigurator().apply(getCANCoderConfig(), Constants.kLongCANTimeoutMs);
+
         mLeftLeader.getConfigurator().apply(getLeaderConfig(mEncoder), Constants.kLongCANTimeoutMs);
         mRightFollower.getConfigurator().apply(getFollowerConfig(), Constants.kLongCANTimeoutMs);
         
@@ -149,8 +153,8 @@ public class Arm extends Submodule {
 
         // Velocity PID Configuration
         Slot0Configs slot0Configs = new Slot0Configs();
-        slot0Configs.withGravityType(ArmConstants.kGravityCompensationType);
-        slot0Configs.withKG(ArmConstants.kG);
+        // slot0Configs.withGravityType(ArmConstants.kGravityCompensationType);
+        // slot0Configs.withKG(ArmConstants.kG);
         slot0Configs.withKP(ArmConstants.kP);
         slot0Configs.withKI(ArmConstants.kI);
         slot0Configs.withKD(ArmConstants.kD);
@@ -189,6 +193,19 @@ public class Arm extends Submodule {
         currentLimitsConfigs.withSupplyCurrentThreshold(ArmConstants.kSupplyCurrentThreshold);
         currentLimitsConfigs.withSupplyTimeThreshold(ArmConstants.kSupplyTimeThreshold);
         config.withCurrentLimits(currentLimitsConfigs);
+
+        return config;
+    }
+
+    private CANcoderConfiguration getCANCoderConfig() {
+        CANcoderConfiguration config = new CANcoderConfiguration();
+
+        // Magnet Sensor Configuration
+        MagnetSensorConfigs magnetSensorConfigs = new MagnetSensorConfigs();
+        magnetSensorConfigs.withSensorDirection(ArmConstants.kSensorDirection);
+        magnetSensorConfigs.withMagnetOffset(ArmConstants.kMagnetOffset);
+        magnetSensorConfigs.withAbsoluteSensorRange(ArmConstants.kAbsoluteSensorRange);
+        config.withMagnetSensor(magnetSensorConfigs);
 
         return config;
     }
