@@ -147,6 +147,7 @@ public class Arm extends Submodule {
         // Feedback Configuration
         FeedbackConfigs feedbackConfigs = new FeedbackConfigs();
         feedbackConfigs.withSensorToMechanismRatio(ArmConstants.kSensorToMechanismRatio);
+        feedbackConfigs.withRotorToSensorRatio(ArmConstants.kRotorToSensorRatio);
         feedbackConfigs.withFeedbackRemoteSensorID(encoder.getDeviceID());
         feedbackConfigs.withFeedbackSensorSource(ArmConstants.kFeedbackSensorSource);
         config.withFeedback(feedbackConfigs);
@@ -155,6 +156,7 @@ public class Arm extends Submodule {
         Slot0Configs slot0Configs = new Slot0Configs();
         // slot0Configs.withGravityType(ArmConstants.kGravityCompensationType);
         // slot0Configs.withKG(ArmConstants.kG);
+        slot0Configs.withKV(ArmConstants.kV);
         slot0Configs.withKP(ArmConstants.kP);
         slot0Configs.withKI(ArmConstants.kI);
         slot0Configs.withKD(ArmConstants.kD);

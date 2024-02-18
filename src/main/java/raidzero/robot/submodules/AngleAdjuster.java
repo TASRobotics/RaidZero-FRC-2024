@@ -136,12 +136,14 @@ public class AngleAdjuster extends Submodule {
         // Feedback Configuration
         FeedbackConfigs feedbackConfigs = new FeedbackConfigs();
         feedbackConfigs.withSensorToMechanismRatio(AngleAdjusterConstants.kSensorToMechanismRatio);
+        feedbackConfigs.withRotorToSensorRatio(AngleAdjusterConstants.kRotorToSensorRatio);
         feedbackConfigs.withFeedbackRemoteSensorID(encoder.getDeviceID());
         feedbackConfigs.withFeedbackSensorSource(AngleAdjusterConstants.kFeedbackSensorSource);
         config.withFeedback(feedbackConfigs);
 
         // Velocity PID Configuration
         Slot0Configs slot0Configs = new Slot0Configs();
+        slot0Configs.withKV(AngleAdjusterConstants.kV);
         slot0Configs.withKP(AngleAdjusterConstants.kP);
         slot0Configs.withKI(AngleAdjusterConstants.kI);
         slot0Configs.withKD(AngleAdjusterConstants.kD);
