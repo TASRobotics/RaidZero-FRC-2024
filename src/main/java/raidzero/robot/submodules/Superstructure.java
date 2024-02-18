@@ -3,13 +3,20 @@ package raidzero.robot.submodules;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import raidzero.robot.Constants.AngleAdjusterConstants;
 import raidzero.robot.Constants.SuperstructureConstants;
+import raidzero.robot.utils.InterpolatingDouble;
 import raidzero.robot.utils.requests.ParallelRequest;
 import raidzero.robot.utils.requests.Request;
 import raidzero.robot.utils.requests.SequentialRequest;
 
 public class Superstructure extends Submodule {
+    public enum SuperstructureState {
+        IDLE, AMP, SHOOT, INTAKE
+    }
+    
     private static Superstructure instance = null;
 
     public static Superstructure getInstance() {
@@ -35,6 +42,8 @@ public class Superstructure extends Submodule {
     private ArrayList<Request> mQueuedRequests = new ArrayList<>(0);
     private boolean mHasNewRequest = false;
     private boolean mAllRequestsComplete = false;
+
+    private SuperstructureState mCurrentState;
 
     @Override
     public void onInit() {}
@@ -99,6 +108,7 @@ public class Superstructure extends Submodule {
             mWrist.wristRequest(SuperstructureConstants.kWristStowAngle, true), 
             mArm.armRequest(SuperstructureConstants.kArmStowAngle, true)
         ));
+        mCurrentState = SuperstructureState.IDLE;
     }
 
     public void groundIntakeState() {
@@ -109,30 +119,41 @@ public class Superstructure extends Submodule {
                 mWrist.wristRequest(SuperstructureConstants.kWristStowAngle, true)
             ));
         }
+        mCurrentState = SuperstructureState.INTAKE;
     }
 
-    public void shootState() {
-        boolean noteLoaded = false;
-        if(noteLoaded) {
+    public void ampState() {
+        request(new SequentialRequest(
+            mArm.armRequest(SuperstructureConstants.kArmAmpAngle, true), 
+            mWrist.wristRequest(SuperstructureConstants.kWristAmpAngle, true)
+        ));
+        mCurrentState = SuperstructureState.AMP;
+    }
+
+    public void scoreState() {
+        if(mCurrentState == SuperstructureState.AMP) {
+            request(
+                mIntake.intakeRequest(-1.0, -1.0, false, false)
+            );
+        } else if(mCurrentState == SuperstructureState.SHOOT) {
             request(new SequentialRequest(
+                mWrist.wristRequest(SuperstructureConstants.kWristIntakingAngle, true), 
                 new ParallelRequest(
-                    mAngleAdjuster.angleAdjusterRequest(null, true), 
-                    mShooter.shooterRequest(0)
-                ), 
-                mConveyor.conveyorRequest(1.0)
-            ));
-        } else {
-            request(new ParallelRequest(
-                new SequentialRequest(
-                    mWrist.wristRequest(SuperstructureConstants.kWristIntakingAngle, true),
-                    mIntake.intakeRequest(1.0, 0.8)
-                ), 
-                new ParallelRequest(
-                    mAngleAdjuster.angleAdjusterRequest(null, true), 
-                    mShooter.shooterRequest(0)
-                ), 
-                mConveyor.conveyorRequest(1.0)
+                    mIntake.intakeRequest(1.0, 1.0, false, false), 
+                    mConveyor.conveyorRequest(1.0)
+                )
             ));
         }
+    }
+
+    public void shooterState() {
+        double robotDistanceToTargetMeters = 0;
+        Rotation2d aimAngle = 
+            Rotation2d.fromDegrees(AngleAdjusterConstants.kAimMap.get(new InterpolatingDouble(robotDistanceToTargetMeters)).value);
+
+        request(new ParallelRequest(
+            mShooter.shooterRequest(SuperstructureConstants.kShootingSpeedRPS, true),
+            mAngleAdjuster.angleAdjusterRequest(aimAngle, true)
+        ));
     }
 }

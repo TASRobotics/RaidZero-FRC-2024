@@ -121,7 +121,7 @@ public class Shooter extends Submodule {
                 && Math.abs(mPeriodicIO.currentVelocity - mPeriodicIO.desiredVelocity) < ShooterConstants.kErrorTolerance;
     }
 
-    public Request shooterRequest(double velocity) {
+    public Request shooterRequest(double velocity, boolean waitUntilSettled) {
         return new Request() {
             @Override
             public void act() {
@@ -130,7 +130,7 @@ public class Shooter extends Submodule {
 
             @Override
             public boolean isFinished() {
-                return isUpToSpeed();
+                return waitUntilSettled ? isUpToSpeed() : true;
             }
         };
     }

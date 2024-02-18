@@ -260,6 +260,8 @@ public class Constants {
             kAimMap.put(new InterpolatingDouble(0.0), new InterpolatingDouble(0.0));
             // ...
         }
+
+        public static final Rotation2d kMaxAngle = new Rotation2d(5);
     }
 
     public static final class ArmConstants {
@@ -400,13 +402,16 @@ public class Constants {
 
     public static final class SuperstructureConstants {
         // Arm
-        public static final Rotation2d kArmStowAngle = Rotation2d.fromDegrees(0.0);
-        public static final Rotation2d kArmAmpAngle = Rotation2d.fromDegrees(1.0);
+        public static final Rotation2d kArmStowAngle = Rotation2d.fromDegrees(-49.0);
+        public static final Rotation2d kArmAmpAngle = Rotation2d.fromDegrees(60.0);
 
         // Wrist
         public static final Rotation2d kWristStowAngle = Rotation2d.fromDegrees(110.0);
         public static final Rotation2d kWristIntakingAngle = Rotation2d.fromDegrees(0.0);
-        // public static final Rotation2d kWristAmpAngle = Rotation2d.fromDegrees(2.0);
+        public static final Rotation2d kWristAmpAngle = Rotation2d.fromDegrees(-20.0);
+
+        // Shooter
+        public static final double kShootingSpeedRPS = 90.0;
     }
 
     public static final class VisionConstants {
