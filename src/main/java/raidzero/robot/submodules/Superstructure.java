@@ -39,7 +39,7 @@ public class Superstructure extends Submodule {
     private static final Conveyor mConveyor = Conveyor.getInstance();
 
     private Request mActiveRequest = null;
-    private ArrayList<Request> mQueuedRequests = new ArrayList<>(0);
+    // private ArrayList<Request> mQueuedRequests = new ArrayList<>(0);
     private boolean mHasNewRequest = false;
     private boolean mAllRequestsComplete = false;
 
@@ -63,15 +63,18 @@ public class Superstructure extends Submodule {
                 mActiveRequest.act();
                 mHasNewRequest = false;
             }
-            if (mActiveRequest == null) {
-                if (mQueuedRequests.isEmpty()) {
-                    mAllRequestsComplete = true;
-                } else {
-                    request(mQueuedRequests.remove(0));
-                }
-            } else if (mActiveRequest.isFinished()) {
+            if(mActiveRequest.isFinished()) {
                 mActiveRequest = null;
             }
+            // if (mActiveRequest == null) {
+            //     if (mQueuedRequests.isEmpty()) {
+            //         mAllRequestsComplete = true;
+            //     } else {
+            //         request(mQueuedRequests.remove(0));
+            //     }
+            // } else if (mActiveRequest.isFinished()) {
+            //     mActiveRequest = null;
+            // }
         }  catch (Exception e) {
             e.printStackTrace();
         }
@@ -86,25 +89,27 @@ public class Superstructure extends Submodule {
     public void zero() {}
 
     public void request(Request request) {
-        mActiveRequest = request;
-        mHasNewRequest = true;
-        mAllRequestsComplete = false;
+        // if(mActiveRequest == null) {
+            mActiveRequest = request;
+            mHasNewRequest = true;
+            mAllRequestsComplete = false;
+        // }
     }
 
     private void clearRequestQueue() {
-        mQueuedRequests.clear();
+        // mQueuedRequests.clear();
     }
 
     private void setRequestQueue(List<Request> requests) {
         clearRequestQueue();
-        for(Request request : requests) {
-            mQueuedRequests.add(request);
-        }
+        // for(Request request : requests) {
+        //     mQueuedRequests.add(request);
+        // }
     }
 
     public void stowState() {
         request(new SequentialRequest(
-            mIntake.intakeRequest(0.0, 0.0, false, false),
+            // mIntake.intakeRequest(0.0, 0.0, false, false),
             mWrist.wristRequest(SuperstructureConstants.kWristStowAngle, true), 
             mArm.armRequest(SuperstructureConstants.kArmStowAngle, true)
         ));

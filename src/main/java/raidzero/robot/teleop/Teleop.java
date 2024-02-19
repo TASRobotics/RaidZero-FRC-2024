@@ -5,6 +5,7 @@ import raidzero.robot.submodules.Conveyor;
 import raidzero.robot.submodules.Intake;
 import raidzero.robot.submodules.Shooter;
 import raidzero.robot.submodules.Swerve;
+import raidzero.robot.submodules.Wrist;
 import raidzero.robot.submodules.SwerveModule.PeriodicIO;
 import raidzero.robot.utils.JoystickUtils;
 
@@ -29,6 +30,7 @@ public class Teleop {
     private static final Shooter mShooter = Shooter.getInstance();
     private static final Intake mIntake = Intake.getInstance();
     private static final Conveyor mConveyor = Conveyor.getInstance();
+    private static final Wrist mWrist = Wrist.getInstance();
 
     public static Teleop getInstance() {
         if (instance == null) {
@@ -50,23 +52,44 @@ public class Teleop {
 
     // Rotation2d snapAngle = null;
 
+    double desiredShooterSpeed = 50; 
+
     private void p1Loop(XboxController p) {
 
         double leftTrigger = p.getLeftTriggerAxis();
         double rightTrigger = p.getRightTriggerAxis();
 
         // mConveyor.setPercentSpeed(leftTrigger);
-        mIntake.setPercentSpeed(leftTrigger, leftTrigger);
+        // mIntake.setPercentSpeed(leftTrigger, leftTrigger);
+        if(p.getLeftBumper()) {
+            mIntake.setPercentSpeed(1.0, 1.0);
+        }
+        if(p.getRightBumper()) {
+            mConveyor.setPercentSpeed(1.0);
+        }
+        if(p.getAButton()) {
+            mShooter.setPercentSpeed(0.5);
+        }
+        if(p.getBButton()) {
+            mShooter.setVelocity(desiredShooterSpeed);
+        }
+        mWrist.setPercentSpeed(leftTrigger - rightTrigger);
 
-        mShooter.setPercentSpeed(rightTrigger);
+        SmartDashboard.putNumber("Wrist angle", mWrist.getAngle().getDegrees());
+        SmartDashboard.putNumber("Current Shooter Speed", mShooter.getVelocity());
+        SmartDashboard.putNumber("Desired Shooter Speed", desiredShooterSpeed);
+
+        // mShooter.setPercentSpeed(rightTrigger);
 
 
-        // mSwerve.teleopDrive(
-        //     JoystickUtils.applyDeadband(p.getLeftY()), 
-        //     JoystickUtils.applyDeadband(p.getLeftX()), 
-        //     JoystickUtils.applyDeadband(p.getRightX()), 
-        //     true
-        // );
+        mSwerve.teleopDrive(
+            JoystickUtils.applyDeadband(p.getLeftY()), 
+            JoystickUtils.applyDeadband(p.getLeftX()), 
+            JoystickUtils.applyDeadband(p.getRightX()), 
+            true, 
+            null, 
+            false
+        );
         // if(p.getBButton()) {
         //     snapAngle = Rotation2d.fromDegrees(0);
         // } else {

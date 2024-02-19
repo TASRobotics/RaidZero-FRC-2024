@@ -54,16 +54,16 @@ public class Constants {
         public static final int kImuID = 0;
 
         /* Red Arm Offsets */
-        public static final double kFrontLeftAzimuthOffset = -0.463379;
-        public static final double kFrontRightAzimuthOffset = -0.565674 + 0.5;
-        public static final double kRearLeftAzimuthOffset = -0.090088;
-        public static final double kRearRightAzimuthOffset = -0.674316 + 0.5;
+        // public static final double kFrontLeftAzimuthOffset = -0.463379;
+        // public static final double kFrontRightAzimuthOffset = -0.565674 + 0.5;
+        // public static final double kRearLeftAzimuthOffset = -0.090088;
+        // public static final double kRearRightAzimuthOffset = -0.674316 + 0.5;
 
         /* Alpha Offsets */
-        // public static final double kFrontLeftAzimuthOffset = 0.192383;
-        // public static final double kFrontRightAzimuthOffset = 0.397949 + 0.5;
-        // public static final double kRearLeftAzimuthOffset = 0.255615;
-        // public static final double kRearRightAzimuthOffset = -0.205811 + 0.5;
+        public static final double kFrontLeftAzimuthOffset = 0.192383;
+        public static final double kFrontRightAzimuthOffset = 0.397949 + 0.5;
+        public static final double kRearLeftAzimuthOffset = 0.255615;
+        public static final double kRearRightAzimuthOffset = -0.205811 + 0.5;
 
         public static final double kThrottleReduction = (14.0 / 50.0) * (28.0 / 16.0) * (15.0 / 45.0);
         public static final double kAzimuthReduction = (14.0 / 50.0) * (10.0 / 60.0);
@@ -364,7 +364,7 @@ public class Constants {
         public static final boolean kForwardSoftLimitEnabled = false;
         public static final double kForwardSoftLimit = 400.0;
         public static final boolean kReverseSoftLimitEnabled = false;
-        public static final double kReverseSoftLimit = 0.0;
+        public static final double kReverseSoftLimit = 128.0 / 360.0; // rotations
 
         // Hardware Limit Switch Constants
         public static final ForwardLimitSourceValue kForwardLimitSource = ForwardLimitSourceValue.LimitSwitchPin;
