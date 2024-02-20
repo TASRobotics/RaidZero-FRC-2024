@@ -32,14 +32,16 @@ public class Shooter extends Submodule {
 
     private Shooter() {}
 
-    private TalonFX mLeftLeader = new TalonFX(ShooterConstants.kOuterLeaderID, Constants.kCANBusName);
-    private TalonFX mRightFollower = new TalonFX(ShooterConstants.kInnerFollowerID, Constants.kCANBusName);
+    private TalonFX mOuterLeader = new TalonFX(ShooterConstants.kOuterLeaderID);
+    private TalonFX mInnerFollower = new TalonFX(ShooterConstants.kInnerFollowerID);
 
     private VoltageOut mVoltageOut = new VoltageOut(0.0).withEnableFOC(Constants.kEnableFOC);
     private VelocityVoltage mVelocityVoltage = new VelocityVoltage(0.0)
         .withEnableFOC(Constants.kEnableFOC)
         .withSlot(ShooterConstants.kVelocityPIDSlot)
         .withUpdateFreqHz(ShooterConstants.kPIDUpdateHz);
+
+    private Follower mFollower = new Follower(mOuterLeader.getDeviceID(), ShooterConstants.kFollowerOpposeLeaderInversion);
 
     public static class PeriodicIO {
         public double desiredVelocity = 0.0;
@@ -53,12 +55,12 @@ public class Shooter extends Submodule {
 
     @Override
     public void onInit() {
-        mLeftLeader.getConfigurator().apply(getLeaderConfig(), Constants.kLongCANTimeoutMs);
-        mRightFollower.getConfigurator().apply(getFollowerConfig(), Constants.kLongCANTimeoutMs);
+        mOuterLeader.getConfigurator().apply(getLeaderConfig(), Constants.kLongCANTimeoutMs);
+        mInnerFollower.getConfigurator().apply(getFollowerConfig(), Constants.kLongCANTimeoutMs);
 
-        Follower follower = new Follower(mLeftLeader.getDeviceID(), ShooterConstants.kFollowerOpposeLeaderInversion);
-        follower.withUpdateFreqHz(ShooterConstants.kFollowerUpdateHz);
-        mRightFollower.setControl(follower);
+        // Follower follower = 
+        mFollower.withUpdateFreqHz(ShooterConstants.kFollowerUpdateHz);
+        mInnerFollower.setControl(mFollower);
     }
 
     @Override
@@ -69,24 +71,26 @@ public class Shooter extends Submodule {
 
     @Override
     public void update(double timestamp) {
-        mPeriodicIO.currentVelocity = mLeftLeader.getVelocity().refresh().getValueAsDouble();
+        mPeriodicIO.currentVelocity = mOuterLeader.getVelocity().refresh().getValueAsDouble();
 
-        SmartDashboard.putNumber("left shooter current velocity", mLeftLeader.getVelocity().getValueAsDouble());
+        SmartDashboard.putNumber("left shooter current velocity", mOuterLeader.getVelocity().getValueAsDouble());
     }
 
     @Override
     public void run() {
         if(mPeriodicIO.controlState == ControlState.FEEDBACK) {
-            mLeftLeader.setControl(mVelocityVoltage.withVelocity(mPeriodicIO.desiredVelocity));
+            mOuterLeader.setControl(mVelocityVoltage.withVelocity(mPeriodicIO.desiredVelocity));
+            mInnerFollower.setControl(mFollower);
         } else if(mPeriodicIO.controlState == ControlState.FEEDFORWARD) {
-            mLeftLeader.setControl(mVoltageOut.withOutput(mPeriodicIO.desiredPercentSpeed * Constants.kMaxMotorVoltage));
+            mOuterLeader.setControl(mVoltageOut.withOutput(mPeriodicIO.desiredPercentSpeed * Constants.kMaxMotorVoltage));
+            mInnerFollower.setControl(mFollower);
         }
     }
 
     @Override
     public void stop() {
-        mLeftLeader.stopMotor();
-        mRightFollower.stopMotor();
+        mOuterLeader.stopMotor();
+        mInnerFollower.stopMotor();
     }
 
     @Override

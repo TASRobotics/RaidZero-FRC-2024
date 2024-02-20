@@ -50,6 +50,8 @@ public class Arm extends Submodule {
         .withSlot(ArmConstants.kPositionPIDSlot)
         .withUpdateFreqHz(ArmConstants.kPIDUpdateHz);
 
+    Follower mFollower = new Follower(mLeftLeader.getDeviceID(), ArmConstants.kFollowerOpposeLeaderInversion);
+
     public static class PeriodicIO {
         public Rotation2d desiredPosition = new Rotation2d();
         public Rotation2d currentPosition = new Rotation2d();
@@ -68,9 +70,9 @@ public class Arm extends Submodule {
         mLeftLeader.getConfigurator().apply(getLeaderConfig(mEncoder), Constants.kLongCANTimeoutMs);
         mRightFollower.getConfigurator().apply(getFollowerConfig(), Constants.kLongCANTimeoutMs);
         
-        Follower follower = new Follower(mLeftLeader.getDeviceID(), ArmConstants.kFollowerOpposeLeaderInversion);
-        follower.withUpdateFreqHz(ArmConstants.kFollowerUpdateHz);
-        mRightFollower.setControl(follower);
+        // Follower follower = new Follower(mLeftLeader.getDeviceID(), ArmConstants.kFollowerOpposeLeaderInversion);
+        // follower.withUpdateFreqHz(ArmConstants.kFollowerUpdateHz);
+        mRightFollower.setControl(mFollower);
     }
 
     @Override
@@ -85,8 +87,10 @@ public class Arm extends Submodule {
     public void run() {
         if(mPeriodicIO.controlState == ControlState.FEEDBACK) {
             mLeftLeader.setControl(mMotionMagicVoltage.withPosition(mPeriodicIO.desiredPosition.getRotations()));
+            mRightFollower.setControl(mFollower);
         } else if(mPeriodicIO.controlState == ControlState.FEEDFORWARD) {
             mLeftLeader.setControl(mVoltageOut.withOutput(mPeriodicIO.desiredPercentSpeed * Constants.kMaxMotorVoltage));
+            mRightFollower.setControl(mFollower);
         }
     }
 

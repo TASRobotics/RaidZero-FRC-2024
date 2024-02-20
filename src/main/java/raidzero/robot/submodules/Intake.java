@@ -5,6 +5,7 @@ import com.ctre.phoenix6.signals.ForwardLimitValue;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import raidzero.robot.Constants;
 import raidzero.robot.Constants.IntakeConstants;
 import raidzero.robot.utils.requests.Request;
@@ -39,13 +40,13 @@ public class Intake extends Submodule{
     public void onInit() {
         mFrontMotor.restoreFactoryDefaults();
         mFrontMotor.enableVoltageCompensation(Constants.kMaxMotorVoltage);
-        mFrontMotor.setSmartCurrentLimit(IntakeConstants.kCurrentLimit);
+        mFrontMotor.setSmartCurrentLimit(IntakeConstants.kFrontCurrentLimit);
         mFrontMotor.setIdleMode(IntakeConstants.kIdleMode);
         mFrontMotor.setInverted(IntakeConstants.kFrontInversion);
 
         mRearMotor.restoreFactoryDefaults();
         mRearMotor.enableVoltageCompensation(Constants.kMaxMotorVoltage);
-        mRearMotor.setSmartCurrentLimit(IntakeConstants.kCurrentLimit);
+        mRearMotor.setSmartCurrentLimit(IntakeConstants.kRearCurrentLimit);
         mRearMotor.setIdleMode(IntakeConstants.kIdleMode);
         mRearMotor.setInverted(IntakeConstants.kRearInversion);
     }
@@ -55,7 +56,7 @@ public class Intake extends Submodule{
 
     @Override
     public void update(double timestamp) {
-        // SmartDashboard.putNumber("Intake current draw", mMotor.getOutputCurrent());
+        SmartDashboard.putNumber("Front Intake Current", mFrontMotor.getOutputCurrent());
         mPeriodicIO.limitTriggered = mWristMotor.getForwardLimit().refresh().getValue() == ForwardLimitValue.ClosedToGround;
     }
 

@@ -31,14 +31,16 @@ public class Climb extends Submodule {
 
     private Climb() {}
 
-    private TalonFX mLeftLeader = new TalonFX(ClimbConstants.kLeftLeaderID, Constants.kCANBusName);
-    private TalonFX mRightFollower = new TalonFX(ClimbConstants.kRightFollowerID, Constants.kCANBusName);
+    private TalonFX mLeftLeader = new TalonFX(ClimbConstants.kLeftLeaderID);
+    private TalonFX mRightFollower = new TalonFX(ClimbConstants.kRightFollowerID);
 
     private VoltageOut mVoltageOut = new VoltageOut(0.0).withEnableFOC(Constants.kEnableFOC);
     private MotionMagicVoltage mMotionMagicVoltage = new MotionMagicVoltage(0.0)
         .withEnableFOC(Constants.kEnableFOC)
         .withSlot(ClimbConstants.kPositionPIDSlot)
         .withUpdateFreqHz(ClimbConstants.kPIDUpdateHz);
+
+    private Follower mFollower = new Follower(mLeftLeader.getDeviceID(), ClimbConstants.kFollowerOpposeLeaderInversion);
 
     public static class PeriodicIO {
         public double desiredPosition = 0.0;
@@ -56,9 +58,9 @@ public class Climb extends Submodule {
         mLeftLeader.getConfigurator().apply(getLeaderConfig(), Constants.kLongCANTimeoutMs);
         mRightFollower.getConfigurator().apply(getFollowerConfig(), Constants.kLongCANTimeoutMs);
 
-        Follower follower = new Follower(mLeftLeader.getDeviceID(), ClimbConstants.kFollowerOpposeLeaderInversion);
-        follower.withUpdateFreqHz(ClimbConstants.kFollowerUpdateHz);
-        mRightFollower.setControl(follower);
+        // Follower follower = new Follower(mLeftLeader.getDeviceID(), ClimbConstants.kFollowerOpposeLeaderInversion);
+        mFollower.withUpdateFreqHz(ClimbConstants.kFollowerUpdateHz);
+        mRightFollower.setControl(mFollower);
     }
 
     @Override
@@ -73,8 +75,10 @@ public class Climb extends Submodule {
     public void run() {
         if(mPeriodicIO.controlState == ControlState.FEEDBACK) {
             mLeftLeader.setControl(mMotionMagicVoltage.withPosition(mPeriodicIO.desiredPosition));
+            mRightFollower.setControl(mFollower);
         } else if(mPeriodicIO.controlState == ControlState.FEEDFORWARD) {
             mLeftLeader.setControl(mVoltageOut.withOutput(mPeriodicIO.desiredPercentSpeed * Constants.kMaxMotorVoltage));
+            mRightFollower.setControl(mFollower);
         }
     }
 

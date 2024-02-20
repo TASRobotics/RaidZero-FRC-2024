@@ -60,10 +60,16 @@ public class Constants {
         // public static final double kRearRightAzimuthOffset = -0.674316 + 0.5;
 
         /* Alpha Offsets */
-        public static final double kFrontLeftAzimuthOffset = 0.192383;
-        public static final double kFrontRightAzimuthOffset = 0.397949 + 0.5;
-        public static final double kRearLeftAzimuthOffset = 0.255615;
-        public static final double kRearRightAzimuthOffset = -0.205811 + 0.5;
+        // public static final double kFrontLeftAzimuthOffset = 0.192383;
+        // public static final double kFrontRightAzimuthOffset = 0.397949 + 0.5;
+        // public static final double kRearLeftAzimuthOffset = 0.255615;
+        // public static final double kRearRightAzimuthOffset = -0.205811 + 0.5;
+
+        /* Sheesh Offsets */
+        public static final double kFrontLeftAzimuthOffset = 0.160645;
+        public static final double kFrontRightAzimuthOffset = 0.473145;
+        public static final double kRearLeftAzimuthOffset = 0.118652;
+        public static final double kRearRightAzimuthOffset = 0.038574;
 
         public static final double kThrottleReduction = (14.0 / 50.0) * (28.0 / 16.0) * (15.0 / 45.0);
         public static final double kAzimuthReduction = (14.0 / 50.0) * (10.0 / 60.0);
@@ -166,7 +172,8 @@ public class Constants {
         public static final int kFrontMotorID = 1;
         public static final int kRearMotorID = 2;
 
-        public static final int kCurrentLimit = 40;
+        public static final int kFrontCurrentLimit = 20;
+        public static final int kRearCurrentLimit = 40;
         public static final IdleMode kIdleMode = IdleMode.kBrake;
         public static final boolean kFrontInversion = true;
         public static final boolean kRearInversion = false;
@@ -194,7 +201,7 @@ public class Constants {
 
         // Current Limit Constants
         public static final double kSupplyCurrentLimit = 30.0;
-        public static final boolean kSupplyCurrentEnable = true;
+        public static final boolean kSupplyCurrentEnable = false;
         public static final double kSupplyCurrentThreshold = 60.0;
         public static final double kSupplyTimeThreshold = 0.2;
 
@@ -204,7 +211,7 @@ public class Constants {
         // Velocity PID Constants
         public static final int kVelocityPIDSlot = 0;
         public static final double kV = 0.12; // voltage/rps
-        public static final double kP = 0.0;
+        public static final double kP = 0.75;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
         public static final double kPIDUpdateHz = 1000;
@@ -213,7 +220,7 @@ public class Constants {
 
     public static final class AngleAdjusterConstants {
         public static final int kMotorID = 51;
-        public static final int kEncoderID = 0; // TODO
+        public static final int kEncoderID = 21; 
 
         // Motor Output Constants
         public static final InvertedValue kInversion = InvertedValue.CounterClockwise_Positive;
@@ -272,9 +279,9 @@ public class Constants {
     }
 
     public static final class ArmConstants {
-        public static final int kLeftLeaderID = 0;
-        public static final int kRightFollowerID = 0;
-        public static final int kEncoderID = 0;
+        public static final int kLeftLeaderID = 11;
+        public static final int kRightFollowerID = 12;
+        public static final int kEncoderID = 11;
 
         // Motor Output Constants
         public static final InvertedValue kLeaderInversion = InvertedValue.Clockwise_Positive;
@@ -290,37 +297,37 @@ public class Constants {
 
         // Feedback Constants
         public static final double kSensorToMechanismRatio = 1.0;
-        public static final double kRotorToSensorRatio = (125.0 / 1.0) * (62.0 / 44.0); // TODO
+        public static final double kRotorToSensorRatio = (125.0 / 1.0) * (62.0 / 44.0) * (42.0 / 39.0); // TODO
         public static final FeedbackSensorSourceValue kFeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
 
         // Position PID Constants
         public static final int kPositionPIDSlot = 0;
         // public static final GravityTypeValue kGravityCompensationType = GravityTypeValue.Arm_Cosine;
         // public static final double kG = 0.0;
-        public static final double kV = 0.12;
-        public static final double kP = 0.0;
+        public static final double kV = 12.0 / (6000.0 / kRotorToSensorRatio / 60.0);
+        public static final double kP = 70.0;
         public static final double kI = 0.0;
-        public static final double kD = 0.0;
+        public static final double kD = 10.0;
         public static final double kPIDUpdateHz = 1000;
         
         public static final double kTolerance = 2.0 / 360.0; // rotations
 
         // Motion Magic Constants
         public static final double kTheoreticalMaxSpeedRPS = 6000.0 / kRotorToSensorRatio / 60.0;
-        public static final double kMotionMagicVelocity = kTheoreticalMaxSpeedRPS * 0.95;
-        public static final double kMotionMagicAccel = kTheoreticalMaxSpeedRPS * 1.5;
-        public static final double kMotionMagicJerk = kTheoreticalMaxSpeedRPS * 3.0;
+        public static final double kMotionMagicVelocity = kTheoreticalMaxSpeedRPS * 1.0;
+        public static final double kMotionMagicAccel = kTheoreticalMaxSpeedRPS * 3.0;
+        public static final double kMotionMagicJerk = kTheoreticalMaxSpeedRPS * 40.0;
 
         // Software Limit Switch Constants
         // TODO
-        public static final boolean kForwardSoftLimitEnabled = false;
+        public static final boolean kForwardSoftLimitEnabled = true;
         public static final double kForwardSoftLimit = 90.0 / 360.0; // rotations
-        public static final boolean kReverseSoftLimitEnabled = false;
-        public static final double kReverseSoftLimit = -49.0 / 360.0; // rotations
+        public static final boolean kReverseSoftLimitEnabled = true;
+        public static final double kReverseSoftLimit = -40.0 / 360.0; // rotations
 
         // Magnet Sensor Constants
-        public static final SensorDirectionValue kSensorDirection = SensorDirectionValue.Clockwise_Positive;
-        public static final double kMagnetOffset = 0.0;
+        public static final SensorDirectionValue kSensorDirection = SensorDirectionValue.CounterClockwise_Positive;
+        public static final double kMagnetOffset = 0.195313;
         public static final AbsoluteSensorRangeValue kAbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
     }
 
@@ -346,7 +353,7 @@ public class Constants {
         // Position PID Constants
         public static final int kPositionPIDSlot = 0;
         public static final double kV = 12.0 / (6000.0 / kSensorToMechanismRatio / 60.0); // 12.0 V / max speed rps
-        public static final double kP = 0.01;
+        public static final double kP = 80.0;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
         public static final double kPIDUpdateHz = 1000;
@@ -357,8 +364,8 @@ public class Constants {
         public static final double kTheoreticalMaxSpeedRPS = 6000.0 / kSensorToMechanismRatio / 60.0 * 10;
         // public static final double kTheoreticalMaxSpeedRPS = 100.0;
         public static final double kMotionMagicVelocity = kTheoreticalMaxSpeedRPS * 0.5;
-        public static final double kMotionMagicAccel = kTheoreticalMaxSpeedRPS * 1.0;
-        public static final double kMotionMagicJerk = kTheoreticalMaxSpeedRPS * 2.0;
+        public static final double kMotionMagicAccel = kTheoreticalMaxSpeedRPS * 2.0;
+        public static final double kMotionMagicJerk = kTheoreticalMaxSpeedRPS * 10.0;
 
         // Software Limit Switch Constants
         // TODO
@@ -418,7 +425,7 @@ public class Constants {
 
     public static final class SuperstructureConstants {
         // Arm
-        public static final Rotation2d kArmStowAngle = Rotation2d.fromDegrees(-49.0);
+        public static final Rotation2d kArmStowAngle = Rotation2d.fromDegrees(-39.0);
         public static final Rotation2d kArmAmpAngle = Rotation2d.fromDegrees(60.0);
 
         // Wrist

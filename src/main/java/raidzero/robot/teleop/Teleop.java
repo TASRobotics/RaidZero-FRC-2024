@@ -2,6 +2,9 @@ package raidzero.robot.teleop;
 
 import raidzero.robot.Constants.SuperstructureConstants;
 import raidzero.robot.Constants.SwerveConstants;
+import raidzero.robot.submodules.AngleAdjuster;
+import raidzero.robot.submodules.Arm;
+import raidzero.robot.submodules.Climb;
 import raidzero.robot.submodules.Conveyor;
 import raidzero.robot.submodules.Intake;
 import raidzero.robot.submodules.Shooter;
@@ -14,6 +17,7 @@ import java.util.Optional;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.units.Angle;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -32,6 +36,9 @@ public class Teleop {
     private static final Intake mIntake = Intake.getInstance();
     private static final Conveyor mConveyor = Conveyor.getInstance();
     private static final Wrist mWrist = Wrist.getInstance();
+    private static final AngleAdjuster mAngleAdjuster = AngleAdjuster.getInstance();
+    private static final Climb mClimb = Climb.getInstance();
+    private static final Arm mArm = Arm.getInstance();
 
     public static Teleop getInstance() {
         if (instance == null) {
@@ -63,10 +70,13 @@ public class Teleop {
         // mConveyor.setPercentSpeed(leftTrigger);
         // mIntake.setPercentSpeed(leftTrigger, leftTrigger);
         if(p.getLeftBumper()) {
-            mIntake.setPercentSpeed(1.0, 0.0);
-        } else if(p.getYButton()) {
-            mIntake.setPercentSpeed(0.0, 1.0);
-        } else {
+            mIntake.setPercentSpeed(1.0, 1.0);
+        } else if(p.getBButton()) {
+            // mIntake.setPercentSpeed(-1.0, 0.0);
+            // mIntake.setPercentSpeed(leftTrigger, rightTrigger);
+        }
+        
+        else {
             mIntake.setPercentSpeed(0, 0);
         }
 
@@ -76,25 +86,57 @@ public class Teleop {
             mConveyor.setPercentSpeed(0);
         }
 
-        if(p.getAButton()) {
-            mShooter.setPercentSpeed(0.5);
-        } else if(p.getBButton()) {
+        // if(p.getAButton()) {
+        //     mShooter.setPercentSpeed(0.5);
+        // } else if(p.getBButton()) {
+        //     mShooter.setVelocity(desiredShooterSpeed);
+        // } else {
+        //     mShooter.setPercentSpeed(0);
+        // }
+
+        // if(p.getYButton()) {
+        //     // mAngleAdjuster.setPercentSpeed(0.2);
+        //     // mClimb.setPercentSpeed(0.5);
+        //     mArm.setPercentSpeed(0.05);
+        // } else if(p.getXButton()) {
+        //     // mAngleAdjuster.setPercentSpeed(-0.2);
+        //     // mClimb.setPercentSpeed(-0.5);
+        //     mArm.setPercentSpeed(-0.05);
+        // } else {
+        //     // mAngleAdjuster.setPercentSpeed(0.0);
+        //     // mClimb.setPercentSpeed(0.0);
+        //     mArm.setPercentSpeed(0.0);
+        // }
+
+        // mArm.setPercentSpeed((leftTrigger - rightTrigger) * 0.5);
+
+        if(p.getYButton()) {
+            // mArm.setAngle(SuperstructureConstants.kArmAmpAngle);
             mShooter.setVelocity(desiredShooterSpeed);
+        } else if(p.getBButton()) {
+            // mArm.setAngle(SuperstructureConstants.kArmStowAngle);
         } else {
-            mShooter.setPercentSpeed(0);
+            // mArm.setPercentSpeed(0);
+            mShooter.setPercentSpeed(0.0);
         }
+
+
+
+
         if(p.getXButton()) {
             mWrist.setAngle(SuperstructureConstants.kWristStowAngle);
         } else if(p.getAButton()) {
             mWrist.setAngle(SuperstructureConstants.kWristIntakingAngle);
         } else {
-            mWrist.setPercentSpeed(leftTrigger - rightTrigger);
+            // mWrist.setPercentSpeed(leftTrigger - rightTrigger);
+            mWrist.setPercentSpeed(0);
         }
         
 
         SmartDashboard.putNumber("Wrist angle", mWrist.getAngle().getDegrees());
         SmartDashboard.putNumber("Current Shooter Speed", mShooter.getVelocity());
         SmartDashboard.putNumber("Desired Shooter Speed", desiredShooterSpeed);
+        SmartDashboard.putNumber("Arm Angle", mArm.getAngle().getDegrees());
 
         // mShooter.setPercentSpeed(rightTrigger);
 
