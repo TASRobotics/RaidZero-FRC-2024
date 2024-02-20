@@ -354,16 +354,17 @@ public class Constants {
         public static final double kTolerance = 2.0 / 360.0; // rotations
 
         // Motion Magic Constants
-        public static final double kTheoreticalMaxSpeedRPS = 6000.0 / kSensorToMechanismRatio / 60.0;
-        public static final double kMotionMagicVelocity = kTheoreticalMaxSpeedRPS * 0.9;
-        public static final double kMotionMagicAccel = kTheoreticalMaxSpeedRPS * 1.5;
-        public static final double kMotionMagicJerk = kTheoreticalMaxSpeedRPS * 3.0;
+        public static final double kTheoreticalMaxSpeedRPS = 6000.0 / kSensorToMechanismRatio / 60.0 * 10;
+        // public static final double kTheoreticalMaxSpeedRPS = 100.0;
+        public static final double kMotionMagicVelocity = kTheoreticalMaxSpeedRPS * 0.5;
+        public static final double kMotionMagicAccel = kTheoreticalMaxSpeedRPS * 1.0;
+        public static final double kMotionMagicJerk = kTheoreticalMaxSpeedRPS * 2.0;
 
         // Software Limit Switch Constants
         // TODO
-        public static final boolean kForwardSoftLimitEnabled = false;
-        public static final double kForwardSoftLimit = 180.0 / 360.0; // rotations
-        public static final boolean kReverseSoftLimitEnabled = false;
+        public static final boolean kForwardSoftLimitEnabled = true;
+        public static final double kForwardSoftLimit = 200.0 / 360.0; // rotations
+        public static final boolean kReverseSoftLimitEnabled = true;
         public static final double kReverseSoftLimit = 0.0; // rotations
 
         // Hardware Limit Switch Constants

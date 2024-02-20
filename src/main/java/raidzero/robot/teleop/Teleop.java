@@ -1,5 +1,6 @@
 package raidzero.robot.teleop;
 
+import raidzero.robot.Constants.SuperstructureConstants;
 import raidzero.robot.Constants.SwerveConstants;
 import raidzero.robot.submodules.Conveyor;
 import raidzero.robot.submodules.Intake;
@@ -82,8 +83,14 @@ public class Teleop {
         } else {
             mShooter.setPercentSpeed(0);
         }
+        if(p.getXButton()) {
+            mWrist.setAngle(SuperstructureConstants.kWristStowAngle);
+        } else if(p.getAButton()) {
+            mWrist.setAngle(SuperstructureConstants.kWristIntakingAngle);
+        } else {
+            mWrist.setPercentSpeed(leftTrigger - rightTrigger);
+        }
         
-        mWrist.setPercentSpeed(leftTrigger - rightTrigger);
 
         SmartDashboard.putNumber("Wrist angle", mWrist.getAngle().getDegrees());
         SmartDashboard.putNumber("Current Shooter Speed", mShooter.getVelocity());
