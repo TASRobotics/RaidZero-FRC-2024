@@ -144,7 +144,7 @@ public class Wrist extends Submodule {
 
         // Velocity PID Configuration
         Slot0Configs slot0Configs = new Slot0Configs();
-        slot0Configs.withKV(WristConstants.kV);
+        // slot0Configs.withKV(WristConstants.kV);
         slot0Configs.withKP(WristConstants.kP);
         slot0Configs.withKI(WristConstants.kI);
         slot0Configs.withKD(WristConstants.kD);

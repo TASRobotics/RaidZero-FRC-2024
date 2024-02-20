@@ -109,22 +109,28 @@ public class Superstructure extends Submodule {
 
     public void stowState() {
         request(new SequentialRequest(
-            // mIntake.intakeRequest(0.0, 0.0, false, false),
+            mIntake.intakeRequest(0.0, 0.0, false, false),
             mWrist.wristRequest(SuperstructureConstants.kWristStowAngle, true), 
             mArm.armRequest(SuperstructureConstants.kArmStowAngle, true)
         ));
         mCurrentState = SuperstructureState.IDLE;
     }
 
+    // public void groundIntakeState() {
+    //     if(!mIntake.ringPresent()) {
+    //         request(new SequentialRequest(
+    //             mWrist.wristRequest(SuperstructureConstants.kWristIntakingAngle, false),
+    //             mIntake.intakeRequest(1.0, 0.5, true, true), 
+    //             mWrist.wristRequest(SuperstructureConstants.kWristStowAngle, true)
+    //         ));
+    //     }
+    //     mCurrentState = SuperstructureState.INTAKE;
+    // }
     public void groundIntakeState() {
-        if(!mIntake.ringPresent()) {
-            request(new SequentialRequest(
-                mWrist.wristRequest(SuperstructureConstants.kWristIntakingAngle, false),
-                mIntake.intakeRequest(1.0, 0.5, true, true), 
-                mWrist.wristRequest(SuperstructureConstants.kWristStowAngle, true)
-            ));
-        }
-        mCurrentState = SuperstructureState.INTAKE;
+        request(new SequentialRequest(
+            mWrist.wristRequest(SuperstructureConstants.kWristIntakingAngle, true), 
+            mIntake.intakeRequest(1.0, 0.0, false, false)
+        ));
     }
 
     public void ampState() {
