@@ -62,17 +62,27 @@ public class Teleop {
         // mConveyor.setPercentSpeed(leftTrigger);
         // mIntake.setPercentSpeed(leftTrigger, leftTrigger);
         if(p.getLeftBumper()) {
-            mIntake.setPercentSpeed(1.0, 1.0);
+            mIntake.setPercentSpeed(1.0, 0.0);
+        } else if(p.getYButton()) {
+            mIntake.setPercentSpeed(0.0, 1.0);
+        } else {
+            mIntake.setPercentSpeed(0, 0);
         }
+
         if(p.getRightBumper()) {
             mConveyor.setPercentSpeed(1.0);
+        } else {
+            mConveyor.setPercentSpeed(0);
         }
+
         if(p.getAButton()) {
             mShooter.setPercentSpeed(0.5);
-        }
-        if(p.getBButton()) {
+        } else if(p.getBButton()) {
             mShooter.setVelocity(desiredShooterSpeed);
+        } else {
+            mShooter.setPercentSpeed(0);
         }
+        
         mWrist.setPercentSpeed(leftTrigger - rightTrigger);
 
         SmartDashboard.putNumber("Wrist angle", mWrist.getAngle().getDegrees());

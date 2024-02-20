@@ -166,7 +166,7 @@ public class Constants {
         public static final int kFrontMotorID = 1;
         public static final int kRearMotorID = 2;
 
-        public static final int kCurrentLimit = 30;
+        public static final int kCurrentLimit = 40;
         public static final IdleMode kIdleMode = IdleMode.kBrake;
         public static final boolean kFrontInversion = true;
         public static final boolean kRearInversion = false;
