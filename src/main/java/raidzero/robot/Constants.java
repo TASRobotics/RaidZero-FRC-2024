@@ -328,7 +328,7 @@ public class Constants {
         public static final int kMotorID = 21;
 
         // public static final double kTheoreticalMaxSpeed = 600; // 6000*(1/25)(20/48)/60*360 degrees per second
-        public static final double kResetAngleRotations = 128.0 / 360.0; 
+        // public static final double kResetAngleRotations = 128.0 / 360.0; 
 
         // Motor Output Constants
         public static final InvertedValue kInversion = InvertedValue.Clockwise_Positive;
@@ -362,9 +362,9 @@ public class Constants {
         // Software Limit Switch Constants
         // TODO
         public static final boolean kForwardSoftLimitEnabled = false;
-        public static final double kForwardSoftLimit = 400.0;
+        public static final double kForwardSoftLimit = 180.0 / 360.0; // rotations
         public static final boolean kReverseSoftLimitEnabled = false;
-        public static final double kReverseSoftLimit = 128.0 / 360.0; // rotations
+        public static final double kReverseSoftLimit = 0.0; // rotations
 
         // Hardware Limit Switch Constants
         public static final ForwardLimitSourceValue kForwardLimitSource = ForwardLimitSourceValue.LimitSwitchPin;
@@ -421,9 +421,9 @@ public class Constants {
         public static final Rotation2d kArmAmpAngle = Rotation2d.fromDegrees(60.0);
 
         // Wrist
-        public static final Rotation2d kWristStowAngle = Rotation2d.fromDegrees(110.0);
-        public static final Rotation2d kWristIntakingAngle = Rotation2d.fromDegrees(0.0);
-        public static final Rotation2d kWristAmpAngle = Rotation2d.fromDegrees(-20.0);
+        public static final Rotation2d kWristStowAngle = Rotation2d.fromDegrees(10.0);
+        public static final Rotation2d kWristIntakingAngle = Rotation2d.fromDegrees(120.0);
+        public static final Rotation2d kWristAmpAngle = Rotation2d.fromDegrees(140.0);
 
         // Shooter
         public static final double kShootingSpeedRPS = 90.0;

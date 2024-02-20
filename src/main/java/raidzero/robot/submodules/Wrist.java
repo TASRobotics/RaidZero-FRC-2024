@@ -84,7 +84,8 @@ public class Wrist extends Submodule {
 
     @Override
     public void zero() {
-        mMotor.setPosition(WristConstants.kResetAngleRotations);
+        // mMotor.setPosition(WristConstants.kResetAngleRotations);
+        mMotor.setPosition(0.0);
     }
 
     public TalonFX getMotor() {
