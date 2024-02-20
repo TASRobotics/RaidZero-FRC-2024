@@ -18,6 +18,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -172,9 +173,9 @@ public class Swerve extends Submodule {
 
         mCurrentPose = updateOdometry(timestamp);
         mCurrentAutoPose = mCurrentPose;
-        if (DriverStation.getAlliance().get() == Alliance.Red){
-            mCurrentAutoPose = new Pose2d(-mCurrentPose.getX(),mCurrentPose.getY(),Rotation2d.fromDegrees(-mCurrentPose.getRotation().getDegrees()));
-        }
+        //if (DriverStation.getAlliance().get() == Alliance.Red){
+        //    mCurrentAutoPose = new Pose2d(-mCurrentPose.getX(),mCurrentPose.getY(),Rotation2d.fromDegrees(-mCurrentPose.getRotation().getDegrees()));
+        //}
 
         SmartDashboard.putNumber("X pose", mCurrentAutoPose.getX());
         SmartDashboard.putNumber("Y pose", mCurrentAutoPose.getY());
@@ -404,6 +405,14 @@ public class Swerve extends Submodule {
     private void updatePathing() {
         PathPlannerTrajectory.State state = (PathPlannerTrajectory.State) mCurrentTrajectory.sample(mTimer.get());
 
+        if(DriverStation.getAlliance().get() == Alliance.Red){
+            state.headingAngularVelocityRps*=-1;
+            state.positionMeters = new Translation2d(-state.positionMeters.getX(),state.positionMeters.getY());
+            state.heading = new Rotation2d(-state.heading.getRadians());
+            state.targetHolonomicRotation = new Rotation2d(-state.targetHolonomicRotation.getRadians());
+        }
+        SmartDashboard.putNumber("state vel", state.velocityMps);
+
          mHolonomicController.setEnabled(true); //false, doesnt turn when only ff
          testController.setEnabled(true);
         // PathPlannerPath.fromChoreoTrajectory()
@@ -411,23 +420,23 @@ public class Swerve extends Submodule {
         //ChassisSpeeds trash = testController.calculateRobotRelativeSpeeds(mCurrentPose, state);
         //desiredSpeeds.times(-1.0);
         
-        if(DriverStation.getAlliance().get() == Alliance.Red){
-            desiredSpeeds.vxMetersPerSecond = -desiredSpeeds.vxMetersPerSecond;
-            desiredSpeeds.omegaRadiansPerSecond = -desiredSpeeds.omegaRadiansPerSecond;
-        }
+        //if(DriverStation.getAlliance().get() == Alliance.Red){
+        //    desiredSpeeds.vxMetersPerSecond = -desiredSpeeds.vxMetersPerSecond;
+        //    desiredSpeeds.omegaRadiansPerSecond = -desiredSpeeds.omegaRadiansPerSecond;
+        //}
 
         mDesiredPathingSpeeds = desiredSpeeds;
         setClosedLoopSpeeds(mDesiredPathingSpeeds,false); //true
 
-        // setOpenLoopSpeeds(desiredSpeeds);
-        SmartDashboard.putNumber("desired heading", state.targetHolonomicRotation.getDegrees());
-        if(state.holonomicAngularVelocityRps.isPresent())SmartDashboard.putNumber("desired holonomicAngularVelocityRps", state.holonomicAngularVelocityRps.get());
-        SmartDashboard.putNumber("desired omegaRadiansPerSecond", desiredSpeeds.omegaRadiansPerSecond);
-        SmartDashboard.putNumber("desired xmps", desiredSpeeds.vxMetersPerSecond);
-        SmartDashboard.putNumber("desired ymps", desiredSpeeds.vyMetersPerSecond);
-        //SmartDashboard.putNumber("ff xmps", trash.vxMetersPerSecond);
-        //SmartDashboard.putNumber("ff ymps", trash.vyMetersPerSecond);
-        SmartDashboard.putNumber("trottle dist from ideal", Constants.SwerveConstants.kMetersToThrottleRot*4-mTopRightModule.throttlePosTravelled());
+//// setOpenLoopSpeeds(desiredSpeeds);
+//SmartDashboard.putNumber("desired heading", state.targetHolonomicRotation.getDegrees());
+//if(state.holonomicAngularVelocityRps.isPresent())SmartDashboard.putNumber("desired holonomicAngularVelocityRps", state.holonomicAngularVelocityRps.get());
+//SmartDashboard.putNumber("desired omegaRadiansPerSecond", desiredSpeeds.omegaRadiansPerSecond);
+SmartDashboard.putNumber("desired xmps", desiredSpeeds.vxMetersPerSecond);
+SmartDashboard.putNumber("desired ymps", desiredSpeeds.vyMetersPerSecond);
+////SmartDashboard.putNumber("ff xmps", trash.vxMetersPerSecond);
+////SmartDashboard.putNumber("ff ymps", trash.vyMetersPerSecond);
+//SmartDashboard.putNumber("trottle dist from ideal", Constants.SwerveConstants.kMetersToThrottleRot*4-mTopRightModule.throttlePosTravelled());
     }
 
 
