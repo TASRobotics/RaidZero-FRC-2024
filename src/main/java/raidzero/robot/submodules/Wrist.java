@@ -34,7 +34,7 @@ public class Wrist extends Submodule {
 
     private Wrist() {}
 
-    private TalonFX mMotor = new TalonFX(WristConstants.kMotorID, Constants.kCANBusName);
+    private TalonFX mMotor = new TalonFX(WristConstants.kMotorID);
 
     private VoltageOut mVoltageOut = new VoltageOut(0.0).withEnableFOC(Constants.kEnableFOC);
     private MotionMagicVoltage mMotionMagicVoltage = new MotionMagicVoltage(0.0)
@@ -56,11 +56,12 @@ public class Wrist extends Submodule {
     @Override
     public void onInit() {
         mMotor.getConfigurator().apply(getConfig(), Constants.kLongCANTimeoutMs);
+        zero();
     }
 
     @Override
     public void onStart(double timestamp) {
-        zero();
+        // zero();
     }
 
     @Override
