@@ -151,10 +151,10 @@ public class Shooter extends Submodule {
 
         // Current Limit Configuration
         CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
-        currentLimitsConfigs.withSupplyCurrentLimit(ShooterConstants.kSupplyCurrentLimit);
-        currentLimitsConfigs.withSupplyCurrentLimitEnable(ShooterConstants.kSupplyCurrentEnable);
-        currentLimitsConfigs.withSupplyCurrentThreshold(ShooterConstants.kSupplyCurrentThreshold);
-        currentLimitsConfigs.withSupplyTimeThreshold(ShooterConstants.kSupplyTimeThreshold);
+        // currentLimitsConfigs.withSupplyCurrentLimit(ShooterConstants.kSupplyCurrentLimit);
+        // currentLimitsConfigs.withSupplyCurrentLimitEnable(ShooterConstants.kSupplyCurrentEnable);
+        // currentLimitsConfigs.withSupplyCurrentThreshold(ShooterConstants.kSupplyCurrentThreshold);
+        // currentLimitsConfigs.withSupplyTimeThreshold(ShooterConstants.kSupplyTimeThreshold);
         config.withCurrentLimits(currentLimitsConfigs);
         
         // Feedback Configuration
@@ -183,10 +183,10 @@ public class Shooter extends Submodule {
 
         // Current Limit Configuration
         CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
-        currentLimitsConfigs.withSupplyCurrentLimit(ShooterConstants.kSupplyCurrentLimit);
-        currentLimitsConfigs.withSupplyCurrentLimitEnable(ShooterConstants.kSupplyCurrentEnable);
-        currentLimitsConfigs.withSupplyCurrentThreshold(ShooterConstants.kSupplyCurrentThreshold);
-        currentLimitsConfigs.withSupplyTimeThreshold(ShooterConstants.kSupplyTimeThreshold);
+        // currentLimitsConfigs.withSupplyCurrentLimit(ShooterConstants.kSupplyCurrentLimit);
+        // currentLimitsConfigs.withSupplyCurrentLimitEnable(ShooterConstants.kSupplyCurrentEnable);
+        // currentLimitsConfigs.withSupplyCurrentThreshold(ShooterConstants.kSupplyCurrentThreshold);
+        // currentLimitsConfigs.withSupplyTimeThreshold(ShooterConstants.kSupplyTimeThreshold);
         config.withCurrentLimits(currentLimitsConfigs);
 
         return config;

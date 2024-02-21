@@ -200,10 +200,10 @@ public class Constants {
         public static final double kFollowerUpdateHz = 1000;
 
         // Current Limit Constants
-        public static final double kSupplyCurrentLimit = 30.0;
-        public static final boolean kSupplyCurrentEnable = false;
-        public static final double kSupplyCurrentThreshold = 60.0;
-        public static final double kSupplyTimeThreshold = 0.2;
+        // public static final double kSupplyCurrentLimit = 30.0;
+        // public static final boolean kSupplyCurrentEnable = false;
+        // public static final double kSupplyCurrentThreshold = 60.0;
+        // public static final double kSupplyTimeThreshold = 0.2;
 
         // Feedback Constants
         public static final double kSensorToMechanismRatio = 1.0;
@@ -211,7 +211,7 @@ public class Constants {
         // Velocity PID Constants
         public static final int kVelocityPIDSlot = 0;
         public static final double kV = 0.12; // voltage/rps
-        public static final double kP = 0.75;
+        public static final double kP = 0.5;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
         public static final double kPIDUpdateHz = 1000;
@@ -256,14 +256,14 @@ public class Constants {
 
         // Software Limit Switch Constants
         // TODO
-        public static final boolean kForwardSoftLimitEnabled = false;
-        public static final double kForwardSoftLimit = 56.0 / 360; // rotations
-        public static final boolean kReverseSoftLimitEnabled = false;
-        public static final double kReverseSoftLimit = -8.0 / 360; // rotations
+        public static final boolean kForwardSoftLimitEnabled = true;
+        public static final double kForwardSoftLimit = 60.46875 / 360.0; // rotations
+        public static final boolean kReverseSoftLimitEnabled = true;
+        public static final double kReverseSoftLimit = 20.0 / 360.0; // rotations
 
         // Magnet Sensor Constants
-        public static final SensorDirectionValue kSensorDirection = SensorDirectionValue.Clockwise_Positive;
-        public static final double kMagnetOffset = 0.0;
+        public static final SensorDirectionValue kSensorDirection = SensorDirectionValue.CounterClockwise_Positive;
+        public static final double kMagnetOffset = 0.453369 + 42.0 / 360; // 0.499268 /// 42 deg
         public static final AbsoluteSensorRangeValue kAbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
 
         // Aiming Constants
@@ -274,6 +274,18 @@ public class Constants {
             kAimMap.put(new InterpolatingDouble(0.0), new InterpolatingDouble(0.0));
             // ...
         }
+
+        /**
+         * Angle Adjuster Angle |    X Meters    |     Y Meters
+         * 48.69140625 | 1.08 | 5.67
+         * 45.3515625 | 1.57 | 5.82
+         * 41.8359375 | 2.29 | 5.26
+         * 36.9140625 | 2.88 | 5.30
+         * 34.1015625 | 3.36 | 5.44
+         * 30.41015625 | 3.84 | 5.57
+         * 27.24609375 | 3.96 | 6.64
+         * xxx | 4.20 | 7.00
+         */
 
         public static final Rotation2d kMaxAngle = new Rotation2d(5);
     }

@@ -60,83 +60,52 @@ public class Teleop {
 
     // Rotation2d snapAngle = null;
 
-    double desiredShooterSpeed = 50; 
+    double desiredShooterSpeed = 90.0; 
 
     private void p1Loop(XboxController p) {
+        desiredShooterSpeed = SmartDashboard.getNumber("Desired Shooter Speed", desiredShooterSpeed);
+        SmartDashboard.putNumber("Desired Shooter Speed", desiredShooterSpeed);
+
+        SmartDashboard.putNumber("Shooter Angle", mAngleAdjuster.getAngle().getDegrees());
 
         double leftTrigger = p.getLeftTriggerAxis();
         double rightTrigger = p.getRightTriggerAxis();
 
-        // mConveyor.setPercentSpeed(leftTrigger);
-        // mIntake.setPercentSpeed(leftTrigger, leftTrigger);
-        if(p.getLeftBumper()) {
-            mIntake.setPercentSpeed(1.0, 1.0);
-        } else if(p.getBButton()) {
-            // mIntake.setPercentSpeed(-1.0, 0.0);
-            // mIntake.setPercentSpeed(leftTrigger, rightTrigger);
-        }
-        
-        else {
-            mIntake.setPercentSpeed(0, 0);
-        }
-
         if(p.getRightBumper()) {
             mConveyor.setPercentSpeed(1.0);
+        } else if(p.getLeftBumper()) {
+            mConveyor.setPercentSpeed(-1.0);
         } else {
             mConveyor.setPercentSpeed(0);
         }
 
-        // if(p.getAButton()) {
-        //     mShooter.setPercentSpeed(0.5);
-        // } else if(p.getBButton()) {
-        //     mShooter.setVelocity(desiredShooterSpeed);
-        // } else {
-        //     mShooter.setPercentSpeed(0);
-        // }
-
-        // if(p.getYButton()) {
-        //     // mAngleAdjuster.setPercentSpeed(0.2);
-        //     // mClimb.setPercentSpeed(0.5);
-        //     mArm.setPercentSpeed(0.05);
-        // } else if(p.getXButton()) {
-        //     // mAngleAdjuster.setPercentSpeed(-0.2);
-        //     // mClimb.setPercentSpeed(-0.5);
-        //     mArm.setPercentSpeed(-0.05);
-        // } else {
-        //     // mAngleAdjuster.setPercentSpeed(0.0);
-        //     // mClimb.setPercentSpeed(0.0);
-        //     mArm.setPercentSpeed(0.0);
-        // }
-
-        // mArm.setPercentSpeed((leftTrigger - rightTrigger) * 0.5);
-
         if(p.getYButton()) {
             // mArm.setAngle(SuperstructureConstants.kArmAmpAngle);
             mShooter.setVelocity(desiredShooterSpeed);
-        } else if(p.getBButton()) {
-            // mArm.setAngle(SuperstructureConstants.kArmStowAngle);
         } else {
             // mArm.setPercentSpeed(0);
             mShooter.setPercentSpeed(0.0);
         }
 
-
-
-
         if(p.getXButton()) {
-            mWrist.setAngle(SuperstructureConstants.kWristStowAngle);
+            // mWrist.setAngle(SuperstructureConstants.kWristStowAngle);
+            mArm.setAngle(SuperstructureConstants.kArmAmpAngle);
         } else if(p.getAButton()) {
-            mWrist.setAngle(SuperstructureConstants.kWristIntakingAngle);
+            // mWrist.setAngle(SuperstructureConstants.kWristIntakingAngle);
+            mArm.setAngle(SuperstructureConstants.kArmStowAngle);
         } else {
             // mWrist.setPercentSpeed(leftTrigger - rightTrigger);
-            mWrist.setPercentSpeed(0);
+            // mWrist.setPercentSpeed(0);
+            mArm.setPercentSpeed(0.0);
         }
+
+        mAngleAdjuster.setPercentSpeed((leftTrigger - rightTrigger) * 0.5);
         
 
-        SmartDashboard.putNumber("Wrist angle", mWrist.getAngle().getDegrees());
-        SmartDashboard.putNumber("Current Shooter Speed", mShooter.getVelocity());
-        SmartDashboard.putNumber("Desired Shooter Speed", desiredShooterSpeed);
-        SmartDashboard.putNumber("Arm Angle", mArm.getAngle().getDegrees());
+        // SmartDashboard.putNumber("Wrist angle", mWrist.getAngle().getDegrees());
+        // SmartDashboard.putNumber("Current Shooter Speed", mShooter.getVelocity());
+        // SmartDashboard.putNumber("Desired Shooter Speed", desiredShooterSpeed);
+        // SmartDashboard.putNumber("Arm Angle", mArm.getAngle().getDegrees());
 
         // mShooter.setPercentSpeed(rightTrigger);
 
@@ -165,23 +134,6 @@ public class Teleop {
         //     snapAngle,
         //     p.getAButton() /*false*/
         // );
-
-        // mIntake.setPercentSpeed(p.getLeftTriggerAxis() - p.getRightTriggerAxis());
-        // if(p.getAButton()) {
-        //     mSwerve.setClosedLoopSpeeds(new ChassisSpeeds(1.0, 0.0, 0.0), true);
-        // }
-        // if (p.getAButton()) {
-        //     intake.setPercentSpeed(0.45);
-        // }
-        // else if(p.getYButton()){
-        //     intake.setPercentSpeed(-0.45);
-        // }
-        // if(p.getXButton()){
-        //     shooter.shoot(1, false);
-        // }
-        // else{
-        //     shooter.shoot(0, false);
-        // }
 
         // SmartDashboard.putNumber("Throttle Position 0", mSwerve.getModules()[0].getThrottleMotor().getPosition().getValueAsDouble());
         // SmartDashboard.putNumber("Throttle Position 1", mSwerve.getModules()[1].getThrottleMotor().getPosition().getValueAsDouble());
