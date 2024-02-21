@@ -30,7 +30,7 @@ public class Teleop {
     private static XboxController p2 = new XboxController(1);
     private static GenericHID p3 = new GenericHID(2);
 
-    // private static Swerve mSwerve = Swerve.getInstance();
+    private static Swerve mSwerve = Swerve.getInstance();
     // private static final Intake mIntake = Intake.getInstance();
     private static final Shooter mShooter = Shooter.getInstance();
     private static final Intake mIntake = Intake.getInstance();
@@ -141,14 +141,14 @@ public class Teleop {
         // mShooter.setPercentSpeed(rightTrigger);
 
 
-        // mSwerve.teleopDrive(
-        //     JoystickUtils.applyDeadband(p.getLeftY()), 
-        //     JoystickUtils.applyDeadband(p.getLeftX()), 
-        //     JoystickUtils.applyDeadband(p.getRightX()), 
-        //     true, 
-        //     null, 
-        //     false
-        // );
+        mSwerve.teleopDrive(
+            JoystickUtils.applyDeadband(-p.getLeftY()) * SwerveConstants.kMaxVelMPS, 
+            JoystickUtils.applyDeadband(-p.getLeftX()) * SwerveConstants.kMaxVelMPS, 
+            JoystickUtils.applyDeadband(-p.getRightX()) * SwerveConstants.kMaxVelMPS, 
+            true, 
+            null, 
+            false
+        );
 
         
         // if(p.getBButton()) {

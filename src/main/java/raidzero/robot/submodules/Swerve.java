@@ -54,7 +54,7 @@ public class Swerve extends Submodule {
     private SwerveModule mRearLeftModule = new SwerveModule();
     private SwerveModule mRearRightModule = new SwerveModule();
 
-    private Pigeon2 mPigeon = new Pigeon2(SwerveConstants.kImuID, Constants.kCANBusName);
+    private Pigeon2 mPigeon = new Pigeon2(SwerveConstants.kImuID);
 
     private SwerveDrivePoseEstimator mOdometry;
 
@@ -472,7 +472,7 @@ public class Swerve extends Submodule {
             );
         } 
 
-        ChassisSpeeds.discretize(speeds, 0.02);
+        // ChassisSpeeds.discretize(speeds, 0.02);
 
         SwerveModuleState[] desiredState = SwerveConstants.kKinematics.toSwerveModuleStates(speeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredState, SwerveConstants.kRealisticMaxVelMPS);

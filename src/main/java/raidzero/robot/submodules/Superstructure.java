@@ -107,6 +107,10 @@ public class Superstructure extends Submodule {
         // }
     }
 
+    // public void setIntakeState(boolean isIntaking) {
+    //     mintak
+    // }
+
     public void stowState() {
         request(new SequentialRequest(
             mIntake.intakeRequest(0.0, 0.0, false, false),

@@ -75,7 +75,7 @@ public class Constants {
         public static final double kAzimuthReduction = (14.0 / 50.0) * (10.0 / 60.0);
         public static final double kWheelDiameterMeters = 0.1016;
 
-        public static final double kMaxVelMPS = 4.959668;
+        public static final double kMaxVelMPS = 6000 * kThrottleReduction / 60 * Math.PI * 0.102;// 4.959668;
         public static final double kRealisticMaxVelMPS = 4.2;
         public static final double kTestingMaxVelMPS = 3.0;
         public static final double kTestingMaxAccelMPSPS = 3.0;
@@ -98,7 +98,7 @@ public class Constants {
 
 
         public static final int kAzimuthPositionPIDSlot = 0;
-        public static final double kAzimuth_kP = 40.0;// .75
+        public static final double kAzimuth_kP = 50.0;// .75
         public static final double kAzimuth_kI = 0.0;
         public static final double kAzimuth_kD = 0.0;// 5.0
         public static final double kAzimuthPIDUpdateHz = 1000.0;
