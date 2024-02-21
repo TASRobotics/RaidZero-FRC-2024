@@ -18,8 +18,10 @@ import raidzero.robot.submodules.Swerve;
 public class ThreeNote extends AutoSequence {
     private static final Swerve mSwerve = Swerve.getInstance();
 
-    private PathPlannerPath path1 = PathPlannerPath.fromPathFile("first note")  .flipPath();
+    private PathPlannerPath path1 = PathPlannerPath.fromPathFile("first note");
     private PathPlannerTrajectory trajectory1;
+    private PathPlannerPath path1p5 = PathPlannerPath.fromPathFile("first.5 note");
+    private PathPlannerTrajectory trajectory1p5;
     private PathPlannerPath path2 = PathPlannerPath.fromPathFile("2nd note");
     private PathPlannerTrajectory trajectory2;
     private PathPlannerPath path3 = PathPlannerPath.fromPathFile("3rd note");
@@ -37,6 +39,8 @@ public class ThreeNote extends AutoSequence {
         Rotation2d test1 = new Rotation2d(Math.toRadians(0));
         // Rotation2d test1 = path1.getPoint(0).rotationTarget.getTarget();
         // Rotation2d test1 = mSwerve.getPose().getRotation();
+        trajectory1p5 = path1p5.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)));
+
         trajectory1 = path1.getTrajectory(new ChassisSpeeds(), test1);
         Rotation2d test2 = new Rotation2d(Math.toRadians(0)); 
         trajectory2 = path2.getTrajectory(new ChassisSpeeds(), test2);
@@ -53,7 +57,7 @@ public class ThreeNote extends AutoSequence {
         List<Action> idk = new ArrayList();
         idk.add(new Res());
         idk.add(new DrivePath(trajectory1));
-        //idk.add(new WaitAction(1));
+        idk.add(new DrivePath(trajectory1p5));
         idk.add(new DrivePath(trajectory2));
         //idk.add(new WaitAction(1));
         idk.add(new DrivePath(trajectory3));
