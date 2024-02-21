@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.104598092604258,
-        "y": 4.2058839274629225
+        "x": 8.118015665417921,
+        "y": 5.7617315805245015
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.460370795181054,
-        "y": 5.024972919900996
+        "x": 6.724426116469921,
+        "y": 6.171610859626855
       },
       "isLocked": false,
-      "linkedName": "rush6"
+      "linkedName": "fiveend"
     },
     {
       "anchor": {
-        "x": 5.178595692426762,
-        "y": 6.382405917450922
+        "x": 5.237149875155669,
+        "y": 6.604911811820771
       },
       "prevControl": {
-        "x": 6.485456781485262,
-        "y": 6.437625400087196
+        "x": 6.184677336122196,
+        "y": 6.335930176002417
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "shootright"
     }
   ],
   "rotationTargets": [],
@@ -39,11 +39,14 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 20.0,
+    "rotation": 15.0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": null,
-  "previewStartingState": null,
-  "useDefaultConstraints": false
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
 }

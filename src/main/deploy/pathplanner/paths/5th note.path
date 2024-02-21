@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.214778501305882,
-        "y": 6.405459985807864
+        "x": 5.237149875155669,
+        "y": 6.604911811820771
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.236338930076964,
-        "y": 6.396256738701818
+        "x": 6.258710303926751,
+        "y": 6.595708564714725
       },
       "isLocked": false,
       "linkedName": "shootright"
@@ -25,7 +25,7 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "fiveend"
     }
   ],
   "rotationTargets": [],
