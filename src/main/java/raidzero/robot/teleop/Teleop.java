@@ -8,6 +8,7 @@ import raidzero.robot.submodules.Climb;
 import raidzero.robot.submodules.Conveyor;
 import raidzero.robot.submodules.Intake;
 import raidzero.robot.submodules.Shooter;
+import raidzero.robot.submodules.Superstructure;
 import raidzero.robot.submodules.Swerve;
 import raidzero.robot.submodules.Wrist;
 import raidzero.robot.submodules.SwerveModule.PeriodicIO;
@@ -39,6 +40,7 @@ public class Teleop {
     private static final AngleAdjuster mAngleAdjuster = AngleAdjuster.getInstance();
     private static final Climb mClimb = Climb.getInstance();
     private static final Arm mArm = Arm.getInstance();
+    private static final Superstructure mSuperstructure = Superstructure.getInstance();
 
     public static Teleop getInstance() {
         if (instance == null) {
@@ -67,16 +69,21 @@ public class Teleop {
         SmartDashboard.putNumber("Desired Shooter Speed", desiredShooterSpeed);
 
         SmartDashboard.putNumber("Shooter Angle", mAngleAdjuster.getAngle().getDegrees());
+        SmartDashboard.putNumber("Arm Angle", mArm.getAngle().getDegrees());
+        SmartDashboard.putNumber("Wrist Angle", mWrist.getAngle().getDegrees());
 
         double leftTrigger = p.getLeftTriggerAxis();
         double rightTrigger = p.getRightTriggerAxis();
 
         if(p.getRightBumper()) {
-            mConveyor.setPercentSpeed(1.0);
+            // mConveyor.setPercentSpeed(1.0);
+            mWrist.setPercentSpeed(0.3);
         } else if(p.getLeftBumper()) {
-            mConveyor.setPercentSpeed(-1.0);
+            // mConveyor.setPercentSpeed(-1.0);
+            mWrist.setPercentSpeed(-0.3);
         } else {
-            mConveyor.setPercentSpeed(0);
+            // mConveyor.setPercentSpeed(0);
+            // mWrist.setPercentSpeed(0.0);
         }
 
         if(p.getYButton()) {
@@ -89,17 +96,24 @@ public class Teleop {
 
         if(p.getXButton()) {
             // mWrist.setAngle(SuperstructureConstants.kWristStowAngle);
-            mArm.setAngle(SuperstructureConstants.kArmAmpAngle);
+            // mArm.setAngle(SuperstructureConstants.kArmAmpAngle);
+            // mIntake.setPercentSpeed(1.0, 1.0);
+            mSuperstructure.stowState();
         } else if(p.getAButton()) {
             // mWrist.setAngle(SuperstructureConstants.kWristIntakingAngle);
-            mArm.setAngle(SuperstructureConstants.kArmStowAngle);
+            // mArm.setAngle(SuperstructureConstants.kArmStowAngle);
+            // mIntake.setPercentSpeed(-1.0, -1.0);
+            mSuperstructure.ampState();
         } else {
             // mWrist.setPercentSpeed(leftTrigger - rightTrigger);
             // mWrist.setPercentSpeed(0);
-            mArm.setPercentSpeed(0.0);
+            // mArm.setPercentSpeed(0.0);
+            // mIntake.setPercentSpeed(0.0, 0.0);
         }
 
-        mAngleAdjuster.setPercentSpeed((leftTrigger - rightTrigger) * 0.5);
+        // mAngleAdjuster.setPercentSpeed((leftTrigger - rightTrigger) * 0.5);
+        // mArm.setPercentSpeed((leftTrigger - rightTrigger) * 0.5);
+
         
 
         // SmartDashboard.putNumber("Wrist angle", mWrist.getAngle().getDegrees());

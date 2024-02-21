@@ -62,15 +62,6 @@ public class Intake extends Submodule{
 
     @Override
     public void run() {
-        // if (Math.abs(mPercentOut) < 0.05) {
-        //     holdPosition();
-        // }
-        // if (mControlState == ControlState.OPEN_LOOP) {
-        //     mMotor.set(mPercentOut);
-        //     mPrevOpenLoopPosition = mMotor.getPosition().getValue();
-        // } else if (mControlState == ControlState.CLOSED_LOOP) {
-            
-        // }
         mFrontMotor.set(mPeriodicIO.desiredFrontPercentSpeed);
         mRearMotor.set(mPeriodicIO.desiredRearPercentSpeed);
     }
@@ -122,13 +113,4 @@ public class Intake extends Submodule{
             }
         };
     }
-
-    /** Hold position of intake */
-    // public void holdPosition() {
-    //     mControlState = ControlState.CLOSED_LOOP;
-    //     if (Math.signum(mPercentOut) < 0)
-    //         mDesiredPosition = mPrevOpenLoopPosition - 1;
-    //     else
-    //         mDesiredPosition = mPrevOpenLoopPosition + 1;
-    // }
 }

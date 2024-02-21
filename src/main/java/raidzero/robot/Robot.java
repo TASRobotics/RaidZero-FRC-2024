@@ -23,6 +23,7 @@ public class Robot extends TimedRobot {
     private static final Swerve mSwerve = Swerve.getInstance();
     private static final Wrist mWrist = Wrist.getInstance();
     private static final Conveyor mConveyor = Conveyor.getInstance();
+    private static final Superstructure mSuperstructure = Superstructure.getInstance();
     
     private static final Vision vision = Vision.getInstance();
 
@@ -35,7 +36,6 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         // Register all submodules here
         submoduleManager.setSubmodules(
-            // mShooter, 
             mIntake,
             mConveyor,
             mSwerve,
@@ -44,10 +44,9 @@ public class Robot extends TimedRobot {
             mArm, 
             mClimb, 
             mShooter, 
-            // mIntake
             mWrist,
-            mAngleAdjuster
-            // mConveyor
+            mAngleAdjuster, 
+            mSuperstructure
         );
         submoduleManager.onInit();
 

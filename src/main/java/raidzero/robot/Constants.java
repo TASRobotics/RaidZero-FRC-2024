@@ -317,9 +317,9 @@ public class Constants {
         // public static final GravityTypeValue kGravityCompensationType = GravityTypeValue.Arm_Cosine;
         // public static final double kG = 0.0;
         public static final double kV = 12.0 / (6000.0 / kRotorToSensorRatio / 60.0);
-        public static final double kP = 70.0;
+        public static final double kP = 3.0;
         public static final double kI = 0.0;
-        public static final double kD = 10.0;
+        public static final double kD = 0.0;
         public static final double kPIDUpdateHz = 1000;
         
         public static final double kTolerance = 2.0 / 360.0; // rotations
@@ -375,14 +375,14 @@ public class Constants {
         // Motion Magic Constants
         public static final double kTheoreticalMaxSpeedRPS = 6000.0 / kSensorToMechanismRatio / 60.0 * 10;
         // public static final double kTheoreticalMaxSpeedRPS = 100.0;
-        public static final double kMotionMagicVelocity = kTheoreticalMaxSpeedRPS * 0.5;
-        public static final double kMotionMagicAccel = kTheoreticalMaxSpeedRPS * 2.0;
-        public static final double kMotionMagicJerk = kTheoreticalMaxSpeedRPS * 10.0;
+        public static final double kMotionMagicVelocity = kTheoreticalMaxSpeedRPS * 0.75;
+        public static final double kMotionMagicAccel = kTheoreticalMaxSpeedRPS * 3.0;
+        public static final double kMotionMagicJerk = kTheoreticalMaxSpeedRPS * 30.0;
 
         // Software Limit Switch Constants
         // TODO
         public static final boolean kForwardSoftLimitEnabled = true;
-        public static final double kForwardSoftLimit = 200.0 / 360.0; // rotations
+        public static final double kForwardSoftLimit = 280.0 / 360.0; // rotations
         public static final boolean kReverseSoftLimitEnabled = true;
         public static final double kReverseSoftLimit = 0.0; // rotations
 
@@ -438,12 +438,12 @@ public class Constants {
     public static final class SuperstructureConstants {
         // Arm
         public static final Rotation2d kArmStowAngle = Rotation2d.fromDegrees(-39.0);
-        public static final Rotation2d kArmAmpAngle = Rotation2d.fromDegrees(60.0);
+        public static final Rotation2d kArmAmpAngle = Rotation2d.fromDegrees(64.0);
 
         // Wrist
         public static final Rotation2d kWristStowAngle = Rotation2d.fromDegrees(10.0);
         public static final Rotation2d kWristIntakingAngle = Rotation2d.fromDegrees(120.0);
-        public static final Rotation2d kWristAmpAngle = Rotation2d.fromDegrees(140.0);
+        public static final Rotation2d kWristAmpAngle = Rotation2d.fromDegrees(204.0);
 
         // Shooter
         public static final double kShootingSpeedRPS = 90.0;

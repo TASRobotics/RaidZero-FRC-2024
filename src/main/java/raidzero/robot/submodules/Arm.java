@@ -126,7 +126,13 @@ public class Arm extends Submodule {
 
             @Override
             public boolean isFinished() {
-                return waitUntilSettled ? Math.abs(mLeftLeader.getClosedLoopError().refresh().getValueAsDouble()) < ArmConstants.kTolerance : true;
+                if(waitUntilSettled) {
+                    if(Math.abs(mPeriodicIO.currentPosition.getRotations() - mPeriodicIO.desiredPosition.getRotations()) < ArmConstants.kTolerance) {
+                        return true;
+                    }
+                    return false;
+                }
+                return true;
             }
         };
     }
