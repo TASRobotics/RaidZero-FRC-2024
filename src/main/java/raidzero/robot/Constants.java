@@ -11,6 +11,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.ReverseLimitSourceValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+
 import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.MatBuilder;
@@ -239,7 +240,7 @@ public class Constants {
 
         // Position PID Constants
         public static final int kPositionPIDSlot = 0;
-        public static final double kV = 0.12; // voltage/rps
+        public static final double kV = 12.0 / (6000.0 / kRotorToSensorRatio / 60); // voltage/rps
         public static final double kP = 0.0;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
@@ -487,17 +488,6 @@ public class Constants {
         public static final double OMEGA_RESET_TOLERANCE = 0.2;
         
         public static final int NUM_THREADS = 10;
-    }
-
-    public static final class LightsConstants {
-        public static final int CANDLE_ID = 0;
-        public static final boolean LOS_BEHAVIOR = true;
-        // public static final LEDStripType LED_STRIP_TYPE = LEDStripType.GRB;
-        public static final double BRIGHTNESS_SCALAR = 1.0;
-        public static final boolean STATUS_LED_CONFIG = false;
-        // public static final VBatOutputMode V_BAT_OUTPUT_MODE = VBatOutputMode.Off;
-
-        public static final int PRIMARY_ANIMATION_SLOT = 0;
     }
 
     public static final int kCANTimeoutMs = 10; 

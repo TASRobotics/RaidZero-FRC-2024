@@ -74,6 +74,12 @@ public class AngleAdjuster extends Submodule {
     @Override
     public void run() {
         if(mPeriodicIO.controlState == ControlState.FEEDBACK) {
+            if(mPeriodicIO.desiredPosition.getRotations() > AngleAdjusterConstants.kForwardSoftLimit) {
+                mPeriodicIO.desiredPosition = Rotation2d.fromRotations(AngleAdjusterConstants.kForwardSoftLimit);
+            }
+            if(mPeriodicIO.desiredPosition.getRotations() < AngleAdjusterConstants.kReverseSoftLimit) {
+                mPeriodicIO.desiredPosition = Rotation2d.fromRotations(AngleAdjusterConstants.kReverseSoftLimit);
+            }
             mMotor.setControl(mMotionMagicVoltage.withPosition(mPeriodicIO.desiredPosition.getRotations()));
         } else if(mPeriodicIO.controlState == ControlState.FEEDFORWARD) {
             mMotor.setControl(mVoltageOut.withOutput(mPeriodicIO.desiredPercentSpeed * Constants.kMaxMotorVoltage));
