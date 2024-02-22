@@ -1,6 +1,5 @@
 package raidzero.robot.submodules;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -32,13 +31,13 @@ public class Superstructure extends Submodule {
 
     private static final AngleAdjuster mAngleAdjuster = AngleAdjuster.getInstance();
     private static final Arm mArm = Arm.getInstance();
-    private static final Climb mClimb = Climb.getInstance();
+    // private static final Climb mClimb = Climb.getInstance();
     private static final Intake mIntake = Intake.getInstance();
-    private static final Limelight mLimelight = Limelight.getInstance();
-    private static final Shooter mShooter = Shooter.getInstance();
-    private static final Swerve mSwerve = Swerve.getInstance();
+    // private static final Limelight mLimelight = Limelight.getInstance();
+    // private static final Shooter mShooter = Shooter.getInstance();
+    // private static final Swerve mSwerve = Swerve.getInstance();
     private static final Wrist mWrist = Wrist.getInstance();
-    private static final Conveyor mConveyor = Conveyor.getInstance();
+    // private static final Conveyor mConveyor = Conveyor.getInstance();
 
     private static final Vision mVision = Vision.getInstance();
 

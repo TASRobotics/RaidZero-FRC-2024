@@ -74,7 +74,7 @@ public class Arm extends Submodule {
         mRightFollower.getConfigurator().apply(getFollowerConfig(), Constants.kLongCANTimeoutMs);
         
         // Follower follower = new Follower(mLeftLeader.getDeviceID(), ArmConstants.kFollowerOpposeLeaderInversion);
-        // follower.withUpdateFreqHz(ArmConstants.kFollowerUpdateHz);
+        mFollower.withUpdateFreqHz(ArmConstants.kFollowerUpdateHz);
         mRightFollower.setControl(mFollower);
     }
 
