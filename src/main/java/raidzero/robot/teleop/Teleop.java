@@ -77,13 +77,16 @@ public class Teleop {
 
         if(p.getRightBumper()) {
             // mConveyor.setPercentSpeed(1.0);
-            mWrist.setPercentSpeed(0.3);
+            // mWrist.setPercentSpeed(0.3);
+            mAngleAdjuster.setAngle(Rotation2d.fromDegrees(30));
         } else if(p.getLeftBumper()) {
             // mConveyor.setPercentSpeed(-1.0);
-            mWrist.setPercentSpeed(-0.3);
+            // mWrist.setPercentSpeed(-0.3);
+            mAngleAdjuster.setAngle(Rotation2d.fromDegrees(50));
         } else {
             // mConveyor.setPercentSpeed(0);
             // mWrist.setPercentSpeed(0.0);
+            mAngleAdjuster.setPercentSpeed(0);
         }
 
         if(p.getYButton()) {

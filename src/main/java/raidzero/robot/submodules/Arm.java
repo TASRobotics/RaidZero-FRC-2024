@@ -9,6 +9,7 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DynamicMotionMagicVoltage;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -49,6 +50,8 @@ public class Arm extends Submodule {
         .withEnableFOC(Constants.kEnableFOC)
         .withSlot(ArmConstants.kPositionPIDSlot)
         .withUpdateFreqHz(ArmConstants.kPIDUpdateHz);
+
+    // private DynamicMotionMagicVoltage mDynamicMotionMagicVoltage = new DynamicMotionMagicVoltage(0, 0, 0, 0);
 
     Follower mFollower = new Follower(mLeftLeader.getDeviceID(), ArmConstants.kFollowerOpposeLeaderInversion);
 
