@@ -119,7 +119,7 @@ public class Constants {
         public static final double kYControllerTolerance = 0.1;
         public static final double kThetaControllerTolerance = Math.toRadians(5);
 
-        public static final double kSnapController_kP = 0.1;
+        public static final double kSnapController_kP = 0.5;
         public static final double kSnapController_kI = 0.0;
         public static final double kSnapController_kD = 0.0;
         public static final TrapezoidProfile.Constraints kSnapControllerConstraints = 
@@ -268,11 +268,17 @@ public class Constants {
         public static final AbsoluteSensorRangeValue kAbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
 
         // Aiming Constants
-        public static final InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble> 
-            kAimMap = new InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble>(20);
+        public static InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble> 
+            kAimMap = new InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble>();
         static {
             // kAimMap.put(new InterpolatingDouble(ROBOT_DISTANCE_FROM_GOAL), new InterpolatingDouble(DESIRED_ANGLE));
-            kAimMap.put(new InterpolatingDouble(0.0), new InterpolatingDouble(0.0));
+            kAimMap.put(new InterpolatingDouble(1.124750566), new InterpolatingDouble(48.69140625));
+            kAimMap.put(new InterpolatingDouble(1.630963346), new InterpolatingDouble(45.3515625));
+            kAimMap.put(new InterpolatingDouble(2.345829831), new InterpolatingDouble(41.8359375));
+            kAimMap.put(new InterpolatingDouble(2.928608228), new InterpolatingDouble(36.9140625));
+            kAimMap.put(new InterpolatingDouble(3.399811629), new InterpolatingDouble(34.1015625));
+            kAimMap.put(new InterpolatingDouble(3.878163152), new InterpolatingDouble(30.41015625));
+            kAimMap.put(new InterpolatingDouble(4.144581513), new InterpolatingDouble(27.24609375));
             // ...
         }
 
@@ -286,6 +292,14 @@ public class Constants {
          * 30.41015625 | 3.84 | 5.57
          * 27.24609375 | 3.96 | 6.64
          * xxx | 4.20 | 7.00
+         * 
+         * 1.124750566
+            1.630963346
+            2.345829831
+            2.928608228
+            3.399811629
+            3.878163152
+            4.144581513
          */
 
         public static final Rotation2d kMaxAngle = new Rotation2d(5);

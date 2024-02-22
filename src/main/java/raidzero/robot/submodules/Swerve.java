@@ -47,7 +47,7 @@ public class Swerve extends Submodule {
 
     private Swerve() {}
 
-    // private static final Vision vision = Vision.getInstance();
+    private static final Vision mVision = Vision.getInstance();
 
     private SwerveModule mTopRightModule = new SwerveModule();
     private SwerveModule mTopLeftModule = new SwerveModule();
@@ -175,6 +175,8 @@ public class Swerve extends Submodule {
         SmartDashboard.putNumber("X pose", mOdometry.getEstimatedPosition().getX());
         SmartDashboard.putNumber("Y pose", mOdometry.getEstimatedPosition().getY());
         SmartDashboard.putNumber("Theta pose", mOdometry.getEstimatedPosition().getRotation().getDegrees());
+
+        SmartDashboard.putNumber("Raw Pigeon Rotation2d", mPigeon.getRotation2d().getDegrees());
 
         // if(vision.getRobotPose() != null) {
         // setPose(vision.getRobotPose());
@@ -340,7 +342,7 @@ public class Swerve extends Submodule {
      * @param angularSpeed  turn speed
      * @param fieldOriented
      */
-    public void teleopDrive(double xSpeed, double ySpeed, double angularSpeed, boolean fieldOriented, Rotation2d snapAngle, boolean aimAssist) {
+    public void teleopDrive(double xSpeed, double ySpeed, double angularSpeed, boolean fieldOriented, Rotation2d snapAngle, boolean autoAim, boolean aimAssist) {
         if (mControlState == ControlState.AUTO_AIM) {
             return;
         }
@@ -348,6 +350,11 @@ public class Swerve extends Submodule {
 
         if(snapAngle != null) {
             angularSpeed = mSnapController.calculate(mPigeon.getRotation2d().getDegrees(), snapAngle.getDegrees());
+        }
+
+        if(autoAim && mVision.getSpeakerAngle(Alliance.Blue) != null) {
+            // angularSpeed = mSnapController.calculate(-mPigeon.getRotation2d().getDegrees(), -mVision.getSpeakerAngle(Alliance.Blue).getDegrees());
+            angularSpeed = (-mVision.getSpeakerAngle(Alliance.Blue).getDegrees() + mPigeon.getRotation2d().getDegrees()) * 0.15;
         }
 
         // setOpenLoopSpeeds(new ChassisSpeeds(xSpeed, ySpeed, angularSpeed), fieldOriented);
