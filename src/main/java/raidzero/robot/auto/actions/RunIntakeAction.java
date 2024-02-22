@@ -1,41 +1,42 @@
-// package raidzero.robot.auto.actions;
 
-// import edu.wpi.first.wpilibj.Timer;
+package raidzero.robot.auto.actions;
 
-// import raidzero.robot.submodules.Intake;
+import edu.wpi.first.wpilibj.Timer;
 
-// public class RunIntakeAction implements Action {
-//     private static final Intake mIntake = Intake.getInstance();
-//     private Timer timer = new Timer();
+import raidzero.robot.submodules.Intake;
 
-//     private double mDuration, mSpeed;
+public class RunIntakeAction implements Action {
+    private static final Intake mIntake = Intake.getInstance();
+    private Timer timer = new Timer();
 
-//     public RunIntakeAction(double duration, double speed) {
-//         mDuration = duration;
-//         mSpeed = speed;
-//     }
+    private double mDuration, mSpeed;
 
-//     @Override
-//     public boolean isFinished() {
-//         return timer.hasElapsed(mDuration);
-//     }
+    public RunIntakeAction(double duration, double speed) {
+        mDuration = duration;
+        mSpeed = speed;
+    }
 
-//     @Override
-//     public void start() {
-//         timer.reset();
-//         timer.start();
-//         mIntake.setPercentSpeed(mSpeed);
-//         System.out.println("[Auto] Action '" + getClass().getSimpleName() + "' started!");
-//     }
+    @Override
+    public boolean isFinished() {
+        return timer.hasElapsed(mDuration);
+    }
 
-//     @Override
-//     public void update() {
-//     }
+    @Override
+    public void start() {
+        timer.reset();
+        timer.start();
+        // mIntake.setPercentSpeed(mSpeed);
+        System.out.println("[Auto] Action '" + getClass().getSimpleName() + "' started!");
+    }
 
-//     @Override
-//     public void done() {
-//         System.out.println("[Auto] Action '" + getClass().getSimpleName() + "' finished!");
-//         timer.stop();
-//         mIntake.setPercentSpeed(0);
-//     }
-// }
+    @Override
+    public void update() {
+    }
+
+    @Override
+    public void done() {
+        System.out.println("[Auto] Action '" + getClass().getSimpleName() + "' finished!");
+        timer.stop();
+        // mIntake.setPercentSpeed(0);
+    }
+}

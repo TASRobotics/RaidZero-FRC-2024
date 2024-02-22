@@ -1,93 +1,116 @@
-// package raidzero.robot.submodules;
+package raidzero.robot.submodules;
 
-// import com.revrobotics.CANSparkMax;
-// import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.ForwardLimitValue;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 
-// import raidzero.robot.Constants;
-// import raidzero.robot.Constants.IntakeConstants;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import raidzero.robot.Constants;
+import raidzero.robot.Constants.IntakeConstants;
+import raidzero.robot.utils.requests.Request;
 
-// public class Intake extends Submodule{
-//     private static Intake instance = null;
+public class Intake extends Submodule{
+    private static Intake instance = null;
 
-//     public static Intake getInstance() {
-//         if (instance == null) {
-//             instance = new Intake();
-//         }
-//         return instance;
-//     }
+    public static Intake getInstance() {
+        if (instance == null) {
+            instance = new Intake();
+        }
+        return instance;
+    }
 
-//     private Intake() {}
+    private Intake() {}
 
-//     private CANSparkMax mLeader = new CANSparkMax(IntakeConstants.kLeaderID, MotorType.kBrushless);
-//     private CANSparkMax mFollower = new CANSparkMax(IntakeConstants.kFollowerID, MotorType.kBrushless);
+    private CANSparkMax mFrontMotor = new CANSparkMax(IntakeConstants.kFrontMotorID, MotorType.kBrushless);
+    private CANSparkMax mRearMotor = new CANSparkMax(IntakeConstants.kRearMotorID, MotorType.kBrushless);
 
-//     public static class PeriodicIO {
-//         public double desiredPercentSpeed = 0.0;
-//     }
+    private TalonFX mWristMotor = Wrist.getInstance().getMotor();
 
-//     private PeriodicIO mPeriodicIO = new PeriodicIO();
+    public static class PeriodicIO {
+        public double desiredFrontPercentSpeed = 0.0;
+        public double desiredRearPercentSpeed = 0.0;
 
-//     @Override
-//     public void onInit() {
-//         mLeader.restoreFactoryDefaults();
-//         mLeader.enableVoltageCompensation(Constants.kMaxMotorVoltage);
-//         mLeader.setSmartCurrentLimit(IntakeConstants.kCurrentLimit);
-//         mLeader.setIdleMode(IntakeConstants.kIdleMode);
+        public boolean limitTriggered = false;
+    }
 
-//         mFollower.restoreFactoryDefaults();
-//         mFollower.enableVoltageCompensation(Constants.kMaxMotorVoltage);
-//         mFollower.setSmartCurrentLimit(IntakeConstants.kCurrentLimit);
-//         mFollower.setIdleMode(IntakeConstants.kIdleMode);
+    private PeriodicIO mPeriodicIO = new PeriodicIO();
 
-//         mFollower.follow(mLeader);
-//     }
+    @Override
+    public void onInit() {
+        mFrontMotor.restoreFactoryDefaults();
+        mFrontMotor.enableVoltageCompensation(Constants.kMaxMotorVoltage);
+        mFrontMotor.setSmartCurrentLimit(IntakeConstants.kFrontCurrentLimit);
+        mFrontMotor.setIdleMode(IntakeConstants.kIdleMode);
+        mFrontMotor.setInverted(IntakeConstants.kFrontInversion);
 
-//     @Override
-//     public void onStart(double timestamp) {}
+        mRearMotor.restoreFactoryDefaults();
+        mRearMotor.enableVoltageCompensation(Constants.kMaxMotorVoltage);
+        mRearMotor.setSmartCurrentLimit(IntakeConstants.kRearCurrentLimit);
+        mRearMotor.setIdleMode(IntakeConstants.kIdleMode);
+        mRearMotor.setInverted(IntakeConstants.kRearInversion);
+    }
 
-//     @Override
-//     public void update(double timestamp) {
-//         // SmartDashboard.putNumber("Intake current draw", mMotor.getOutputCurrent());
-//     }
+    @Override
+    public void onStart(double timestamp) {}
 
-//     @Override
-//     public void run() {
-//         // if (Math.abs(mPercentOut) < 0.05) {
-//         //     holdPosition();
-//         // }
-//         // if (mControlState == ControlState.OPEN_LOOP) {
-//         //     mMotor.set(mPercentOut);
-//         //     mPrevOpenLoopPosition = mMotor.getPosition().getValue();
-//         // } else if (mControlState == ControlState.CLOSED_LOOP) {
-            
-//         // }
-//         mLeader.set(mPeriodicIO.desiredPercentSpeed);
-//     }
+    @Override
+    public void update(double timestamp) {
+        SmartDashboard.putNumber("Front Intake Current", mFrontMotor.getOutputCurrent());
+        mPeriodicIO.limitTriggered = mWristMotor.getForwardLimit().refresh().getValue() == ForwardLimitValue.ClosedToGround;
+    }
 
-//     @Override
-//     public void stop() {
-//         mLeader.stopMotor();
-//         mFollower.stopMotor();
-//     }
+    @Override
+    public void run() {
+        mFrontMotor.set(mPeriodicIO.desiredFrontPercentSpeed);
+        mRearMotor.set(mPeriodicIO.desiredRearPercentSpeed);
+    }
 
-//     @Override
-//     public void zero() {}
+    @Override
+    public void stop() {
+        mFrontMotor.stopMotor();
+        mRearMotor.stopMotor();
+    }
 
-//     /**
-//      * Set intake percent speed [-1, 1]
-//      * 
-//      * @param speed percent speed
-//      */
-//     public void setPercentSpeed(double speed) {
-//         mPeriodicIO.desiredPercentSpeed = speed;
-//     }
+    @Override
+    public void zero() {}
 
-//     /** Hold position of intake */
-//     // public void holdPosition() {
-//     //     mControlState = ControlState.CLOSED_LOOP;
-//     //     if (Math.signum(mPercentOut) < 0)
-//     //         mDesiredPosition = mPrevOpenLoopPosition - 1;
-//     //     else
-//     //         mDesiredPosition = mPrevOpenLoopPosition + 1;
-//     // }
-// }
+    /**
+     * Set intake percent speed [-1, 1]
+     * 
+     * @param speed percent speed
+     */
+    public void setPercentSpeed(double frontSpeed, double rearSpeed) {
+        mPeriodicIO.desiredFrontPercentSpeed = frontSpeed;
+        mPeriodicIO.desiredRearPercentSpeed = rearSpeed;
+    }
+
+    public void setPercentSpeed(double frontSpeed, double rearSpeed, boolean stopIfLimitIsTriggered) {
+        if(stopIfLimitIsTriggered && mPeriodicIO.limitTriggered) {
+            setPercentSpeed(0, 0);
+        } else {
+            setPercentSpeed(frontSpeed, rearSpeed);
+        }
+    }
+
+    public boolean ringPresent() {
+        return mPeriodicIO.limitTriggered;
+    }
+
+    public Request intakeRequest(double frontSpeed, double rearSpeed, boolean stopIfLimitIsTriggered, boolean waitUntilSettled) {
+        return new Request() {
+            @Override
+            public void act() {
+                setPercentSpeed(frontSpeed, rearSpeed, stopIfLimitIsTriggered);
+            }
+
+            @Override
+            public boolean isFinished() {
+                if(stopIfLimitIsTriggered && !mPeriodicIO.limitTriggered && waitUntilSettled) {
+                    return false;
+                }
+                return true;
+            }
+        };
+    }
+}

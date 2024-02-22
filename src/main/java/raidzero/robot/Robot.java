@@ -2,6 +2,7 @@ package raidzero.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+
 import raidzero.robot.auto.AutoRunner;
 import raidzero.robot.submodules.*;
 import raidzero.robot.submodules.SubmoduleManager;
@@ -22,8 +23,10 @@ public class Robot extends TimedRobot {
     private static final Shooter mShooter = Shooter.getInstance();
     private static final Swerve mSwerve = Swerve.getInstance();
     private static final Wrist mWrist = Wrist.getInstance();
-    
-    private static final Vision vision = Vision.getInstance();
+    private static final Conveyor mConveyor = Conveyor.getInstance();
+    private static final Superstructure mSuperstructure = Superstructure.getInstance();
+
+    private static final Vision mVision = Vision.getInstance();
 
     private AutoRunner autoRunner;
 
@@ -34,15 +37,17 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         // Register all submodules here
         submoduleManager.setSubmodules(
-            mSwerve
-            // vision, 
-            // mLimelight, 
-            // mArm, 
-            // mClimb, 
-            // mShooter, 
-            // //mIntake, 
-            // mWrist, 
-            // mAngleAdjuster
+            mIntake,
+            mConveyor,
+            mSwerve,
+            mVision,
+            // mLimelight
+            mArm, 
+            mClimb, 
+            mShooter, 
+            mWrist,
+            mAngleAdjuster, 
+            mSuperstructure
         );
         submoduleManager.onInit();
 

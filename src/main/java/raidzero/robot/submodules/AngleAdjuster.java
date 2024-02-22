@@ -1,7 +1,9 @@
 package raidzero.robot.submodules;
 
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -16,6 +18,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 
 import raidzero.robot.Constants;
 import raidzero.robot.Constants.AngleAdjusterConstants;
+import raidzero.robot.utils.requests.Request;
 
 public class AngleAdjuster extends Submodule {
     private enum ControlState {
@@ -55,6 +58,8 @@ public class AngleAdjuster extends Submodule {
 
     @Override
     public void onInit() {
+        mEncoder.getConfigurator().apply(getCANCoderConfig(), Constants.kLongCANTimeoutMs);
+
         mMotor.getConfigurator().apply(getMotorConfig(mEncoder), Constants.kLongCANTimeoutMs);
     }
 
@@ -69,6 +74,12 @@ public class AngleAdjuster extends Submodule {
     @Override
     public void run() {
         if(mPeriodicIO.controlState == ControlState.FEEDBACK) {
+            if(mPeriodicIO.desiredPosition.getRotations() > AngleAdjusterConstants.kForwardSoftLimit) {
+                mPeriodicIO.desiredPosition = Rotation2d.fromRotations(AngleAdjusterConstants.kForwardSoftLimit);
+            }
+            if(mPeriodicIO.desiredPosition.getRotations() < AngleAdjusterConstants.kReverseSoftLimit) {
+                mPeriodicIO.desiredPosition = Rotation2d.fromRotations(AngleAdjusterConstants.kReverseSoftLimit);
+            }
             mMotor.setControl(mMotionMagicVoltage.withPosition(mPeriodicIO.desiredPosition.getRotations()));
         } else if(mPeriodicIO.controlState == ControlState.FEEDFORWARD) {
             mMotor.setControl(mVoltageOut.withOutput(mPeriodicIO.desiredPercentSpeed * Constants.kMaxMotorVoltage));
@@ -82,6 +93,34 @@ public class AngleAdjuster extends Submodule {
 
     @Override
     public void zero() {}
+
+    public void setPercentSpeed(double speed) {
+        mPeriodicIO.controlState = ControlState.FEEDFORWARD;
+        mPeriodicIO.desiredPercentSpeed = speed;
+    }
+
+    public void setAngle(Rotation2d angle) {
+        mPeriodicIO.controlState = ControlState.FEEDBACK;
+        mPeriodicIO.desiredPosition = angle;
+    }
+
+    public Rotation2d getAngle() {
+        return mPeriodicIO.currentPosition;
+    }
+
+    public Request angleAdjusterRequest(Rotation2d angle, boolean waitUntilSettled) {
+        return new Request() {
+            @Override
+            public void act() {
+                setAngle(angle);
+            }
+
+            @Override
+            public boolean isFinished() {
+                return waitUntilSettled ? Math.abs(mMotor.getClosedLoopError().refresh().getValueAsDouble()) < AngleAdjusterConstants.kTolerance : true;
+            }
+        };
+    }
 
     private TalonFXConfiguration getMotorConfig(CANcoder encoder) {
         TalonFXConfiguration config = new TalonFXConfiguration();
@@ -103,12 +142,14 @@ public class AngleAdjuster extends Submodule {
         // Feedback Configuration
         FeedbackConfigs feedbackConfigs = new FeedbackConfigs();
         feedbackConfigs.withSensorToMechanismRatio(AngleAdjusterConstants.kSensorToMechanismRatio);
+        feedbackConfigs.withRotorToSensorRatio(AngleAdjusterConstants.kRotorToSensorRatio);
         feedbackConfigs.withFeedbackRemoteSensorID(encoder.getDeviceID());
         feedbackConfigs.withFeedbackSensorSource(AngleAdjusterConstants.kFeedbackSensorSource);
         config.withFeedback(feedbackConfigs);
 
         // Velocity PID Configuration
         Slot0Configs slot0Configs = new Slot0Configs();
+        slot0Configs.withKV(AngleAdjusterConstants.kV);
         slot0Configs.withKP(AngleAdjusterConstants.kP);
         slot0Configs.withKI(AngleAdjusterConstants.kI);
         slot0Configs.withKD(AngleAdjusterConstants.kD);
@@ -128,6 +169,19 @@ public class AngleAdjuster extends Submodule {
         softLimitConfigs.withReverseSoftLimitEnable(AngleAdjusterConstants.kReverseSoftLimitEnabled);
         softLimitConfigs.withReverseSoftLimitThreshold(AngleAdjusterConstants.kReverseSoftLimit);
         config.withSoftwareLimitSwitch(softLimitConfigs);
+
+        return config;
+    }
+
+    private CANcoderConfiguration getCANCoderConfig() {
+        CANcoderConfiguration config = new CANcoderConfiguration();
+
+        // Magnet Sensor Configuration
+        MagnetSensorConfigs magnetSensorConfigs = new MagnetSensorConfigs();
+        magnetSensorConfigs.withSensorDirection(AngleAdjusterConstants.kSensorDirection);
+        magnetSensorConfigs.withMagnetOffset(AngleAdjusterConstants.kMagnetOffset);
+        magnetSensorConfigs.withAbsoluteSensorRange(AngleAdjusterConstants.kAbsoluteSensorRange);
+        config.withMagnetSensor(magnetSensorConfigs);
 
         return config;
     }

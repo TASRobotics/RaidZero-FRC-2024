@@ -49,14 +49,14 @@ public class Swerve extends Submodule {
 
     private Swerve() {}
 
-    // private static final Vision vision = Vision.getInstance();
+    private static final Vision mVision = Vision.getInstance();
 
     private SwerveModule mTopRightModule = new SwerveModule();
     private SwerveModule mTopLeftModule = new SwerveModule();
     private SwerveModule mRearLeftModule = new SwerveModule();
     private SwerveModule mRearRightModule = new SwerveModule();
 
-    private Pigeon2 mPigeon = new Pigeon2(SwerveConstants.kImuID, Constants.kCANBusName);
+    private Pigeon2 mPigeon = new Pigeon2(SwerveConstants.kImuID);
 
     private SwerveDrivePoseEstimator mOdometry;
 
@@ -71,10 +71,12 @@ public class Swerve extends Submodule {
     private ControlState mControlState = ControlState.OPEN_LOOP;
 
     private final Limelight mLimelight = Limelight.getInstance();
-    private PIDController mAimAssistYController = new PIDController(
+    private ProfiledPIDController mAimAssistYController = new ProfiledPIDController(
         SwerveConstants.kAimAssistController_kP, 
         SwerveConstants.kAimAssistController_kI, 
-        SwerveConstants.kAimAssistController_kD
+        SwerveConstants.kAimAssistController_kD, 
+        SwerveConstants.kAimAssistControllerConstraints
+
     );
     private ProfiledPIDController mSnapController = new ProfiledPIDController(
         SwerveConstants.kSnapController_kP, 
@@ -190,6 +192,8 @@ public class Swerve extends Submodule {
         //SmartDashboard.putNumber("X pose", mOdometry.getEstimatedPosition().getX());
         //SmartDashboard.putNumber("Y pose", mOdometry.getEstimatedPosition().getY());
         //SmartDashboard.putNumber("Theta pose", mOdometry.getEstimatedPosition().getRotation().getDegrees());
+
+        SmartDashboard.putNumber("Raw Pigeon Rotation2d", mPigeon.getRotation2d().getDegrees());
 
         // if(vision.getRobotPose() != null) {
         // setPose(vision.getRobotPose());
@@ -331,13 +335,13 @@ public class Swerve extends Submodule {
      */
     private Pose2d updateOdometry(double timestamp) {
         try {
-            SwerveModulePosition[] reversedPositions = new SwerveModulePosition[] {
-                new SwerveModulePosition(-getModulePositions()[0].distanceMeters, getModulePositions()[0].angle), 
-                new SwerveModulePosition(-getModulePositions()[1].distanceMeters, getModulePositions()[1].angle), 
-                new SwerveModulePosition(-getModulePositions()[2].distanceMeters, getModulePositions()[2].angle), 
-                new SwerveModulePosition(-getModulePositions()[3].distanceMeters, getModulePositions()[3].angle), 
-            };
-            return mOdometry.updateWithTime(timestamp, mPigeon.getRotation2d(), reversedPositions);
+            // SwerveModulePosition[] reversedPositions = new SwerveModulePosition[] {
+            //     new SwerveModulePosition(-getModulePositions()[0].distanceMeters, getModulePositions()[0].angle), 
+            //     new SwerveModulePosition(-getModulePositions()[1].distanceMeters, getModulePositions()[1].angle), 
+            //     new SwerveModulePosition(-getModulePositions()[2].distanceMeters, getModulePositions()[2].angle), 
+            //     new SwerveModulePosition(-getModulePositions()[3].distanceMeters, getModulePositions()[3].angle), 
+            // };
+            return mOdometry.updateWithTime(timestamp, mPigeon.getRotation2d(), /*reversedPositions*/getModulePositions());
             // return mOdometry.updateWithTime(timestamp,
             //         Rotation2d.fromDegrees(mPigeon.getAngle()),
             //         reversedPositions);
@@ -359,7 +363,7 @@ public class Swerve extends Submodule {
      * @param angularSpeed  turn speed
      * @param fieldOriented
      */
-    public void teleopDrive(double xSpeed, double ySpeed, double angularSpeed, boolean fieldOriented, Rotation2d snapAngle, boolean aimAssist) {
+    public void teleopDrive(double xSpeed, double ySpeed, double angularSpeed, boolean fieldOriented, Rotation2d snapAngle, boolean autoAim, boolean aimAssist) {
         if (mControlState == ControlState.AUTO_AIM) {
             return;
         }
@@ -367,6 +371,11 @@ public class Swerve extends Submodule {
 
         if(snapAngle != null) {
             angularSpeed = mSnapController.calculate(mPigeon.getRotation2d().getDegrees(), snapAngle.getDegrees());
+        }
+
+        if(autoAim && mVision.getSpeakerAngle(Alliance.Blue) != null) {
+            // angularSpeed = mSnapController.calculate(-mPigeon.getRotation2d().getDegrees(), -mVision.getSpeakerAngle(Alliance.Blue).getDegrees());
+            angularSpeed = (-mVision.getSpeakerAngle(Alliance.Blue).getDegrees() + mPigeon.getRotation2d().getDegrees()) * 0.15;
         }
 
         // setOpenLoopSpeeds(new ChassisSpeeds(xSpeed, ySpeed, angularSpeed), fieldOriented);
@@ -518,6 +527,30 @@ SmartDashboard.putNumber("desired ymps", desiredSpeeds.vyMetersPerSecond);
         mRearRightModule.setClosedLoopState(desiredState[3]);
     }
 
+    // public void setAutoAimLocation(AutoAimLocation location) {
+    //     autoAimController.setTarget(getPose(), location, true);
+    // }
+
+    // public void setClosedLoopSpeeds(ChassisSpeeds speeds, boolean fieldOriented) {
+    //     if(fieldOriented) {
+    //         // IMPORTANT - pigeon might need * -1
+    //         speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+    //             speeds.vxMetersPerSecond, 
+    //             speeds.vyMetersPerSecond, 
+    //             speeds.omegaRadiansPerSecond,
+    //             mPigeon.getRotation2d()
+    //         );
+    //     } 
+
+    //     ChassisSpeeds.discretize(speeds, 0.02);
+
+    //     SwerveModuleState[] desiredState = SwerveConstants.kKinematics.toSwerveModuleStates(speeds);
+    //     SwerveDriveKinematics.desaturateWheelSpeeds(desiredState, SwerveConstants.kRealisticMaxVelMPS);
+    //     mTopLeftModule.setClosedLoopState(desiredState[0]);
+    //     mTopRightModule.setClosedLoopState(desiredState[1]);
+    //     mRearLeftModule.setClosedLoopState(desiredState[2]);
+    //     mRearRightModule.setClosedLoopState(desiredState[3]);
+    // }
 
     public ChassisSpeeds getOpenLoopSpeeds() {
         // return SwerveConstants.KINEMATICS.toChassisSpeeds(
@@ -532,11 +565,10 @@ SmartDashboard.putNumber("desired ymps", desiredSpeeds.vyMetersPerSecond);
         return null;
     }
 
-    /*
-    public void setAutoAimLocation(AutoAimLocation location) {
-        autoAimController.setTarget(getPose(), location, true);
-    }
-     */
+
+    // public void setAutoAimLocation(AutoAimLocation location) {
+    //     autoAimController.setTarget(getPose(), location, true);
+    // }
     // public void enableAutoAimController(boolean isEnabled) {
     //     if (isEnabled) {
     //         mControlState = ControlState.AUTO_AIM;

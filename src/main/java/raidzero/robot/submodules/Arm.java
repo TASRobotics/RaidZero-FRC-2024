@@ -1,12 +1,15 @@
 package raidzero.robot.submodules;
 
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DynamicMotionMagicVoltage;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -17,6 +20,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 
 import raidzero.robot.Constants;
 import raidzero.robot.Constants.ArmConstants;
+import raidzero.robot.utils.requests.Request;
 
 // DONE (as of 1/24/2024)
 
@@ -47,6 +51,10 @@ public class Arm extends Submodule {
         .withSlot(ArmConstants.kPositionPIDSlot)
         .withUpdateFreqHz(ArmConstants.kPIDUpdateHz);
 
+    // private DynamicMotionMagicVoltage mDynamicMotionMagicVoltage = new DynamicMotionMagicVoltage(0, 0, 0, 0);
+
+    Follower mFollower = new Follower(mLeftLeader.getDeviceID(), ArmConstants.kFollowerOpposeLeaderInversion);
+
     public static class PeriodicIO {
         public Rotation2d desiredPosition = new Rotation2d();
         public Rotation2d currentPosition = new Rotation2d();
@@ -60,12 +68,14 @@ public class Arm extends Submodule {
 
     @Override
     public void onInit() {
+        mEncoder.getConfigurator().apply(getCANCoderConfig(), Constants.kLongCANTimeoutMs);
+
         mLeftLeader.getConfigurator().apply(getLeaderConfig(mEncoder), Constants.kLongCANTimeoutMs);
         mRightFollower.getConfigurator().apply(getFollowerConfig(), Constants.kLongCANTimeoutMs);
         
-        Follower follower = new Follower(mLeftLeader.getDeviceID(), ArmConstants.kFollowerOpposeLeaderInversion);
-        follower.withUpdateFreqHz(ArmConstants.kFollowerUpdateHz);
-        mRightFollower.setControl(follower);
+        // Follower follower = new Follower(mLeftLeader.getDeviceID(), ArmConstants.kFollowerOpposeLeaderInversion);
+        mFollower.withUpdateFreqHz(ArmConstants.kFollowerUpdateHz);
+        mRightFollower.setControl(mFollower);
     }
 
     @Override
@@ -80,8 +90,10 @@ public class Arm extends Submodule {
     public void run() {
         if(mPeriodicIO.controlState == ControlState.FEEDBACK) {
             mLeftLeader.setControl(mMotionMagicVoltage.withPosition(mPeriodicIO.desiredPosition.getRotations()));
+            mRightFollower.setControl(mFollower);
         } else if(mPeriodicIO.controlState == ControlState.FEEDFORWARD) {
             mLeftLeader.setControl(mVoltageOut.withOutput(mPeriodicIO.desiredPercentSpeed * Constants.kMaxMotorVoltage));
+            mRightFollower.setControl(mFollower);
         }
     }
 
@@ -108,6 +120,26 @@ public class Arm extends Submodule {
         mPeriodicIO.desiredPercentSpeed = speed;
     }
 
+    public Request armRequest(Rotation2d angle, boolean waitUntilSettled) {
+        return new Request() {
+            @Override
+            public void act() {
+                setAngle(angle);
+            }
+
+            @Override
+            public boolean isFinished() {
+                if(waitUntilSettled) {
+                    if(Math.abs(mPeriodicIO.currentPosition.getRotations() - mPeriodicIO.desiredPosition.getRotations()) < ArmConstants.kTolerance) {
+                        return true;
+                    }
+                    return false;
+                }
+                return true;
+            }
+        };
+    }
+
     private TalonFXConfiguration getLeaderConfig(CANcoder encoder) {
         TalonFXConfiguration config = new TalonFXConfiguration();
 
@@ -128,14 +160,16 @@ public class Arm extends Submodule {
         // Feedback Configuration
         FeedbackConfigs feedbackConfigs = new FeedbackConfigs();
         feedbackConfigs.withSensorToMechanismRatio(ArmConstants.kSensorToMechanismRatio);
+        feedbackConfigs.withRotorToSensorRatio(ArmConstants.kRotorToSensorRatio);
         feedbackConfigs.withFeedbackRemoteSensorID(encoder.getDeviceID());
         feedbackConfigs.withFeedbackSensorSource(ArmConstants.kFeedbackSensorSource);
         config.withFeedback(feedbackConfigs);
 
         // Velocity PID Configuration
         Slot0Configs slot0Configs = new Slot0Configs();
-        slot0Configs.withGravityType(ArmConstants.kGravityCompensationType);
-        slot0Configs.withKG(ArmConstants.kG);
+        // slot0Configs.withGravityType(ArmConstants.kGravityCompensationType);
+        // slot0Configs.withKG(ArmConstants.kG);
+        slot0Configs.withKV(ArmConstants.kV);
         slot0Configs.withKP(ArmConstants.kP);
         slot0Configs.withKI(ArmConstants.kI);
         slot0Configs.withKD(ArmConstants.kD);
@@ -174,6 +208,19 @@ public class Arm extends Submodule {
         currentLimitsConfigs.withSupplyCurrentThreshold(ArmConstants.kSupplyCurrentThreshold);
         currentLimitsConfigs.withSupplyTimeThreshold(ArmConstants.kSupplyTimeThreshold);
         config.withCurrentLimits(currentLimitsConfigs);
+
+        return config;
+    }
+
+    private CANcoderConfiguration getCANCoderConfig() {
+        CANcoderConfiguration config = new CANcoderConfiguration();
+
+        // Magnet Sensor Configuration
+        MagnetSensorConfigs magnetSensorConfigs = new MagnetSensorConfigs();
+        magnetSensorConfigs.withSensorDirection(ArmConstants.kSensorDirection);
+        magnetSensorConfigs.withMagnetOffset(ArmConstants.kMagnetOffset);
+        magnetSensorConfigs.withAbsoluteSensorRange(ArmConstants.kAbsoluteSensorRange);
+        config.withMagnetSensor(magnetSensorConfigs);
 
         return config;
     }
