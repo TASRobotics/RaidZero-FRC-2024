@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import raidzero.robot.Constants.AngleAdjusterConstants;
 import raidzero.robot.Constants.SuperstructureConstants;
@@ -38,6 +39,8 @@ public class Superstructure extends Submodule {
     private static final Swerve mSwerve = Swerve.getInstance();
     private static final Wrist mWrist = Wrist.getInstance();
     private static final Conveyor mConveyor = Conveyor.getInstance();
+
+    private static final Vision mVision = Vision.getInstance();
 
     private Request mActiveRequest = null;
     // private ArrayList<Request> mQueuedRequests = new ArrayList<>(0);
@@ -131,6 +134,22 @@ public class Superstructure extends Submodule {
             )
         ));
         mCurrentState = SuperstructureState.AMP;
+    }
+
+    public void angleShooter() {
+        if(mVision.getSpeakerDistance(Alliance.Blue) == 0.0) {
+            return;
+        }
+        double dist = mVision.getSpeakerDistance(Alliance.Blue);
+        double desiredAngleDegrees = 0.0;
+        if(AngleAdjusterConstants.kAimMap.getInterpolated(new InterpolatingDouble(dist)).value != null) {
+            desiredAngleDegrees = AngleAdjusterConstants.kAimMap.getInterpolated(new InterpolatingDouble(dist)).value.doubleValue();
+        }
+
+
+        SmartDashboard.putNumber("Desired Angle Val", desiredAngleDegrees);
+        
+        mAngleAdjuster.setAngle(Rotation2d.fromDegrees(desiredAngleDegrees));
     }
 
     // public void scoreState() {

@@ -25,8 +25,8 @@ public class Robot extends TimedRobot {
     private static final Wrist mWrist = Wrist.getInstance();
     private static final Conveyor mConveyor = Conveyor.getInstance();
     private static final Superstructure mSuperstructure = Superstructure.getInstance();
-    
-    private static final Vision vision = Vision.getInstance();
+
+    private static final Vision mVision = Vision.getInstance();
 
     private AutoRunner autoRunner;
 
@@ -40,7 +40,7 @@ public class Robot extends TimedRobot {
             mIntake,
             mConveyor,
             mSwerve,
-            // vision,
+            mVision,
             // mLimelight
             mArm, 
             mClimb, 
@@ -48,6 +48,7 @@ public class Robot extends TimedRobot {
             mWrist,
             mAngleAdjuster, 
             mSuperstructure
+
         );
         submoduleManager.onInit();
 

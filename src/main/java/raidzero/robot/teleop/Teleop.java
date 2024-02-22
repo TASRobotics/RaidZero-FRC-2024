@@ -75,44 +75,59 @@ public class Teleop {
         double leftTrigger = p.getLeftTriggerAxis();
         double rightTrigger = p.getRightTriggerAxis();
 
-        if(p.getRightBumper()) {
-            // mConveyor.setPercentSpeed(1.0);
-            // mWrist.setPercentSpeed(0.3);
-            mAngleAdjuster.setAngle(Rotation2d.fromDegrees(30));
-        } else if(p.getLeftBumper()) {
-            // mConveyor.setPercentSpeed(-1.0);
-            // mWrist.setPercentSpeed(-0.3);
-            mAngleAdjuster.setAngle(Rotation2d.fromDegrees(50));
-        } else {
-            // mConveyor.setPercentSpeed(0);
-            // mWrist.setPercentSpeed(0.0);
-            mAngleAdjuster.setPercentSpeed(0);
-        }
+        // if(p.getRightBumper()) {
+        //     // mConveyor.setPercentSpeed(1.0);
+        //     // mWrist.setPercentSpeed(0.3);
+        //     // mAngleAdjuster.setAngle(Rotation2d.fromDegrees(30));
+        //     mShooter.setVelocity(90);
+        // } else {
+        //     mShooter.setPercentSpeed(0.0);
+        // }
+        // if(p.getLeftBumper()) {
+        //     // mConveyor.setPercentSpeed(-1.0);
+        //     // mWrist.setPercentSpeed(-0.3);
+        //     // mAngleAdjuster.setAngle(Rotation2d.fromDegrees(50));
+        //     mConveyor.setPercentSpeed(1.0);
+        // } else {
+        //     // mConveyor.setPercentSpeed(0);
+        //     // mWrist.setPercentSpeed(0.0);
+        //     // mAngleAdjuster.setPercentSpeed(0);
+        //     // mShooter.setPercentSpeed(0.0);
+        //     mConveyor.setPercentSpeed(0.0);
+        // }
 
-        if(p.getYButton()) {
-            // mArm.setAngle(SuperstructureConstants.kArmAmpAngle);
-            mShooter.setVelocity(desiredShooterSpeed);
-        } else {
-            // mArm.setPercentSpeed(0);
-            mShooter.setPercentSpeed(0.0);
-        }
+        // if(p.getBButton()) {
+        //     mIntake.setPercentSpeed(1.0, 1.0);
+        // } else {
+        //     mIntake.setPercentSpeed(0.0, 0.0);
+        // }
 
-        if(p.getXButton()) {
-            // mWrist.setAngle(SuperstructureConstants.kWristStowAngle);
-            // mArm.setAngle(SuperstructureConstants.kArmAmpAngle);
-            // mIntake.setPercentSpeed(1.0, 1.0);
-            mSuperstructure.stowState();
-        } else if(p.getAButton()) {
-            // mWrist.setAngle(SuperstructureConstants.kWristIntakingAngle);
-            // mArm.setAngle(SuperstructureConstants.kArmStowAngle);
-            // mIntake.setPercentSpeed(-1.0, -1.0);
-            mSuperstructure.ampState();
-        } else {
-            // mWrist.setPercentSpeed(leftTrigger - rightTrigger);
-            // mWrist.setPercentSpeed(0);
-            // mArm.setPercentSpeed(0.0);
-            // mIntake.setPercentSpeed(0.0, 0.0);
-        }
+        mArm.setPercentSpeed(leftTrigger - rightTrigger);
+
+        // if(p.getYButton()) {
+        //     // mArm.setAngle(SuperstructureConstants.kArmAmpAngle);
+        //     mShooter.setVelocity(desiredShooterSpeed);
+        // } else {
+        //     // mArm.setPercentSpeed(0);
+        //     mShooter.setPercentSpeed(0.0);
+        // }
+
+        // if(p.getXButton()) {
+        //     // mWrist.setAngle(SuperstructureConstants.kWristStowAngle);
+        //     // mArm.setAngle(SuperstructureConstants.kArmAmpAngle);
+        //     // mIntake.setPercentSpeed(1.0, 1.0);
+        //     mSuperstructure.stowState();
+        // } else if(p.getAButton()) {
+        //     // mWrist.setAngle(SuperstructureConstants.kWristIntakingAngle);
+        //     // mArm.setAngle(SuperstructureConstants.kArmStowAngle);
+        //     // mIntake.setPercentSpeed(-1.0, -1.0);
+        //     mSuperstructure.ampState();
+        // } else {
+        //     // mWrist.setPercentSpeed(leftTrigger - rightTrigger);
+        //     // mWrist.setPercentSpeed(0);
+        //     // mArm.setPercentSpeed(0.0);
+        //     // mIntake.setPercentSpeed(0.0, 0.0);
+        // }
 
         // mAngleAdjuster.setPercentSpeed((leftTrigger - rightTrigger) * 0.5);
         // mArm.setPercentSpeed((leftTrigger - rightTrigger) * 0.5);
@@ -133,8 +148,32 @@ public class Teleop {
             JoystickUtils.applyDeadband(p.getRightX()) * SwerveConstants.kMaxVelMPS, 
             true, 
             null, 
+            p.getXButton(),
             false
         );
+
+        // if(p.getXButton()) {
+        //     // mSuperstructure.angleShooter();
+        //     mSuperstructure.ampState();
+        // } 
+        if(p.getYButton()) {
+            mWrist.setPercentSpeed(0.25);
+        } else if(p.getAButton()) {
+            mWrist.setPercentSpeed(-0.25);
+        } else {
+            mWrist.setPercentSpeed(0.0);
+        }
+
+        if(p.getLeftBumper()) {
+            mClimb.setPercentSpeed(.25);
+        } else if(p.getRightBumper()) {
+            mClimb.setPercentSpeed(-.25);
+        } else {
+            mClimb.setPercentSpeed(0.0);
+        }
+        // else {
+        //     mAngleAdjuster.setPercentSpeed(0.0);
+        // }
 
         
         // if(p.getBButton()) {
