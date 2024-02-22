@@ -312,13 +312,13 @@ public class Swerve extends Submodule {
      */
     private Pose2d updateOdometry(double timestamp) {
         try {
-            SwerveModulePosition[] reversedPositions = new SwerveModulePosition[] {
-                new SwerveModulePosition(-getModulePositions()[0].distanceMeters, getModulePositions()[0].angle), 
-                new SwerveModulePosition(-getModulePositions()[1].distanceMeters, getModulePositions()[1].angle), 
-                new SwerveModulePosition(-getModulePositions()[2].distanceMeters, getModulePositions()[2].angle), 
-                new SwerveModulePosition(-getModulePositions()[3].distanceMeters, getModulePositions()[3].angle), 
-            };
-            return mOdometry.updateWithTime(timestamp, mPigeon.getRotation2d(), reversedPositions);
+            // SwerveModulePosition[] reversedPositions = new SwerveModulePosition[] {
+            //     new SwerveModulePosition(-getModulePositions()[0].distanceMeters, getModulePositions()[0].angle), 
+            //     new SwerveModulePosition(-getModulePositions()[1].distanceMeters, getModulePositions()[1].angle), 
+            //     new SwerveModulePosition(-getModulePositions()[2].distanceMeters, getModulePositions()[2].angle), 
+            //     new SwerveModulePosition(-getModulePositions()[3].distanceMeters, getModulePositions()[3].angle), 
+            // };
+            return mOdometry.updateWithTime(timestamp, mPigeon.getRotation2d(), /*reversedPositions*/getModulePositions());
             // return mOdometry.updateWithTime(timestamp,
             //         Rotation2d.fromDegrees(mPigeon.getAngle()),
             //         reversedPositions);
@@ -472,7 +472,7 @@ public class Swerve extends Submodule {
             );
         } 
 
-        // ChassisSpeeds.discretize(speeds, 0.02);
+        ChassisSpeeds.discretize(speeds, 0.02);
 
         SwerveModuleState[] desiredState = SwerveConstants.kKinematics.toSwerveModuleStates(speeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredState, SwerveConstants.kRealisticMaxVelMPS);

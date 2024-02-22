@@ -128,9 +128,9 @@ public class Teleop {
 
 
         mSwerve.teleopDrive(
-            JoystickUtils.applyDeadband(-p.getLeftY()) * SwerveConstants.kMaxVelMPS, 
-            JoystickUtils.applyDeadband(-p.getLeftX()) * SwerveConstants.kMaxVelMPS, 
-            JoystickUtils.applyDeadband(-p.getRightX()) * SwerveConstants.kMaxVelMPS, 
+            JoystickUtils.applyDeadband(p.getLeftY()) * SwerveConstants.kMaxVelMPS, 
+            JoystickUtils.applyDeadband(p.getLeftX()) * SwerveConstants.kMaxVelMPS, 
+            JoystickUtils.applyDeadband(p.getRightX()) * SwerveConstants.kMaxVelMPS, 
             true, 
             null, 
             false
