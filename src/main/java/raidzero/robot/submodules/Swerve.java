@@ -172,8 +172,8 @@ public class Swerve extends Submodule {
         // This needs to be moved somewhere else.....
         SmartDashboard.putData(fieldPose);
 
-        SmartDashboard.putNumber("X pose", mOdometry.getEstimatedPosition().getX());
-        SmartDashboard.putNumber("Y pose", mOdometry.getEstimatedPosition().getY());
+        SmartDashboard.putNumber("X Pose", mOdometry.getEstimatedPosition().getX());
+        SmartDashboard.putNumber("Y Pose", mOdometry.getEstimatedPosition().getY());
         SmartDashboard.putNumber("Theta pose", mOdometry.getEstimatedPosition().getRotation().getDegrees());
 
         // if(vision.getRobotPose() != null) {

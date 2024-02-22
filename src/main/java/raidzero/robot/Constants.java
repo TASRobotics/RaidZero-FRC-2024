@@ -2,6 +2,8 @@ package raidzero.robot;
 
 import java.nio.file.Path;
 
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.ForwardLimitSourceValue;
@@ -13,13 +15,18 @@ import com.ctre.phoenix6.signals.ReverseLimitSourceValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.revrobotics.CANSparkBase.IdleMode;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -430,43 +437,55 @@ public class Constants {
     }
 
     public static final class VisionConstants {
-        public static final String NAME = "SmartDashboard";
-        public static final String APRILTAGFAMILY = "tag16h5";
-        private static final String APRILTAGFILENAME = "AprilTagPoses.json";
-        public static final Path APRILTAGPATH = Filesystem.getDeployDirectory().toPath().resolve(APRILTAGFILENAME);
-        private static final double CAMERAXDISPLACEMENT = 0.0772;
-        private static final double CAMERAYDISPLACEMENT = 0.3429;
-        // private static final double CAMERAZDISPLACEMENT = 0.56198;
-        public static final Rotation2d[] CAMERAANGLES = { new Rotation2d(0), new Rotation2d(Math.PI) };
+        public static final String CAM1_NAME = "photonvision";
+        public static final String CAM2_NAME = "photonvision2";
+        public static final Transform3d ROBOT_TO_CAM1 = new Transform3d(new Translation3d(), new Rotation3d());
+        public static final Transform3d ROBOT_TO_CAM2 = new Transform3d(new Translation3d(), new Rotation3d());
 
-        public static final Pose2d[] CAMERALOCATIONS = {
-                new Pose2d(CAMERAXDISPLACEMENT, -CAMERAYDISPLACEMENT, CAMERAANGLES[0]),
-                new Pose2d(-CAMERAXDISPLACEMENT, -CAMERAYDISPLACEMENT, CAMERAANGLES[1]) };
-        public static final Transform2d[] CAMERATRANSFORMS = { new Transform2d(CAMERALOCATIONS[0], new Pose2d()),
-                new Transform2d(CAMERALOCATIONS[1], new Pose2d()) };
+        public static final AprilTagFieldLayout FIELD_LAYOUT = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
+        public static final PoseStrategy STRATEGY = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
+        public static final Matrix<N3, N1> VISION_STD_DEVS = MatBuilder.fill(Nat.N3(), Nat.N1(), 0.05, 0.05, 1);
 
-        public static final double ANGLEHISTSECS = 1.0;
-        public static final double DISTANCETOLERANCE = 3.0;
-        public static final double DISTANCEERRORFACTOR = 0.01;
-        public static final double ANGLEERRORFACTOR = 1;
-        // public static final Pose2d[] APRILTAG_POSE2DS = {new Pose2d(1, 1, new
-        // Rotation2d(.5))};
-        // public final Pose2d[] APRILTAG_POSE2DS =
-        // JSONTools.GenerateAprilTagPoses(APRILTAGPATH);
-        Path trajectoryFilePath = Filesystem.getDeployDirectory().toPath().resolve("paths/");
-        public static final int IMU_ID = 0;
-
-        public static final double CONE_PIXELS_TO_METERS = 0.001;
-
-        public static final double MID_FIELD_X_POS = 8.3;
-        public static final double MID_FIELD_Y_POS = 4.2;
+        public static final Pose2d BLUE_SPEAKER = new Pose2d(-1.5, 218.42, new Rotation2d());
+        public static final Pose2d RED_SPEAKER = new Pose2d(652.73, 218.42, new Rotation2d());
         
-        public static final double ADD_VISION_TOLERANCE = 1.0;
-        public static final double DISTANCE_RESET_TOLERANCE = 3.0;
-        public static final double SPEED_RESET_TOLERANCE = 0.5;
-        public static final double OMEGA_RESET_TOLERANCE = 0.2;
+        // public static final String NAME = "SmartDashboard";
+        // public static final String APRILTAGFAMILY = "tag16h5";
+        // private static final String APRILTAGFILENAME = "AprilTagPoses.json";
+        // public static final Path APRILTAGPATH = Filesystem.getDeployDirectory().toPath().resolve(APRILTAGFILENAME);
+        // private static final double CAMERAXDISPLACEMENT = 0.0772;
+        // private static final double CAMERAYDISPLACEMENT = 0.3429;
+        // // private static final double CAMERAZDISPLACEMENT = 0.56198;
+        // public static final Rotation2d[] CAMERAANGLES = { new Rotation2d(0), new Rotation2d(Math.PI) };
+
+        // public static final Pose2d[] CAMERALOCATIONS = {
+        //         new Pose2d(CAMERAXDISPLACEMENT, -CAMERAYDISPLACEMENT, CAMERAANGLES[0]),
+        //         new Pose2d(-CAMERAXDISPLACEMENT, -CAMERAYDISPLACEMENT, CAMERAANGLES[1]) };
+        // public static final Transform2d[] CAMERATRANSFORMS = { new Transform2d(CAMERALOCATIONS[0], new Pose2d()),
+        //         new Transform2d(CAMERALOCATIONS[1], new Pose2d()) };
+
+        // public static final double ANGLEHISTSECS = 1.0;
+        // public static final double DISTANCETOLERANCE = 3.0;
+        // public static final double DISTANCEERRORFACTOR = 0.01;
+        // public static final double ANGLEERRORFACTOR = 1;
+        // // public static final Pose2d[] APRILTAG_POSE2DS = {new Pose2d(1, 1, new
+        // // Rotation2d(.5))};
+        // // public final Pose2d[] APRILTAG_POSE2DS =
+        // // JSONTools.GenerateAprilTagPoses(APRILTAGPATH);
+        // Path trajectoryFilePath = Filesystem.getDeployDirectory().toPath().resolve("paths/");
+        // public static final int IMU_ID = 0;
+
+        // public static final double CONE_PIXELS_TO_METERS = 0.001;
+
+        // public static final double MID_FIELD_X_POS = 8.3;
+        // public static final double MID_FIELD_Y_POS = 4.2;
         
-        public static final int NUM_THREADS = 10;
+        // public static final double ADD_VISION_TOLERANCE = 1.0;
+        // public static final double DISTANCE_RESET_TOLERANCE = 3.0;
+        // public static final double SPEED_RESET_TOLERANCE = 0.5;
+        // public static final double OMEGA_RESET_TOLERANCE = 0.2;
+        
+        // public static final int NUM_THREADS = 10;
     }
 
     public static final class LightsConstants {
