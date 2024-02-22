@@ -136,7 +136,7 @@ public class Constants {
         public static final double kThrottleRotToWheelRot = (50.0 / 14.0) * (16.0 / 28.0) * (45.0 / 15.0);
         public static final double kThrottleWheelRotToMeters = 1 / (Math.PI * kWheelDiameterMeters);
         
-        public static final InvertedValue kThrottleInversion = InvertedValue.Clockwise_Positive;
+        public static final InvertedValue kThrottleInversion = InvertedValue.CounterClockwise_Positive;
         public static final InvertedValue kAzimuthInversion = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue kThrottleNeutralMode = NeutralModeValue.Brake;
         public static final NeutralModeValue kAzimuthNeutralMode = NeutralModeValue.Brake;
@@ -241,9 +241,9 @@ public class Constants {
         // Position PID Constants
         public static final int kPositionPIDSlot = 0;
         public static final double kV = 12.0 / (6000.0 / kRotorToSensorRatio / 60); // voltage/rps
-        public static final double kP = 0.0;
+        public static final double kP = 250.0;
         public static final double kI = 0.0;
-        public static final double kD = 0.0;
+        public static final double kD = 0.5;
         public static final double kPIDUpdateHz = 1000;
 
         public static final double kTolerance = 1.0 / 360.0; // rotations
@@ -251,9 +251,9 @@ public class Constants {
         // Motion Magic Constants
         public static final double kTheoreticalMaxSpeedRPS = 6000.0 / kRotorToSensorRatio / 60;
 
-        public static final double kMotionMagicVelocity = kTheoreticalMaxSpeedRPS * 0.95; // rotations per second
-        public static final double kMotionMagicAccel = kTheoreticalMaxSpeedRPS * 2.0;
-        public static final double kMotionMagicJerk = kTheoreticalMaxSpeedRPS * 4.0;
+        public static final double kMotionMagicVelocity = kTheoreticalMaxSpeedRPS; // rotations per second
+        public static final double kMotionMagicAccel = kTheoreticalMaxSpeedRPS * 10.0;
+        public static final double kMotionMagicJerk = kTheoreticalMaxSpeedRPS * 100.0;
 
         // Software Limit Switch Constants
         // TODO

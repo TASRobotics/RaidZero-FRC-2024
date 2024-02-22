@@ -64,9 +64,12 @@ public class Superstructure extends Submodule {
                 mActiveRequest.act();
                 mHasNewRequest = false;
             }
-            if(mActiveRequest.isFinished()) {
-                mActiveRequest = null;
+            if(mActiveRequest != null) {
+                if(mActiveRequest.isFinished()) {
+                    mActiveRequest = null;
+                }
             }
+            
             // if (mActiveRequest == null) {
             //     if (mQueuedRequests.isEmpty()) {
             //         mAllRequestsComplete = true;
