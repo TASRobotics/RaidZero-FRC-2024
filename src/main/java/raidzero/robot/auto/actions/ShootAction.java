@@ -3,22 +3,21 @@ package raidzero.robot.auto.actions;
 
 import edu.wpi.first.wpilibj.Timer;
 
-import raidzero.robot.submodules.Intake;
+import raidzero.robot.submodules.Shooter;
 
-public class RunIntakeAction implements Action {
-    private static final Intake mIntake = Intake.getInstance();
+public class ShootAction implements Action {
+    private static final Shooter mShooter = Shooter.getInstance();
     private Timer timer = new Timer();
 
     private double mSpeed;
 
-    public RunIntakeAction(double speed) {
-        //mDuration = duration;
+    public ShootAction(double speed) {
         mSpeed = speed;
     }
 
     @Override
     public boolean isFinished() {
-        return mIntake.ringPresent();
+        return mShooter.ringPresent();
         //return timer.hasElapsed(mDuration);
     }
 
@@ -32,7 +31,7 @@ public class RunIntakeAction implements Action {
 
     @Override
     public void update() {
-        mIntake.setPercentSpeed(mSpeed,-mSpeed,true);
+        mShooter.setPercentSpeed(mSpeed,-mSpeed,true);
     }
 
     @Override

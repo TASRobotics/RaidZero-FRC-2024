@@ -1,6 +1,8 @@
 package raidzero.robot.auto.sequences;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -10,7 +12,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import raidzero.robot.auto.actions.Action;
 import raidzero.robot.auto.actions.DrivePath;
+import raidzero.robot.auto.actions.ParallelAction;
 import raidzero.robot.auto.actions.Res;
+import raidzero.robot.auto.actions.RunIntakeAction;
 import raidzero.robot.auto.actions.SeriesAction;
 import raidzero.robot.auto.actions.WaitAction;
 import raidzero.robot.submodules.Swerve;
@@ -36,7 +40,7 @@ public class ThreeNote extends AutoSequence {
     //private PathPlannerTrajectory trajectory6;
 
     public ThreeNote() {
-        Rotation2d test1 = new Rotation2d(Math.toRadians(180)); //180
+        Rotation2d test1 = new Rotation2d(Math.toRadians(0)); 
         // Rotation2d test1 = path1.getPoint(0).rotationTarget.getTarget();
         // Rotation2d test1 = mSwerve.getPose().getRotation();
         trajectory1p5 = path1p5.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)));
@@ -58,7 +62,8 @@ public class ThreeNote extends AutoSequence {
         idk.add(new Res());
         idk.add(new DrivePath(trajectory1));
         idk.add(new DrivePath(trajectory1p5));
-        idk.add(new DrivePath(trajectory2));
+        idk.add(new ParallelAction(new LinkedList<>(Arrays.asList(new DrivePath(trajectory2), new RunIntakeAction(1)))));
+        //idk.add(new DrivePath(trajectory2));
         //idk.add(new WaitAction(1));
         idk.add(new DrivePath(trajectory3));
         idk.add(new DrivePath(trajectory4));
