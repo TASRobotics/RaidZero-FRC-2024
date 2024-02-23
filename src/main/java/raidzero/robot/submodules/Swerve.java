@@ -78,11 +78,17 @@ public class Swerve extends Submodule {
         SwerveConstants.kAimAssistControllerConstraints
 
     );
-    private ProfiledPIDController mSnapController = new ProfiledPIDController(
+    // private ProfiledPIDController mSnapController = new ProfiledPIDController(
+    //     SwerveConstants.kSnapController_kP, 
+    //     SwerveConstants.kSnapController_kI, 
+    //     SwerveConstants.kSnapController_kD, 
+    //     SwerveConstants.kSnapControllerConstraints
+    // );
+
+    private PIDController mSnapController = new PIDController(
         SwerveConstants.kSnapController_kP, 
         SwerveConstants.kSnapController_kI, 
-        SwerveConstants.kSnapController_kD, 
-        SwerveConstants.kSnapControllerConstraints
+        SwerveConstants.kSnapController_kD
     );
 
     private Field2d fieldPose = new Field2d();
@@ -245,7 +251,7 @@ public class Swerve extends Submodule {
 
         mOdometry.resetPosition(mPigeon.getRotation2d(), getModulePositions(), new Pose2d());
 
-        mSnapController.reset(mPigeon.getRotation2d().getDegrees());
+        // mSnapController.reset(mPigeon.getRotation2d().getDegrees());
     }
 
     /**
