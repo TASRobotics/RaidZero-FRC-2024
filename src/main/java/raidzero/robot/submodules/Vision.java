@@ -17,6 +17,7 @@ public class Vision extends Submodule {
     private static final Swerve drive = Swerve.getInstance();
 
     private Pose2d visionPose = new Pose2d();
+    private Boolean addVision = false;
 
     public static Vision getInstance() {
         if (instance == null) {
@@ -47,6 +48,7 @@ public class Vision extends Submodule {
         } catch (Exception e) {  
         } 
         updatePose();
+        updateVisionMeasurement();
     }
 
     @Override
