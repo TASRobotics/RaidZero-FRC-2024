@@ -138,7 +138,7 @@ public class Constants {
         public static final double kThrottleWheelRotToMeters = 1 / (Math.PI * kWheelDiameterMeters);
         public static final double kMetersToThrottleRot = kThrottleRotToWheelRot/kThrottleWheelRotToMeters;
         
-        public static final InvertedValue kThrottleInversion = InvertedValue.CounterClockwise_Positive;
+        public static final InvertedValue kThrottleInversion = InvertedValue.Clockwise_Positive;
         public static final InvertedValue kAzimuthInversion = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue kThrottleNeutralMode = NeutralModeValue.Brake;
         public static final NeutralModeValue kAzimuthNeutralMode = NeutralModeValue.Brake;
