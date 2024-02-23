@@ -156,6 +156,7 @@ public class Swerve extends Submodule {
         mDesiredPathingSpeeds = new ChassisSpeeds();
 
         mSnapController.enableContinuousInput(-180, 180);
+        mSnapController.setTolerance(SwerveConstants.kSnapControllerToleranceDegrees);
 
         zero();
     }
@@ -243,6 +244,8 @@ public class Swerve extends Submodule {
         mRearRightModule.zero();
 
         mOdometry.resetPosition(mPigeon.getRotation2d(), getModulePositions(), new Pose2d());
+
+        mSnapController.reset(mPigeon.getRotation2d().getDegrees());
     }
 
     /**
@@ -370,8 +373,12 @@ public class Swerve extends Submodule {
         mControlState = ControlState.OPEN_LOOP;
 
         if(snapAngle != null) {
-            angularSpeed = mSnapController.calculate(mPigeon.getRotation2d().getDegrees(), snapAngle.getDegrees());
-        }
+            angularSpeed = -mSnapController.calculate(mCurrentPose.getRotation().getDegrees(), snapAngle.getDegrees());
+            SmartDashboard.putNumber("Snap Controller Output Speed", angularSpeed);
+        } 
+        // else {
+        //     mSnapController.reset(mPigeon.getRotation2d().getDegrees());
+        // }
 
         if(autoAim && mVision.getSpeakerAngle(Alliance.Blue) != null) {
             // angularSpeed = mSnapController.calculate(-mPigeon.getRotation2d().getDegrees(), -mVision.getSpeakerAngle(Alliance.Blue).getDegrees());

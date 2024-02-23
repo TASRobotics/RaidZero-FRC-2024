@@ -119,11 +119,12 @@ public class Constants {
         public static final double kYControllerTolerance = 0.1;
         public static final double kThetaControllerTolerance = Math.toRadians(5);
 
-        public static final double kSnapController_kP = 0.5;
+        public static final double kSnapController_kP = 0.1;
         public static final double kSnapController_kI = 0.0;
         public static final double kSnapController_kD = 0.0;
         public static final TrapezoidProfile.Constraints kSnapControllerConstraints = 
             new TrapezoidProfile.Constraints(kMaxAngularVelRPS, kMaxAngularVelRPS);
+        public static final double kSnapControllerToleranceDegrees = 2.0;
 
         public static final double kAimAssistController_kP = 0.1;
         public static final double kAimAssistController_kI = 0.0;
