@@ -467,8 +467,10 @@ public class Constants {
 
     public static final class VisionConstants {
         public static final String NAME = "limelight";
-        public static final double XY_STDS = 0.1;
-        public static final double DEG_STDS = 1;
+        public static final double XY_STDS = 0.5;
+        public static final double DEG_STDS = 6;
+        // public static final double XY_STDS = 0.1;
+        // public static final double DEG_STDS = 1;
 
         public static final Pose2d BLUE_SPEAKER = new Pose2d(Units.inchesToMeters(-1.5), Units.inchesToMeters(218.42), new Rotation2d());
         public static final Pose2d RED_SPEAKER = new Pose2d(Units.inchesToMeters(652.73), Units.inchesToMeters(218.42), new Rotation2d());

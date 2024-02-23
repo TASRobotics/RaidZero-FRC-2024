@@ -57,7 +57,7 @@ public class Vision extends Submodule {
         Results results = LimelightHelpers.getLatestResults(VisionConstants.NAME).targetingResults;
 
         Pose2d robotPose = results.getBotPose2d_wpiBlue();
-        if (hasTarget()) {
+        if (robotPose.getX() != 0.0 && hasTarget()) {
             visionPose = robotPose;
         }
     }
