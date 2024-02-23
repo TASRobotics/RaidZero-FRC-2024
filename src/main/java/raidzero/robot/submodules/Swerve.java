@@ -344,13 +344,13 @@ public class Swerve extends Submodule {
      */
     private Pose2d updateOdometry(double timestamp) {
         try {
-            // SwerveModulePosition[] reversedPositions = new SwerveModulePosition[] {
-            //     new SwerveModulePosition(-getModulePositions()[0].distanceMeters, getModulePositions()[0].angle), 
-            //     new SwerveModulePosition(-getModulePositions()[1].distanceMeters, getModulePositions()[1].angle), 
-            //     new SwerveModulePosition(-getModulePositions()[2].distanceMeters, getModulePositions()[2].angle), 
-            //     new SwerveModulePosition(-getModulePositions()[3].distanceMeters, getModulePositions()[3].angle), 
-            // };
-            return mOdometry.updateWithTime(timestamp, mPigeon.getRotation2d(), /*reversedPositions*/getModulePositions());
+            SwerveModulePosition[] reversedPositions = new SwerveModulePosition[] {
+                new SwerveModulePosition(-getModulePositions()[0].distanceMeters, getModulePositions()[0].angle), 
+                new SwerveModulePosition(-getModulePositions()[1].distanceMeters, getModulePositions()[1].angle), 
+                new SwerveModulePosition(-getModulePositions()[2].distanceMeters, getModulePositions()[2].angle), 
+                new SwerveModulePosition(-getModulePositions()[3].distanceMeters, getModulePositions()[3].angle), 
+            };
+            return mOdometry.updateWithTime(timestamp, mPigeon.getRotation2d(), reversedPositions/*getModulePositions()*/);
             // return mOdometry.updateWithTime(timestamp,
             //         Rotation2d.fromDegrees(mPigeon.getAngle()),
             //         reversedPositions);
@@ -388,7 +388,7 @@ public class Swerve extends Submodule {
 
         if(autoAim && mVision.getSpeakerAngle(Alliance.Blue) != null) {
             // angularSpeed = mSnapController.calculate(-mPigeon.getRotation2d().getDegrees(), -mVision.getSpeakerAngle(Alliance.Blue).getDegrees());
-            angularSpeed = (-mVision.getSpeakerAngle(Alliance.Blue).getDegrees() + mPigeon.getRotation2d().getDegrees()) * 0.15;
+            angularSpeed = -(-mVision.getSpeakerAngle(Alliance.Blue).getDegrees() + mPigeon.getRotation2d().getDegrees()) * 0.15;
         }
 
         // setOpenLoopSpeeds(new ChassisSpeeds(xSpeed, ySpeed, angularSpeed), fieldOriented);
@@ -427,20 +427,22 @@ public class Swerve extends Submodule {
     private void updatePathing() {
         PathPlannerTrajectory.State state = (PathPlannerTrajectory.State) mCurrentTrajectory.sample(mTimer.get());
 
-        if(DriverStation.getAlliance().get() == Alliance.Red){
+        /*if(DriverStation.getAlliance().get() == Alliance.Red){
             state.headingAngularVelocityRps*=-1;
             state.positionMeters = new Translation2d(-state.positionMeters.getX(),state.positionMeters.getY());
             state.heading = new Rotation2d(-state.heading.getRadians());
             state.targetHolonomicRotation = new Rotation2d(-state.targetHolonomicRotation.getRadians());
         }
-        SmartDashboard.putNumber("state vel", state.velocityMps);
-
-         mHolonomicController.setEnabled(true); //false, doesnt turn when only ff
-         testController.setEnabled(true);
+        */
+        //SmartDashboard.putNumber("state vel", state.velocityMps);
+        mHolonomicController.setEnabled(true); //false, doesnt turn when only ff
+        testController.setEnabled(true);
         // PathPlannerPath.fromChoreoTrajectory()
-        ChassisSpeeds desiredSpeeds = mHolonomicController.calculateRobotRelativeSpeeds(mCurrentAutoPose, state);
+        ChassisSpeeds desiredSpeeds = mHolonomicController.calculateRobotRelativeSpeeds(/*mCurrentAutoPose*/ mCurrentPose, state);
+        SmartDashboard.putNumber("Desired State X", state.getTargetHolonomicPose().getX());
+        SmartDashboard.putNumber("error", mHolonomicController.getPositionalError());
         //ChassisSpeeds trash = testController.calculateRobotRelativeSpeeds(mCurrentPose, state);
-        //desiredSpeeds.times(-1.0);
+        // desiredSpeeds.times(-1.0);
         
         //if(DriverStation.getAlliance().get() == Alliance.Red){
         //    desiredSpeeds.vxMetersPerSecond = -desiredSpeeds.vxMetersPerSecond;

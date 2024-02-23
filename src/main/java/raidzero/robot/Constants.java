@@ -2,6 +2,7 @@ package raidzero.robot;
 
 import java.nio.file.Path;
 
+import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.ForwardLimitSourceValue;
@@ -67,10 +68,10 @@ public class Constants {
         // public static final double kRearRightAzimuthOffset = -0.205811 + 0.5;
 
         /* Sheesh Offsets */
-        public static final double kFrontLeftAzimuthOffset = -0.834473;
-        public static final double kFrontRightAzimuthOffset = -0.502197;
-        public static final double kRearLeftAzimuthOffset = -0.883789;
-        public static final double kRearRightAzimuthOffset = -0.957275;
+        public static final double kFrontLeftAzimuthOffset = -0.834473 /*+ 0.5*/;
+        public static final double kFrontRightAzimuthOffset = -0.502197 /*+ 0.5*/;
+        public static final double kRearLeftAzimuthOffset = -0.883789 /*+ 0.5*/;
+        public static final double kRearRightAzimuthOffset = -0.957275 /*+ 0.5*/;
 
         public static final double kThrottleReduction = (14.0 / 50.0) * (28.0 / 16.0) * (15.0 / 45.0);
         public static final double kAzimuthReduction = (14.0 / 50.0) * (10.0 / 60.0);
@@ -112,11 +113,11 @@ public class Constants {
         public static final double kThrottle_kA = 1.5;
         public static final double kThrottlePIDUpdateHz = 1000.0;
 
-        public static final double kTranslationController_kP = 5.0;
+        public static final double kTranslationController_kP = 5.0; //5.0
         public static final double kTranslationController_kD = 0.0;
-        public static final double kThetaController_kP = 2.0; //2.5
-        public static final double kXControllerTolerance = 0.1;
-        public static final double kYControllerTolerance = 0.1;
+        public static final double kThetaController_kP = 2.0; //2.0
+        public static final double kXControllerTolerance = 0.1; //0.1
+        public static final double kYControllerTolerance = 0.1; //0.1
         public static final double kThetaControllerTolerance = Math.toRadians(5);
 
         public static final double kSnapController_kP = 0.1;
@@ -138,13 +139,15 @@ public class Constants {
         public static final double kThrottleWheelRotToMeters = 1 / (Math.PI * kWheelDiameterMeters);
         public static final double kMetersToThrottleRot = kThrottleRotToWheelRot/kThrottleWheelRotToMeters;
         
-        public static final InvertedValue kThrottleInversion = InvertedValue.CounterClockwise_Positive;
+        public static final InvertedValue kThrottleInversion = InvertedValue.Clockwise_Positive;
         public static final InvertedValue kAzimuthInversion = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue kThrottleNeutralMode = NeutralModeValue.Brake;
         public static final NeutralModeValue kAzimuthNeutralMode = NeutralModeValue.Brake;
 
         public static final AbsoluteSensorRangeValue kAzimuthEncoderRange = AbsoluteSensorRangeValue.Unsigned_0To1;
         public static final SensorDirectionValue kAzimuthEncoderDirection = SensorDirectionValue.CounterClockwise_Positive;
+
+        // public static final double kOpenLoopRampRate = 0.1;
     }
 
     public static final class LimelightConstants {
@@ -172,8 +175,8 @@ public class Constants {
     }
 
     public static final class IntakeConstants{
-        public static final int kFrontMotorID = 1;
-        public static final int kRearMotorID = 2;
+        public static final int kFrontMotorID = 2;
+        public static final int kRearMotorID = 1;
 
         public static final int kFrontCurrentLimit = 20;
         public static final int kRearCurrentLimit = 40;
@@ -253,7 +256,7 @@ public class Constants {
         // Motion Magic Constants
         public static final double kTheoreticalMaxSpeedRPS = 6000.0 / kRotorToSensorRatio / 60;
 
-        public static final double kMotionMagicVelocity = kTheoreticalMaxSpeedRPS; // rotations per second
+        public static final double kMotionMagicVelocity = kTheoreticalMaxSpeedRPS * 0.60; // rotations per second
         public static final double kMotionMagicAccel = kTheoreticalMaxSpeedRPS * 10.0;
         public static final double kMotionMagicJerk = kTheoreticalMaxSpeedRPS * 100.0;
 
@@ -392,16 +395,24 @@ public class Constants {
         // Motion Magic Constants
         public static final double kTheoreticalMaxSpeedRPS = 6000.0 / kSensorToMechanismRatio / 60.0 * 10;
         // public static final double kTheoreticalMaxSpeedRPS = 100.0;
-        public static final double kMotionMagicVelocity = kTheoreticalMaxSpeedRPS * 0.75;
+        public static final double kMotionMagicVelocity = kTheoreticalMaxSpeedRPS * 0.30;
         public static final double kMotionMagicAccel = kTheoreticalMaxSpeedRPS * 3.0;
         public static final double kMotionMagicJerk = kTheoreticalMaxSpeedRPS * 30.0;
 
         // Software Limit Switch Constants
-        // TODO
-        public static final boolean kForwardSoftLimitEnabled = true;
-        public static final double kForwardSoftLimit = 280.0 / 360.0; // rotations
-        public static final boolean kReverseSoftLimitEnabled = true;
-        public static final double kReverseSoftLimit = 0.0; // rotations
+        public static SoftwareLimitSwitchConfigs kNormalSoftLimits = new SoftwareLimitSwitchConfigs();
+        static {
+            kNormalSoftLimits.ForwardSoftLimitEnable = true;
+            kNormalSoftLimits.ForwardSoftLimitThreshold = 280.0 / 360.0; // rotations
+            kNormalSoftLimits.ReverseSoftLimitEnable = true;
+            kNormalSoftLimits.ReverseSoftLimitThreshold = 0.0;
+        }
+
+        public static SoftwareLimitSwitchConfigs kHomingSoftLimits = new SoftwareLimitSwitchConfigs();
+        static {
+            kHomingSoftLimits.ForwardSoftLimitEnable = false;
+            kHomingSoftLimits.ReverseSoftLimitEnable = false;
+        }
 
         // Hardware Limit Switch Constants
         public static final ForwardLimitSourceValue kForwardLimitSource = ForwardLimitSourceValue.LimitSwitchPin;
