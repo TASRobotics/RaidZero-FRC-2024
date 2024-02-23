@@ -435,12 +435,12 @@ public class Swerve extends Submodule {
         }
         SmartDashboard.putNumber("state vel", state.velocityMps);
 
-         mHolonomicController.setEnabled(true); //false, doesnt turn when only ff
-         testController.setEnabled(true);
+        mHolonomicController.setEnabled(false); //false, doesnt turn when only ff
+        testController.setEnabled(true);
         // PathPlannerPath.fromChoreoTrajectory()
-        ChassisSpeeds desiredSpeeds = mHolonomicController.calculateRobotRelativeSpeeds(mCurrentAutoPose, state);
+        ChassisSpeeds desiredSpeeds = mHolonomicController.calculateRobotRelativeSpeeds(/*mCurrentAutoPose*/ mCurrentPose, state);
         //ChassisSpeeds trash = testController.calculateRobotRelativeSpeeds(mCurrentPose, state);
-        //desiredSpeeds.times(-1.0);
+        // desiredSpeeds.times(-1.0);
         
         //if(DriverStation.getAlliance().get() == Alliance.Red){
         //    desiredSpeeds.vxMetersPerSecond = -desiredSpeeds.vxMetersPerSecond;
