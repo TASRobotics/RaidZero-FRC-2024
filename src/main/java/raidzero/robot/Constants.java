@@ -67,10 +67,10 @@ public class Constants {
         // public static final double kRearRightAzimuthOffset = -0.205811 + 0.5;
 
         /* Sheesh Offsets */
-        public static final double kFrontLeftAzimuthOffset = 0.160645;
-        public static final double kFrontRightAzimuthOffset = 0.473145;
-        public static final double kRearLeftAzimuthOffset = 0.118652;
-        public static final double kRearRightAzimuthOffset = 0.038574;
+        public static final double kFrontLeftAzimuthOffset = -0.834473;
+        public static final double kFrontRightAzimuthOffset = -0.502197;
+        public static final double kRearLeftAzimuthOffset = -0.883789;
+        public static final double kRearRightAzimuthOffset = -0.957275;
 
         public static final double kThrottleReduction = (14.0 / 50.0) * (28.0 / 16.0) * (15.0 / 45.0);
         public static final double kAzimuthReduction = (14.0 / 50.0) * (10.0 / 60.0);
@@ -119,11 +119,12 @@ public class Constants {
         public static final double kYControllerTolerance = 0.1;
         public static final double kThetaControllerTolerance = Math.toRadians(5);
 
-        public static final double kSnapController_kP = 0.5;
+        public static final double kSnapController_kP = 0.1;
         public static final double kSnapController_kI = 0.0;
         public static final double kSnapController_kD = 0.0;
         public static final TrapezoidProfile.Constraints kSnapControllerConstraints = 
             new TrapezoidProfile.Constraints(kMaxAngularVelRPS, kMaxAngularVelRPS);
+        public static final double kSnapControllerToleranceDegrees = 2.0;
 
         public static final double kAimAssistController_kP = 0.1;
         public static final double kAimAssistController_kI = 0.0;
@@ -467,8 +468,8 @@ public class Constants {
 
     public static final class VisionConstants {
         public static final String NAME = "limelight";
-        public static final double XY_STDS = 0.1;
-        public static final double DEG_STDS = 1;
+        public static final double XY_STDS = 0.1; // 0.5
+        public static final double DEG_STDS = 1; // 6
 
         public static final Pose2d BLUE_SPEAKER = new Pose2d(Units.inchesToMeters(-1.5), Units.inchesToMeters(218.42), new Rotation2d());
         public static final Pose2d RED_SPEAKER = new Pose2d(Units.inchesToMeters(652.73), Units.inchesToMeters(218.42), new Rotation2d());
