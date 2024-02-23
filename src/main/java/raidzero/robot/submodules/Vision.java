@@ -69,7 +69,7 @@ public class Vision extends Submodule {
         double tl = results.latency_pipeline;
         double cl = results.latency_capture;
         
-        if (robotPose.getX() == 0.0 && hasTarget()) {
+        if (robotPose.getX() != 0.0 && hasTarget()) {
             drive.getPoseEstimator().setVisionMeasurementStdDevs(VecBuilder.fill(VisionConstants.XY_STDS, VisionConstants.XY_STDS, Units.degreesToRadians(VisionConstants.DEG_STDS)));
             drive.getPoseEstimator().addVisionMeasurement(robotPose, Timer.getFPGATimestamp() - (tl/1000.0) - (cl/1000.0));
         }
