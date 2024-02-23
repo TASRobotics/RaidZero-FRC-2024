@@ -92,7 +92,7 @@ public class Teleop {
         }
 
         mSwerve.teleopDrive(
-            JoystickUtils.applyDeadband(p.getLeftY()) * SwerveConstants.kMaxVelMPS, 
+            -JoystickUtils.applyDeadband(p.getLeftY()) * SwerveConstants.kMaxVelMPS, 
             JoystickUtils.applyDeadband(p.getLeftX()) * SwerveConstants.kMaxVelMPS, 
             JoystickUtils.applyDeadband(p.getRightX()) * SwerveConstants.kMaxVelMPS, 
             true, 
@@ -103,7 +103,7 @@ public class Teleop {
     }
 
     private void p2Loop(GenericHID p) {
-        if(p.getRawButton(0)) { // pink button
+        if(p.getRawButton(1)) { // pink button
             
         }
     }

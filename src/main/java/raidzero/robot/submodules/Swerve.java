@@ -439,6 +439,7 @@ public class Swerve extends Submodule {
         testController.setEnabled(true);
         // PathPlannerPath.fromChoreoTrajectory()
         ChassisSpeeds desiredSpeeds = mHolonomicController.calculateRobotRelativeSpeeds(/*mCurrentAutoPose*/ mCurrentPose, state);
+        SmartDashboard.putNumber("Desired State X", state.getTargetHolonomicPose().getX());
         SmartDashboard.putNumber("error", mHolonomicController.getPositionalError());
         //ChassisSpeeds trash = testController.calculateRobotRelativeSpeeds(mCurrentPose, state);
         // desiredSpeeds.times(-1.0);
@@ -499,7 +500,7 @@ SmartDashboard.putNumber("desired ymps", desiredSpeeds.vyMetersPerSecond);
         if(fieldOriented) {
             // IMPORTANT - pigeon might need * -1
             speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                speeds.vxMetersPerSecond, 
+                -speeds.vxMetersPerSecond, 
                 speeds.vyMetersPerSecond, 
                 speeds.omegaRadiansPerSecond,
                 mPigeon.getRotation2d()
@@ -523,7 +524,7 @@ SmartDashboard.putNumber("desired ymps", desiredSpeeds.vyMetersPerSecond);
         if(fieldOriented) {
             // IMPORTANT - pigeon might need * -1
             speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                speeds.vxMetersPerSecond, 
+                -speeds.vxMetersPerSecond, 
                 speeds.vyMetersPerSecond, 
                 speeds.omegaRadiansPerSecond,
                 mPigeon.getRotation2d()

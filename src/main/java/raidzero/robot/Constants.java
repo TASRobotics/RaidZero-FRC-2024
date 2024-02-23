@@ -67,10 +67,10 @@ public class Constants {
         // public static final double kRearRightAzimuthOffset = -0.205811 + 0.5;
 
         /* Sheesh Offsets */
-        public static final double kFrontLeftAzimuthOffset = -0.834473;
-        public static final double kFrontRightAzimuthOffset = -0.502197;
-        public static final double kRearLeftAzimuthOffset = -0.883789;
-        public static final double kRearRightAzimuthOffset = -0.957275;
+        public static final double kFrontLeftAzimuthOffset = -0.834473 /*+ 0.5*/;
+        public static final double kFrontRightAzimuthOffset = -0.502197 /*+ 0.5*/;
+        public static final double kRearLeftAzimuthOffset = -0.883789 /*+ 0.5*/;
+        public static final double kRearRightAzimuthOffset = -0.957275 /*+ 0.5*/;
 
         public static final double kThrottleReduction = (14.0 / 50.0) * (28.0 / 16.0) * (15.0 / 45.0);
         public static final double kAzimuthReduction = (14.0 / 50.0) * (10.0 / 60.0);
