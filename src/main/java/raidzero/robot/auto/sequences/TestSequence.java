@@ -12,7 +12,7 @@ public class TestSequence extends AutoSequence {
     private PathPlannerTrajectory testTrajectory;
 
     public TestSequence() {
-        Rotation2d test = new Rotation2d(Math.toRadians(0));
+        Rotation2d test = new Rotation2d(Math.toRadians(180));
         testTrajectory = testPath.getTrajectory(new ChassisSpeeds(), test);
     }
 

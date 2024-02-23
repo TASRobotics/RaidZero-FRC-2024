@@ -112,9 +112,9 @@ public class Constants {
         public static final double kThrottle_kA = 1.5;
         public static final double kThrottlePIDUpdateHz = 1000.0;
 
-        public static final double kTranslationController_kP = 0.2; //5.0
+        public static final double kTranslationController_kP = 3; //5.0
         public static final double kTranslationController_kD = 0.0;
-        public static final double kThetaController_kP = 1.0; //2.0
+        public static final double kThetaController_kP = 2.0; //2.0
         public static final double kXControllerTolerance = 0; //0.1
         public static final double kYControllerTolerance = 0; //0.1
         public static final double kThetaControllerTolerance = Math.toRadians(5);
