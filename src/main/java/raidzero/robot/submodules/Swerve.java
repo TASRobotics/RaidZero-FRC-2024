@@ -427,18 +427,19 @@ public class Swerve extends Submodule {
     private void updatePathing() {
         PathPlannerTrajectory.State state = (PathPlannerTrajectory.State) mCurrentTrajectory.sample(mTimer.get());
 
-        if(DriverStation.getAlliance().get() == Alliance.Red){
+        /*if(DriverStation.getAlliance().get() == Alliance.Red){
             state.headingAngularVelocityRps*=-1;
             state.positionMeters = new Translation2d(-state.positionMeters.getX(),state.positionMeters.getY());
             state.heading = new Rotation2d(-state.heading.getRadians());
             state.targetHolonomicRotation = new Rotation2d(-state.targetHolonomicRotation.getRadians());
         }
-        SmartDashboard.putNumber("state vel", state.velocityMps);
-
-        mHolonomicController.setEnabled(false); //false, doesnt turn when only ff
+        */
+        //SmartDashboard.putNumber("state vel", state.velocityMps);
+        mHolonomicController.setEnabled(true); //false, doesnt turn when only ff
         testController.setEnabled(true);
         // PathPlannerPath.fromChoreoTrajectory()
         ChassisSpeeds desiredSpeeds = mHolonomicController.calculateRobotRelativeSpeeds(/*mCurrentAutoPose*/ mCurrentPose, state);
+        SmartDashboard.putNumber("error", mHolonomicController.getPositionalError());
         //ChassisSpeeds trash = testController.calculateRobotRelativeSpeeds(mCurrentPose, state);
         // desiredSpeeds.times(-1.0);
         
