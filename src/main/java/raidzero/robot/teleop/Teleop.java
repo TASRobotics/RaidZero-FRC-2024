@@ -14,6 +14,7 @@ import raidzero.robot.submodules.Wrist;
 import raidzero.robot.submodules.SwerveModule.PeriodicIO;
 import raidzero.robot.utils.JoystickUtils;
 
+import java.sql.Driver;
 import java.util.Optional;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -21,6 +22,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
@@ -32,6 +34,7 @@ public class Teleop {
     private static GenericHID p3 = new GenericHID(2);
 
     private static Swerve mSwerve = Swerve.getInstance();
+
     // private static final Intake mIntake = Intake.getInstance();
     private static final Shooter mShooter = Shooter.getInstance();
     private static final Intake mIntake = Intake.getInstance();
@@ -42,6 +45,9 @@ public class Teleop {
     private static final Arm mArm = Arm.getInstance();
     private static final Superstructure mSuperstructure = Superstructure.getInstance();
 
+    private boolean mBlue = false;
+    private int mReverse = 1;
+
     public static Teleop getInstance() {
         if (instance == null) {
             instance = new Teleop();
@@ -50,9 +56,12 @@ public class Teleop {
     }
 
     public void onStart() {
+        mBlue = DriverStation.getAlliance().get() == Alliance.Blue;
+        mReverse = mBlue ? 1 : -1;
     }
 
     public void onLoop() {
+        SmartDashboard.putBoolean("Blue Alliance?", mBlue);
         p1Loop(p1);
         
         p2Loop(p2);
@@ -65,6 +74,7 @@ public class Teleop {
     double desiredShooterSpeed = 90.0; 
 
     private void p1Loop(XboxController p) {
+
         desiredShooterSpeed = SmartDashboard.getNumber("Desired Shooter Speed", desiredShooterSpeed);
         SmartDashboard.putNumber("Desired Shooter Speed", desiredShooterSpeed);
 
@@ -100,6 +110,35 @@ public class Teleop {
         //     mIntake.setPercentSpeed(1.0, 1.0);
         // } else {
         //     mIntake.setPercentSpeed(0.0, 0.0);
+
+  /*
+        // mSwerve.teleopDrive(
+        //     JoystickUtils.applyDeadband(p.getLeftY()), 
+        //     JoystickUtils.applyDeadband(p.getLeftX()), 
+        //     JoystickUtils.applyDeadband(p.getRightX()), 
+        //     true
+        // );
+        if(p.getBButton()) {
+            // if(mBlue) {
+            //     snapAngle = Rotation2d.fromDegrees(0);
+            // } else {
+            //     snapAngle = Rotation2d.fromDegrees(180);
+            // }
+            snapAngle = Rotation2d.fromDegrees(90.0);
+        } else {
+            snapAngle = null;
+        }
+
+        mSwerve.teleopDrive(
+            -JoystickUtils.applyDeadband(p.getLeftY()) * SwerveConstants.kRealisticMaxVelMPS * mReverse, 
+            -JoystickUtils.applyDeadband(p.getLeftX()) * SwerveConstants.kRealisticMaxVelMPS * mReverse, 
+            -JoystickUtils.applyDeadband(p.getRightX()) * SwerveConstants.kRealisticMaxVelMPS, 
+            true, 
+            snapAngle,
+            p.getAButton() //false
+        );
+      */
+
         // }
 
         mArm.setPercentSpeed(leftTrigger - rightTrigger);

@@ -18,14 +18,16 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
-
+import edu.wpi.first.wpilibj.ADXL345_I2C.AllAxes;
 import raidzero.robot.Constants;
 import raidzero.robot.Constants.DriveConstants;
 import raidzero.robot.Constants.SwerveConstants;
@@ -64,6 +66,7 @@ public class Swerve extends Submodule {
     private ChassisSpeeds mDesiredPathingSpeeds; 
     private Timer mTimer = new Timer();
     private Pose2d mCurrentPose;
+    private Pose2d mCurrentAutoPose;
 
     private ControlState mControlState = ControlState.OPEN_LOOP;
 
@@ -85,6 +88,10 @@ public class Swerve extends Submodule {
     private Field2d fieldPose = new Field2d();
 
     private boolean firstPath = true;    
+
+    public void first(){
+        firstPath = true;
+    }
 
     public void onStart(double timestamp) {
         mControlState = ControlState.OPEN_LOOP;
@@ -167,14 +174,24 @@ public class Swerve extends Submodule {
         mRearRightModule.update(timestamp);
 
         mCurrentPose = updateOdometry(timestamp);
+        mCurrentAutoPose = mCurrentPose;
+        //if (DriverStation.getAlliance().get() == Alliance.Red){
+        //    mCurrentAutoPose = new Pose2d(-mCurrentPose.getX(),mCurrentPose.getY(),Rotation2d.fromDegrees(-mCurrentPose.getRotation().getDegrees()));
+        //}
+
+        SmartDashboard.putNumber("X pose", mCurrentAutoPose.getX());
+        SmartDashboard.putNumber("Y pose", mCurrentAutoPose.getY());
+        SmartDashboard.putNumber("Theta pose", mCurrentAutoPose.getRotation().getDegrees());
+
+        
         fieldPose.setRobotPose(mCurrentPose);
 
         // This needs to be moved somewhere else.....
         SmartDashboard.putData(fieldPose);
 
-        SmartDashboard.putNumber("X pose", mOdometry.getEstimatedPosition().getX());
-        SmartDashboard.putNumber("Y pose", mOdometry.getEstimatedPosition().getY());
-        SmartDashboard.putNumber("Theta pose", mOdometry.getEstimatedPosition().getRotation().getDegrees());
+        //SmartDashboard.putNumber("X pose", mOdometry.getEstimatedPosition().getX());
+        //SmartDashboard.putNumber("Y pose", mOdometry.getEstimatedPosition().getY());
+        //SmartDashboard.putNumber("Theta pose", mOdometry.getEstimatedPosition().getRotation().getDegrees());
 
         SmartDashboard.putNumber("Raw Pigeon Rotation2d", mPigeon.getRotation2d().getDegrees());
 
@@ -208,13 +225,17 @@ public class Swerve extends Submodule {
      */
     @Override
     public void zero() {
-        // if (alliance == Alliance.Blue)
-        //     zeroHeading(180);
-        // else if (alliance == Alliance.Red)
-        //     zeroHeading(0);
+        if (DriverStation.getAlliance().get() == Alliance.Blue)
+            zeroHeading(0);
+        else if (DriverStation.getAlliance().get() == Alliance.Red)
+            //zeroHeading(180);
+            zeroHeading(0);
+
+
+
         // setPose(new Pose2d(new Translation2d(1.76, 1.477), new Rotation2d(Math.toRadians(pigeon.getAngle()))));
 
-        mPigeon.setYaw(0.0);
+        // mPigeon.setYaw(0.0);
 
         mTopRightModule.zero();
         mTopLeftModule.zero();
@@ -393,23 +414,38 @@ public class Swerve extends Submodule {
     private void updatePathing() {
         PathPlannerTrajectory.State state = (PathPlannerTrajectory.State) mCurrentTrajectory.sample(mTimer.get());
 
-         mHolonomicController.setEnabled(true); //false, doesnt turn when only ff
-         testController.setEnabled(false);
-        // PathPlannerPath.fromChoreoTrajectory()
-        ChassisSpeeds desiredSpeeds = mHolonomicController.calculateRobotRelativeSpeeds(mCurrentPose, state);
-        ChassisSpeeds trash = testController.calculateRobotRelativeSpeeds(mCurrentPose, state);
-        //desiredSpeeds.times(-1.0);
-        mDesiredPathingSpeeds = desiredSpeeds;
-        setClosedLoopSpeeds(mDesiredPathingSpeeds,true);
+        if(DriverStation.getAlliance().get() == Alliance.Red){
+            state.headingAngularVelocityRps*=-1;
+            state.positionMeters = new Translation2d(-state.positionMeters.getX(),state.positionMeters.getY());
+            state.heading = new Rotation2d(-state.heading.getRadians());
+            state.targetHolonomicRotation = new Rotation2d(-state.targetHolonomicRotation.getRadians());
+        }
+        SmartDashboard.putNumber("state vel", state.velocityMps);
 
-        // setOpenLoopSpeeds(desiredSpeeds);
-        SmartDashboard.putNumber("desired heading", state.targetHolonomicRotation.getDegrees());
-        if(state.holonomicAngularVelocityRps.isPresent())SmartDashboard.putNumber("desired holonomicAngularVelocityRps", state.holonomicAngularVelocityRps.get());
-        SmartDashboard.putNumber("desired omegaRadiansPerSecond", desiredSpeeds.omegaRadiansPerSecond);
-        SmartDashboard.putNumber("desired xmps", desiredSpeeds.vxMetersPerSecond);
-        SmartDashboard.putNumber("desired ymps", desiredSpeeds.vyMetersPerSecond);
-        SmartDashboard.putNumber("ff xmps", trash.vxMetersPerSecond);
-        SmartDashboard.putNumber("ff ymps", trash.vyMetersPerSecond);
+         mHolonomicController.setEnabled(true); //false, doesnt turn when only ff
+         testController.setEnabled(true);
+        // PathPlannerPath.fromChoreoTrajectory()
+        ChassisSpeeds desiredSpeeds = mHolonomicController.calculateRobotRelativeSpeeds(mCurrentAutoPose, state);
+        //ChassisSpeeds trash = testController.calculateRobotRelativeSpeeds(mCurrentPose, state);
+        //desiredSpeeds.times(-1.0);
+        
+        //if(DriverStation.getAlliance().get() == Alliance.Red){
+        //    desiredSpeeds.vxMetersPerSecond = -desiredSpeeds.vxMetersPerSecond;
+        //    desiredSpeeds.omegaRadiansPerSecond = -desiredSpeeds.omegaRadiansPerSecond;
+        //}
+
+        mDesiredPathingSpeeds = desiredSpeeds;
+        setClosedLoopSpeeds(mDesiredPathingSpeeds,false); //true
+
+//// setOpenLoopSpeeds(desiredSpeeds);
+//SmartDashboard.putNumber("desired heading", state.targetHolonomicRotation.getDegrees());
+//if(state.holonomicAngularVelocityRps.isPresent())SmartDashboard.putNumber("desired holonomicAngularVelocityRps", state.holonomicAngularVelocityRps.get());
+//SmartDashboard.putNumber("desired omegaRadiansPerSecond", desiredSpeeds.omegaRadiansPerSecond);
+SmartDashboard.putNumber("desired xmps", desiredSpeeds.vxMetersPerSecond);
+SmartDashboard.putNumber("desired ymps", desiredSpeeds.vyMetersPerSecond);
+////SmartDashboard.putNumber("ff xmps", trash.vxMetersPerSecond);
+////SmartDashboard.putNumber("ff ymps", trash.vyMetersPerSecond);
+//SmartDashboard.putNumber("trottle dist from ideal", aConstants.SwerveConstants.kMetersToThrottleRot*4-mTopRightModule.throttlePosTravelled());
     }
 
 
@@ -436,10 +472,10 @@ public class Swerve extends Submodule {
         // }
         // return false;
 
-        // if(/*mHolonomicController.getPositionalError() < 0.05 && */mTimer.hasElapsed(mCurrentTrajectory.getTotalTimeSeconds())) {
-        //     System.out.println("Done Pathing!");
-        //     return true;
-        // }
+         if(/*mHolonomicController.getPositionalError() < 0.05 && */mTimer.hasElapsed(mCurrentTrajectory.getTotalTimeSeconds()+0.2)) {
+             System.out.println("Done Pathing!");
+             return true;
+         }
         return false;
     }
 
@@ -453,6 +489,7 @@ public class Swerve extends Submodule {
                 speeds.vyMetersPerSecond, 
                 speeds.omegaRadiansPerSecond,
                 mPigeon.getRotation2d()
+                // DriverStation.getAlliance().get() == Alliance.Blue ? mPigeon.getRotation2d() : mPigeon.getRotation2d().minus(Rotation2d.fromDegrees(180))
             );
         } 
 
@@ -476,6 +513,7 @@ public class Swerve extends Submodule {
                 speeds.vyMetersPerSecond, 
                 speeds.omegaRadiansPerSecond,
                 mPigeon.getRotation2d()
+                // DriverStation.getAlliance().get() == Alliance.Blue ? mPigeon.getRotation2d() : mPigeon.getRotation2d().minus(Rotation2d.fromDegrees(180))
             );
         } 
 
@@ -526,6 +564,7 @@ public class Swerve extends Submodule {
         //                 Rotation2d.fromDegrees(mRearRightModule.getRotorAngle())));
         return null;
     }
+
 
     // public void setAutoAimLocation(AutoAimLocation location) {
     //     autoAimController.setTarget(getPose(), location, true);
