@@ -26,8 +26,8 @@ public class Teleop {
 
     private static Teleop instance = null;
     private static XboxController p1 = new XboxController(0);
-    private static XboxController p2 = new XboxController(1);
-    private static GenericHID p3 = new GenericHID(2);
+    // private static XboxController p2 = new XboxController(1);
+    private static GenericHID p2 = new GenericHID(1);
 
     private static Swerve mSwerve = Swerve.getInstance();
 
@@ -102,7 +102,9 @@ public class Teleop {
         );
     }
 
-    private void p2Loop(XboxController p) {
-       
+    private void p2Loop(GenericHID p) {
+        if(p.getRawButton(0)) { // pink button
+            
+        }
     }
 }
