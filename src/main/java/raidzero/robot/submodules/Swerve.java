@@ -388,7 +388,7 @@ public class Swerve extends Submodule {
 
         if(autoAim && mVision.getSpeakerAngle(Alliance.Blue) != null) {
             // angularSpeed = mSnapController.calculate(-mPigeon.getRotation2d().getDegrees(), -mVision.getSpeakerAngle(Alliance.Blue).getDegrees());
-            angularSpeed = (-mVision.getSpeakerAngle(Alliance.Blue).getDegrees() + mPigeon.getRotation2d().getDegrees()) * 0.15;
+            angularSpeed = -(-mVision.getSpeakerAngle(Alliance.Blue).getDegrees() + mPigeon.getRotation2d().getDegrees()) * 0.15;
         }
 
         // setOpenLoopSpeeds(new ChassisSpeeds(xSpeed, ySpeed, angularSpeed), fieldOriented);

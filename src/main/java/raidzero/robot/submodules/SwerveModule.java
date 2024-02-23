@@ -6,6 +6,7 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
@@ -264,6 +265,11 @@ public class SwerveModule extends Submodule {
         // Closed Loop General Configs
         ClosedLoopGeneralConfigs closedLoopGeneralConfigs = new ClosedLoopGeneralConfigs();
         config.withClosedLoopGeneral(closedLoopGeneralConfigs);
+
+        // Open Loop Ramps Configs
+        OpenLoopRampsConfigs openLoopRampsConfigs = new OpenLoopRampsConfigs();
+        // openLoopRampsConfigs.withVoltageOpenLoopRampPeriod(SwerveConstants.kOpenLoopRampRate);
+        config.withOpenLoopRamps(openLoopRampsConfigs);
 
         return config; 
     }

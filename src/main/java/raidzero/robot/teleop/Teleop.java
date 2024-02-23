@@ -1,5 +1,6 @@
 package raidzero.robot.teleop;
 
+import raidzero.robot.Constants.SuperstructureConstants;
 import raidzero.robot.Constants.SwerveConstants;
 import raidzero.robot.submodules.AngleAdjuster;
 import raidzero.robot.submodules.Arm;
@@ -10,6 +11,7 @@ import raidzero.robot.submodules.Shooter;
 import raidzero.robot.submodules.Superstructure;
 import raidzero.robot.submodules.Swerve;
 import raidzero.robot.submodules.Wrist;
+import raidzero.robot.submodules.Superstructure.SuperstructureState;
 import raidzero.robot.utils.JoystickUtils;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -68,6 +70,9 @@ public class Teleop {
     Rotation2d snapAngle = null;
 
     double desiredShooterSpeed = 90.0; 
+    boolean intaking = false;
+
+    boolean prevRightTrigger = false;
 
     private void p1Loop(XboxController p) {
 
@@ -92,19 +97,82 @@ public class Teleop {
         }
 
         mSwerve.teleopDrive(
-            -JoystickUtils.applyDeadband(p.getLeftY()) * SwerveConstants.kMaxVelMPS, 
-            -JoystickUtils.applyDeadband(p.getLeftX()) * SwerveConstants.kMaxVelMPS, 
-            -JoystickUtils.applyDeadband(p.getRightX()) * SwerveConstants.kMaxVelMPS, 
+            -JoystickUtils.applyDeadband(p.getLeftY()) * SwerveConstants.kMaxVelMPS * 0.5, 
+            -JoystickUtils.applyDeadband(p.getLeftX()) * SwerveConstants.kMaxVelMPS * 0.5, 
+            -JoystickUtils.applyDeadband(p.getRightX()) * SwerveConstants.kMaxVelMPS * 0.5, 
             true, 
             snapAngle, 
-            p.getXButton(),
+            p.getBButton(),
             false
         );
+
+        if(p.getBButton()) {
+            mSuperstructure.angleShooter();
+        }
+
+        if(p.getLeftBumper()) {
+            mWrist.setAngle(SuperstructureConstants.kWristStowAngle);
+            // mIntake.setPercentSpeed(1.0, 1.0);
+        } else if(p.getLeftTriggerAxis() > 0.5) {
+            mWrist.setAngle(SuperstructureConstants.kWristIntakingAngle);
+        } 
+
+        if(p.getRightBumper()) {
+            mIntake.setPercentSpeed(1.0, 1.0);
+        } else if(p.getRightTriggerAxis() > 0.5) {
+            mIntake.setPercentSpeed(leftTrigger, rightTrigger);
+        } else if(p.getRightTriggerAxis() < 0.5 && prevRightTrigger) {
+            mIntake.setPercentSpeed(0.0, 0.0);
+        }
+        prevRightTrigger = p.getRightTriggerAxis() > 0.5;
+
+
+        mIntake.setPercentSpeed(rightTrigger - leftTrigger, rightTrigger - leftTrigger);
     }
 
     private void p2Loop(GenericHID p) {
-        if(p.getRawButton(1)) { // pink button
-            
+        // Amp
+        if(p.getRawButton(10)) {
+            mSuperstructure.ampState();
+        }
+        if(p.getRawButton(9)) {
+            mSuperstructure.stowState();
+        }
+
+        // Score
+        if(p.getRawButton(11)) {
+            if(mSuperstructure.getState() == SuperstructureState.AMP) {
+                mIntake.setPercentSpeed(-1.0, -1.0);
+            } else {
+                mWrist.setAngle(SuperstructureConstants.kWristIntakingAngle);
+                if(mWrist.isSettled()) {
+                    mIntake.setPercentSpeed(1.0, 1.0);
+                    mConveyor.setPercentSpeed(1.0);
+                }
+            }
+        } else if(p.getRawButtonReleased(11)) {
+            if(mSuperstructure.getState() == SuperstructureState.AMP) {
+                mIntake.setPercentSpeed(0.0, 0.0);
+            } else if(!intaking) {
+                mWrist.setAngle(SuperstructureConstants.kWristStowAngle);
+                if(mWrist.isSettled()) {
+                    mIntake.setPercentSpeed(0.0, 0.0);
+                    mConveyor.setPercentSpeed(0.0);
+                }
+            }
+        }
+
+        // Shooter
+        if(p.getRawButton(13)) { 
+            mShooter.setVelocity(90);
+        } else if(p.getRawButton(1)) {
+            mShooter.setPercentSpeed(0.0);
+        }
+
+        if(false) { // if button pressed
+            mWrist.home(true);
+        } else if(false) { // if button released
+            mWrist.home(false);
         }
     }
 }

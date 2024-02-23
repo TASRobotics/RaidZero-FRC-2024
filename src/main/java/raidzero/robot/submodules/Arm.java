@@ -108,6 +108,9 @@ public class Arm extends Submodule {
 
     public void setAngle(Rotation2d angle) {
         mPeriodicIO.controlState = ControlState.FEEDBACK;
+        // if(angle.getRotations() < mLeftLeader.getClosedLoopReference().getValueAsDouble()) {
+        //     mLeftLeader.getConfigurator().apply
+        // }
         mPeriodicIO.desiredPosition = angle;
     }
 
