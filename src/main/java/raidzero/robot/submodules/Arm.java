@@ -79,7 +79,9 @@ public class Arm extends Submodule {
     }
 
     @Override
-    public void onStart(double timestamp) {}
+    public void onStart(double timestamp) {
+
+    }
 
     @Override
     public void update(double timestamp) {
@@ -108,9 +110,11 @@ public class Arm extends Submodule {
 
     public void setAngle(Rotation2d angle) {
         mPeriodicIO.controlState = ControlState.FEEDBACK;
-        // if(angle.getRotations() < mLeftLeader.getClosedLoopReference().getValueAsDouble()) {
-        //     mLeftLeader.getConfigurator().apply
-        // }
+        if((angle.getDegrees() - mPeriodicIO.currentPosition.getDegrees()) < 30.0) {
+            mLeftLeader.getConfigurator().apply(ArmConstants.kDownMotionMagicConfigs, Constants.kCANTimeoutMs);
+        } else if((angle.getDegrees() - mPeriodicIO.currentPosition.getDegrees()) > 30.0) {
+            mLeftLeader.getConfigurator().apply(ArmConstants.kUpMotionMagicConfigs, Constants.kCANTimeoutMs);
+        }
         mPeriodicIO.desiredPosition = angle;
     }
 
@@ -179,11 +183,7 @@ public class Arm extends Submodule {
         config.withSlot0(slot0Configs);
 
         // Motion Magic Configuration
-        MotionMagicConfigs motionMagicConfigs = new MotionMagicConfigs();
-        motionMagicConfigs.withMotionMagicCruiseVelocity(ArmConstants.kMotionMagicVelocity);
-        motionMagicConfigs.withMotionMagicAcceleration(ArmConstants.kMotionMagicAccel);
-        motionMagicConfigs.withMotionMagicJerk(ArmConstants.kMotionMagicJerk);
-        config.withMotionMagic(motionMagicConfigs);
+        config.withMotionMagic(ArmConstants.kUpMotionMagicConfigs);
 
         // Software Limit Switch Configuration 
         SoftwareLimitSwitchConfigs softLimitConfigs = new SoftwareLimitSwitchConfigs();

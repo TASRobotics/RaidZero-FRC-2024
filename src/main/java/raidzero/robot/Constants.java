@@ -2,6 +2,7 @@ package raidzero.robot;
 
 import java.nio.file.Path;
 
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
@@ -346,9 +347,19 @@ public class Constants {
 
         // Motion Magic Constants
         public static final double kTheoreticalMaxSpeedRPS = 6000.0 / kRotorToSensorRatio / 60.0;
-        public static final double kMotionMagicVelocity = kTheoreticalMaxSpeedRPS * 1.0;
-        public static final double kMotionMagicAccel = kTheoreticalMaxSpeedRPS * 3.0;
-        public static final double kMotionMagicJerk = kTheoreticalMaxSpeedRPS * 40.0;
+        public static MotionMagicConfigs kUpMotionMagicConfigs = new MotionMagicConfigs();
+        static {
+            kUpMotionMagicConfigs.withMotionMagicCruiseVelocity(kTheoreticalMaxSpeedRPS * 1.0);
+            kUpMotionMagicConfigs.withMotionMagicAcceleration(kTheoreticalMaxSpeedRPS * 3.0);
+            kUpMotionMagicConfigs.withMotionMagicJerk(kTheoreticalMaxSpeedRPS * 40.0);
+        }
+
+        public static MotionMagicConfigs kDownMotionMagicConfigs = new MotionMagicConfigs();
+        static {
+            kDownMotionMagicConfigs.withMotionMagicCruiseVelocity(kTheoreticalMaxSpeedRPS * 1.0);
+            kDownMotionMagicConfigs.withMotionMagicAcceleration(kTheoreticalMaxSpeedRPS * 1.5);
+            kDownMotionMagicConfigs.withMotionMagicJerk(kTheoreticalMaxSpeedRPS * 10.0);
+        }
 
         // Software Limit Switch Constants
         // TODO
