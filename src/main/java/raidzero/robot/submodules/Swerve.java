@@ -500,7 +500,7 @@ SmartDashboard.putNumber("desired ymps", desiredSpeeds.vyMetersPerSecond);
         // }
         // return false;
 
-         if(/*mHolonomicController.getPositionalError() < 0.05 && */mTimer.hasElapsed(mCurrentTrajectory.getTotalTimeSeconds()+0.2)) {
+         if(/*mHolonomicController.getPositionalError() < 0.05 && */mTimer.hasElapsed(mCurrentTrajectory.getTotalTimeSeconds()+1)) { //0.2
              System.out.println("Done Pathing!");
              return true;
          }
