@@ -164,7 +164,7 @@ public class Superstructure extends Submodule {
         mAngleAdjuster.setAngle(Rotation2d.fromDegrees(desiredAngleDegrees));
     }
 
-    public void intakeChoreographed(boolean enable) {
+    public boolean intakeChoreographed(boolean enable) {
         if(enable && !mNoteHasPassed) {
             mIntake.setPercentSpeed(1.0, 1.0);
             mConveyor.setPercentSpeed(0.40);
@@ -173,12 +173,14 @@ public class Superstructure extends Submodule {
             mIntake.setPercentSpeed(0.0, 0.0);
             mConveyor.setPercentSpeed(0.0);
             mWrist.setAngle(SuperstructureConstants.kWristStowAngle);
+            return true;
         } else if(!enable) {
             mNoteHasPassed = false;
             mConveyor.setPercentSpeed(0.0);
             mIntake.setPercentSpeed(0.0, 0.0);
             mWrist.setAngle(SuperstructureConstants.kWristStowAngle);
         }
+        return false;
     }
 
     private boolean noteHasPassedBeamBreak() {

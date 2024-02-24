@@ -1,22 +1,18 @@
 package raidzero.robot.auto.actions;
 
-import raidzero.robot.Constants.SuperstructureConstants;
-import raidzero.robot.submodules.Intake;
-import raidzero.robot.submodules.Wrist;
+import raidzero.robot.submodules.Superstructure;
 
 public class AutomaticIntakeAction implements Action {
-    private static final Intake mIntake = Intake.getInstance();
-    private static final Wrist mWrist = Wrist.getInstance();
+    private static final Superstructure mSuperstructure = Superstructure.getInstance();
 
-    private double mSpeed;
+    private boolean done = false;
 
-    public AutomaticIntakeAction(double speed) {
-        mSpeed = speed;
+    public AutomaticIntakeAction() {
     }
 
     @Override
     public boolean isFinished() {
-        return mIntake.ringPresent();
+        return done;
     }
 
     @Override
@@ -26,14 +22,12 @@ public class AutomaticIntakeAction implements Action {
 
     @Override
     public void update() {
-        mWrist.setAngle(SuperstructureConstants.kWristIntakingAngle);
-        mIntake.setPercentSpeed(mSpeed, mSpeed);
+        done = mSuperstructure.intakeChoreographed(true);
     }
 
     @Override
     public void done() {
         System.out.println("[Auto] Action '" + getClass().getSimpleName() + "' finished!");
-        mIntake.setPercentSpeed(0.0, 0.0);
-        mWrist.setAngle(SuperstructureConstants.kArmStowAngle);
+        mSuperstructure.intakeChoreographed(false);
     }
 }
