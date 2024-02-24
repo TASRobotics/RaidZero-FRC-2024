@@ -402,13 +402,15 @@ public class Swerve extends Submodule {
 
         // setOpenLoopSpeeds(new ChassisSpeeds(xSpeed, ySpeed, angularSpeed), fieldOriented);
         if(aimAssist && mVision.hasNote()) {
-            double y = mAimAssistYController.calculate(mVision.getNoteX(), 0.0);
-            ChassisSpeeds driverSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, angularSpeed, mPigeon.getRotation2d());
-            ChassisSpeeds aimAssistSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(0.0, y, 0.0, mPigeon.getRotation2d());
-            setClosedLoopSpeeds(driverSpeeds.plus(aimAssistSpeeds), false);
+            double y = mSnapController.calculate(mVision.getNoteX(), 0.0);
+            // ChassisSpeeds driverSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, 0.0, angularSpeed, mPigeon.getRotation2d());
+            // ChassisSpeeds aimAssistSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(0.0, y, 0.0, mPigeon.getRotation2d());
+            // setClosedLoopSpeeds(driverSpeeds.plus(aimAssistSpeeds), false);
 
             // ChassisSpeeds speeds = ChassisSpeeds.fromRobotRelativeSpeeds(xSpeed, y, angularSpeed, mPigeon.getRotation2d());
             // setClosedLoopSpeeds(speeds, false);
+
+            setClosedLoopSpeeds(new ChassisSpeeds(xSpeed, ySpeed, y), fieldOriented);
 
             // setClosedLoopSpeeds(ChassisSpeeds.fromRobotRelativeSpeeds(0.0, y, 0.0, mPigeon.getRotation2d()), false);
         } else {
