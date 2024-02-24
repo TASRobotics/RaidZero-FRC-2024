@@ -20,8 +20,7 @@ public class AutoRunner {
         new TestSequence(),
         new ThreeNote(),
         new ThreeNoteMid(),
-        new ThreeNoteRight(),
-        new ThreeNoteRightRed()
+        new RightSideGoFar(),
     };
 
     public AutoRunner() {
