@@ -36,8 +36,10 @@ public class ThreeNote extends AutoSequence {
     PathPlannerPath path5 = PathPlannerPath.fromPathFile("4th note go shoot");
     private PathPlannerTrajectory trajectory5;
     //get 5th note
-    //PathPlannerPath path6 = PathPlannerPath.fromPathFile("5th note");
-    //private PathPlannerTrajectory trajectory6;
+    PathPlannerPath path6 = PathPlannerPath.fromPathFile("5th note");
+    private PathPlannerTrajectory trajectory6;
+    PathPlannerPath path7 = PathPlannerPath.fromPathFile("5th note go shoot");
+    private PathPlannerTrajectory trajectory7;
 
     public ThreeNote() {
         Rotation2d test1 = new Rotation2d(Math.toRadians(0)); 
@@ -52,7 +54,8 @@ public class ThreeNote extends AutoSequence {
         trajectory3 = path3.getTrajectory(new ChassisSpeeds(), test3);
         trajectory4 = path4.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)));
         trajectory5 = path5.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)));
-        //trajectory6 = path6.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)));
+        trajectory6 = path6.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)));
+        trajectory7 = path7.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)));
 
     }
 
@@ -62,13 +65,14 @@ public class ThreeNote extends AutoSequence {
         idk.add(new Res());
         idk.add(new DrivePath(trajectory1));
         idk.add(new DrivePath(trajectory1p5));
-        idk.add(new ParallelAction(new LinkedList<>(Arrays.asList(new DrivePath(trajectory2), new RunIntakeAction(1)))));
-        //idk.add(new DrivePath(trajectory2));
+        //idk.add(new ParallelAction(new LinkedList<>(Arrays.asList(new DrivePath(trajectory2), new RunIntakeAction(1)))));
+        idk.add(new DrivePath(trajectory2));
         //idk.add(new WaitAction(1));
         idk.add(new DrivePath(trajectory3));
         idk.add(new DrivePath(trajectory4));
         idk.add(new DrivePath(trajectory5));
-        //idk.add(new DrivePath(trajectory6));
+        idk.add(new DrivePath(trajectory6));
+        idk.add(new DrivePath(trajectory7));
         addAction(
             new SeriesAction(idk)
         );

@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.281967377058862,
-        "y": 7.401248696933913
+        "x": 7.848666424864946,
+        "y": 7.436381206571257
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.485394174613833,
-        "y": 7.237060667964749
+        "x": 7.052093222419916,
+        "y": 7.272193177602093
       },
       "isLocked": false,
       "linkedName": "fourend"
@@ -39,11 +39,11 @@
   },
   "goalEndState": {
     "velocity": 3.0,
-    "rotation": 15.0,
+    "rotation": 13.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "left side 3 close auto",
   "previewStartingState": null,
   "useDefaultConstraints": false
 }

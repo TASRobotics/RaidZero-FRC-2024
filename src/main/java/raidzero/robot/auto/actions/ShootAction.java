@@ -7,6 +7,7 @@ import raidzero.robot.submodules.Shooter;
 
 public class ShootAction implements Action {
     private static final Shooter mShooter = Shooter.getInstance();
+    private static final Superstructure mAim = Superstructure.getInstance();
     private Timer timer = new Timer();
 
     private double mSpeed;
@@ -23,9 +24,7 @@ public class ShootAction implements Action {
 
     @Override
     public void start() {
-        timer.reset();
-        timer.start();
-        // mIntake.setPercentSpeed(mSpeed);
+        mAim.angleShooter();
         System.out.println("[Auto] Action '" + getClass().getSimpleName() + "' started!");
     }
 
