@@ -19,7 +19,7 @@ public class Robot extends TimedRobot {
     private static final Arm mArm = Arm.getInstance();
     private static final Climb mClimb = Climb.getInstance();
     private static final Intake mIntake = Intake.getInstance();
-    private static final Limelight mLimelight = Limelight.getInstance();
+    // private static final Limelight mLimelight = Limelight.getInstance();
     private static final Shooter mShooter = Shooter.getInstance();
     private static final Swerve mSwerve = Swerve.getInstance();
     private static final Wrist mWrist = Wrist.getInstance();
@@ -37,6 +37,7 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         // Register all submodules here
         submoduleManager.setSubmodules(
+            mWrist,
             mIntake,
             mConveyor,
             mSwerve,
@@ -45,7 +46,6 @@ public class Robot extends TimedRobot {
             mArm, 
             mClimb, 
             mShooter, 
-            mWrist,
             mAngleAdjuster, 
             mSuperstructure
         );

@@ -1,5 +1,7 @@
 package raidzero.robot.teleop;
 
+import raidzero.robot.Constants;
+import raidzero.robot.Constants.SuperstructureConstants;
 import raidzero.robot.Constants.SwerveConstants;
 import raidzero.robot.submodules.AngleAdjuster;
 import raidzero.robot.submodules.Arm;
@@ -10,8 +12,9 @@ import raidzero.robot.submodules.Shooter;
 import raidzero.robot.submodules.Superstructure;
 import raidzero.robot.submodules.Swerve;
 import raidzero.robot.submodules.Wrist;
+import raidzero.robot.submodules.Superstructure.SuperstructureState;
 import raidzero.robot.utils.JoystickUtils;
-
+import raidzero.robot.wrappers.LimelightHelpers;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.Angle;
@@ -66,8 +69,12 @@ public class Teleop {
     // int moduleNumber = 3;
 
     Rotation2d snapAngle = null;
+    boolean autoAim = false;
 
     double desiredShooterSpeed = 90.0; 
+    boolean intaking = false;
+
+    boolean rightTriggerPressed = false;
 
     private void p1Loop(XboxController p) {
 
@@ -87,24 +94,129 @@ public class Teleop {
             } else {
                 snapAngle = Rotation2d.fromDegrees(180);
             }
-        } else {
+        } else if(isAttemptingToTurn()) {
             snapAngle = null;
         }
 
+        if(p.getBButton()) {
+            autoAim = true;
+        } else if(isAttemptingToTurn()) {
+            autoAim = false;
+        }
+
+        // if(LimelightHelpers.getTV(null))
+
         mSwerve.teleopDrive(
-            -JoystickUtils.applyDeadband(p.getLeftY()) * SwerveConstants.kMaxVelMPS, 
-            -JoystickUtils.applyDeadband(p.getLeftX()) * SwerveConstants.kMaxVelMPS, 
-            -JoystickUtils.applyDeadband(p.getRightX()) * SwerveConstants.kMaxVelMPS, 
+            -JoystickUtils.applyDeadband(p.getLeftY()) * SwerveConstants.kMaxVelMPS * 0.5, 
+            -JoystickUtils.applyDeadband(p.getLeftX()) * SwerveConstants.kMaxVelMPS * 0.5, 
+            -JoystickUtils.applyDeadband(p.getRightX()) * SwerveConstants.kMaxVelMPS * 0.5, 
             true, 
             snapAngle, 
-            p.getXButton(),
-            false
+            autoAim,
+            p.getYButton()
         );
+
+        if(autoAim) {
+            mSuperstructure.angleShooter();
+        }
+
+        if(p.getLeftBumper()) {
+            mWrist.setAngle(SuperstructureConstants.kWristStowAngle);
+            // mIntake.setPercentSpeed(1.0, 1.0);
+        } else if(p.getLeftTriggerAxis() > 0.5) {
+            mWrist.setAngle(SuperstructureConstants.kWristIntakingAngle);
+        } 
+
+        if(p.getRightBumper()) {
+            mIntake.setPercentSpeed(1.0, 1.0);
+        } else if(p.getRightTriggerAxis() > 0.5) {
+            mIntake.setPercentSpeed(-1.0, -1.0);
+        } else {
+            mIntake.setPercentSpeed(0.0, 0.0);
+        }
+        // else if(p.getRightBumperReleased() || isRightTriggerReleased()) {
+        //     mIntake.setPercentSpeed(0.0, 0.0);
+        // }
+
+
+
+        // prevRightTrigger = p.getRightTriggerAxis() > 0.5;
+        // if(p.getLeftBumper()) {
+        //     mWrist.setAngle(SuperstructureConstants.kWristStowAngle);
+        // } else if(p.getRightBumper()) {
+        //     mWrist.setAngle(SuperstructureConstants.kWristIntakingAngle);
+        // }
+
+        // mIntake.setPercentSpeed(rightTrigger - leftTrigger, rightTrigger - leftTrigger);
     }
 
     private void p2Loop(GenericHID p) {
-        if(p.getRawButton(1)) { // pink button
-            
+        // manual conveyor control
+        if(p.getRawButton(6)) {
+            mConveyor.setPercentSpeed(1.0);
+        } else if(p.getRawButton(7)) {
+            mConveyor.setPercentSpeed(-1.0);
+        } else {
+            mConveyor.setPercentSpeed(0.0);
         }
+
+        // Amp
+        if(p.getRawButton(10)) {
+            mSuperstructure.ampState();
+        }
+        if(p.getRawButton(9)) {
+            mSuperstructure.stowState();
+        }
+
+        // Score
+        if(p.getRawButton(11)) {
+            if(mSuperstructure.getState() == SuperstructureState.AMP) {
+                mIntake.setPercentSpeed(-1.0, -1.0);
+            } else {
+                mWrist.setAngle(SuperstructureConstants.kWristIntakingAngle);
+                if(mWrist.isSettled()) {
+                    mIntake.setPercentSpeed(1.0, 1.0);
+                    mConveyor.setPercentSpeed(1.0);
+                }
+            }
+        } else if(p.getRawButtonReleased(11)) {
+            if(mSuperstructure.getState() == SuperstructureState.AMP) {
+                mIntake.setPercentSpeed(0.0, 0.0);
+            } else if(!intaking) {
+                mWrist.setAngle(SuperstructureConstants.kWristStowAngle);
+                if(mWrist.isSettled()) {
+                    mIntake.setPercentSpeed(0.0, 0.0);
+                    mConveyor.setPercentSpeed(0.0);
+                }
+            }
+        }
+
+        // Shooter
+        if(p.getRawButton(13)) { 
+            mShooter.setVelocity(90);
+        } else if(p.getRawButton(1)) {
+            mShooter.setPercentSpeed(0.0);
+        }
+
+        if(p.getRawButton(3)) { // if button pressed
+            mWrist.home(true);
+        } else if(p.getRawButtonReleased(3)) { // if button released
+            mWrist.home(false);
+        }
+    }
+
+    private boolean isRightTriggerReleased() {
+        boolean pressed = p1.getRightTriggerAxis() > 0.5;
+        if(rightTriggerPressed && !pressed) {
+            rightTriggerPressed = false;
+            return true;
+        } else if(pressed) {
+            rightTriggerPressed = true; 
+        }
+        return false;
+    }
+
+    private boolean isAttemptingToTurn() {
+        return Math.abs(p1.getRightX()) > Constants.kJoystickDeadband;
     }
 }

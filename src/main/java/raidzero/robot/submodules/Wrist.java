@@ -6,7 +6,6 @@ import com.ctre.phoenix6.configs.HardwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -20,7 +19,7 @@ import raidzero.robot.utils.requests.Request;
 
 public class Wrist extends Submodule {
     private enum ControlState {
-        FEEDBACK, FEEDFORWARD
+        FEEDBACK, FEEDFORWARD, HOMING
     }
 
     private static Wrist instance = null;
@@ -48,6 +47,8 @@ public class Wrist extends Submodule {
 
         public double desiredPercentSpeed = 0.0;
 
+        public boolean homingMove = false;
+
         public ControlState controlState = ControlState.FEEDFORWARD;
     }
 
@@ -72,9 +73,18 @@ public class Wrist extends Submodule {
     @Override
     public void run() {
         if(mPeriodicIO.controlState == ControlState.FEEDBACK) {
+            mMotor.getConfigurator().apply(WristConstants.kNormalSoftLimits);
             mMotor.setControl(mMotionMagicVoltage.withPosition(mPeriodicIO.desiredPosition.getRotations()));
         } else if(mPeriodicIO.controlState == ControlState.FEEDFORWARD) {
+            mMotor.getConfigurator().apply(WristConstants.kNormalSoftLimits);
             mMotor.setControl(mVoltageOut.withOutput(mPeriodicIO.desiredPercentSpeed * Constants.kMaxMotorVoltage));
+        } else if(mPeriodicIO.controlState == ControlState.HOMING) {
+            mMotor.getConfigurator().apply(WristConstants.kHomingSoftLimits);
+            if(mPeriodicIO.homingMove) {
+                mMotor.setControl(mVoltageOut.withOutput(-0.1 * Constants.kMaxMotorVoltage));
+            } else {
+                zero();
+            }
         }
     }
 
@@ -107,6 +117,15 @@ public class Wrist extends Submodule {
         mPeriodicIO.desiredPercentSpeed = speed;
     }
 
+    public boolean isSettled() {
+        return Math.abs(mMotor.getClosedLoopError().refresh().getValueAsDouble()) < WristConstants.kTolerance;
+    }
+
+    public void home(boolean moving) {
+        mPeriodicIO.controlState = ControlState.HOMING;
+        mPeriodicIO.homingMove = moving;
+    }
+
     public Request wristRequest(Rotation2d angle, boolean waitUntilSettled) {
         return new Request() {
             @Override
@@ -116,7 +135,7 @@ public class Wrist extends Submodule {
 
             @Override
             public boolean isFinished() {
-                return waitUntilSettled ? Math.abs(mMotor.getClosedLoopError().refresh().getValueAsDouble()) < WristConstants.kTolerance : true;
+                return waitUntilSettled ? isSettled() : true;
             }
         };
     }
@@ -159,12 +178,7 @@ public class Wrist extends Submodule {
         config.withMotionMagic(motionMagicConfigs);
 
         // Software Limit Switch Configuration 
-        SoftwareLimitSwitchConfigs softLimitConfigs = new SoftwareLimitSwitchConfigs();
-        softLimitConfigs.withForwardSoftLimitEnable(WristConstants.kForwardSoftLimitEnabled);
-        softLimitConfigs.withForwardSoftLimitThreshold(WristConstants.kForwardSoftLimit);
-        softLimitConfigs.withReverseSoftLimitEnable(WristConstants.kReverseSoftLimitEnabled);
-        softLimitConfigs.withReverseSoftLimitThreshold(WristConstants.kReverseSoftLimit);
-        config.withSoftwareLimitSwitch(softLimitConfigs);
+        config.withSoftwareLimitSwitch(WristConstants.kNormalSoftLimits);
 
         // Hardware Limit Switch Configuration
         HardwareLimitSwitchConfigs hardwareLimitConfigs = new HardwareLimitSwitchConfigs();
