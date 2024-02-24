@@ -198,11 +198,10 @@ public class Teleop {
             mShooter.setPercentSpeed(0.0);
         }
 
+        // wrist zeroing
         if(p.getRawButton(3)) { // if button pressed
-            mWrist.home(true);
-        } else if(p.getRawButtonReleased(3)) { // if button released
-            mWrist.home(false);
-        }
+            mWrist.setPercentSpeed(-0.1);
+        } 
     }
 
     private boolean isRightTriggerReleased() {

@@ -13,6 +13,7 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.ReverseLimitSourceValue;
+import com.ctre.phoenix6.signals.ReverseLimitTypeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import com.revrobotics.CANSparkBase.IdleMode;
@@ -432,22 +433,16 @@ public class Constants {
         static {
             kNormalSoftLimits.ForwardSoftLimitEnable = true;
             kNormalSoftLimits.ForwardSoftLimitThreshold = 280.0 / 360.0; // rotations
-            kNormalSoftLimits.ReverseSoftLimitEnable = true;
+            kNormalSoftLimits.ReverseSoftLimitEnable = false;
             kNormalSoftLimits.ReverseSoftLimitThreshold = 0.0;
         }
 
-        public static SoftwareLimitSwitchConfigs kHomingSoftLimits = new SoftwareLimitSwitchConfigs();
-        static {
-            kHomingSoftLimits.ForwardSoftLimitEnable = false;
-            kHomingSoftLimits.ReverseSoftLimitEnable = false;
-        }
-
         // Hardware Limit Switch Constants
-        public static final ForwardLimitSourceValue kForwardLimitSource = ForwardLimitSourceValue.LimitSwitchPin;
-        public static final ForwardLimitTypeValue kForwardLimitType = ForwardLimitTypeValue.NormallyClosed;
-        public static final boolean kForwardLimitEnabled = false;
-        public static final ReverseLimitSourceValue kReverseLimitSource = ReverseLimitSourceValue.Disabled;
-        public static final boolean kReverseLimitEnabled = false;
+        public static final ReverseLimitSourceValue kReverseLimitSource = ReverseLimitSourceValue.LimitSwitchPin;
+        public static final ReverseLimitTypeValue kReverseLimitType = ReverseLimitTypeValue.NormallyClosed;
+        public static final boolean kReverseLimitEnabled = true;
+        public static final boolean kReverseLimitAutosetPositionEnabled = true;
+        public static final double kReverseLimitAutosetPositionValue = 0.0;
     }
 
     public static final class ClimbConstants {

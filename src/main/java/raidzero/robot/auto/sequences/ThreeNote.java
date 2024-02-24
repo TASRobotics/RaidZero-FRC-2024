@@ -14,7 +14,7 @@ import raidzero.robot.auto.actions.Action;
 import raidzero.robot.auto.actions.DrivePath;
 import raidzero.robot.auto.actions.ParallelAction;
 import raidzero.robot.auto.actions.Res;
-import raidzero.robot.auto.actions.RunIntakeAction;
+import raidzero.robot.auto.actions.ManualRunIntakeAction;
 import raidzero.robot.auto.actions.SeriesAction;
 import raidzero.robot.auto.actions.WaitAction;
 import raidzero.robot.submodules.Swerve;
