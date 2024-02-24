@@ -494,6 +494,7 @@ public class Constants {
         public static final double DEG_STDS = 1;
 
         public static final String NOTE_CAM_NAME = "limelight-object";
+        public static final int NOTE_FILTER_SIZE = 5;
 
         public static final Pose2d BLUE_SPEAKER_POSE = new Pose2d(Units.inchesToMeters(-1.5), Units.inchesToMeters(218.42), new Rotation2d());
         public static final Pose2d RED_SPEAKER_POSE = new Pose2d(Units.inchesToMeters(652.73), Units.inchesToMeters(218.42), new Rotation2d());

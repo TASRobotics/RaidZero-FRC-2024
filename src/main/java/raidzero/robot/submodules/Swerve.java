@@ -6,6 +6,8 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathPlannerTrajectory;
 import com.pathplanner.lib.util.PIDConstants;
 
+import java.util.Optional;
+
 import com.choreo.lib.*;
 
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -112,6 +114,8 @@ public class Swerve extends Submodule {
 
     public void onInit() {
         Shuffleboard.getTab(Tab.MAIN).add("Pigey", mPigeon).withSize(2, 2).withPosition(4, 4);
+        
+        // PPHolonomicDriveController.setRotationTargetOverride(this::getRotationTargetOverride);
 
         mTopLeftModule.onInit(
             SwerveConstants.kFrontLeftThrottleID,
@@ -393,7 +397,7 @@ public class Swerve extends Submodule {
         }
 
         // setOpenLoopSpeeds(new ChassisSpeeds(xSpeed, ySpeed, angularSpeed), fieldOriented);
-        if(aimAssist && mVision.seesNote()) {
+        if(aimAssist && mVision.hasNote()) {
             double y = mAimAssistYController.calculate(mVision.getNoteX(), 0.0);
             ChassisSpeeds driverSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, 0.0, angularSpeed, mPigeon.getRotation2d());
             ChassisSpeeds aimAssistSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(0.0, y, 0.0, mPigeon.getRotation2d());
@@ -581,6 +585,13 @@ SmartDashboard.putNumber("desired ymps", desiredSpeeds.vyMetersPerSecond);
         return null;
     }
 
+    public Optional<Rotation2d> getRotationTargetOverride(){
+        if(mVision.hasNote()) {
+            return Optional.of(Rotation2d.fromDegrees(mVision.getNoteX()));
+        } else {
+            return Optional.empty();
+        }
+    }
 
     // public void setAutoAimLocation(AutoAimLocation location) {
     //     autoAimController.setTarget(getPose(), location, true);
