@@ -1,5 +1,6 @@
 package raidzero.robot.teleop;
 
+import raidzero.robot.Constants;
 import raidzero.robot.Constants.SuperstructureConstants;
 import raidzero.robot.Constants.SwerveConstants;
 import raidzero.robot.submodules.AngleAdjuster;
@@ -13,7 +14,7 @@ import raidzero.robot.submodules.Swerve;
 import raidzero.robot.submodules.Wrist;
 import raidzero.robot.submodules.Superstructure.SuperstructureState;
 import raidzero.robot.utils.JoystickUtils;
-
+import raidzero.robot.wrappers.LimelightHelpers;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.Angle;
@@ -68,11 +69,12 @@ public class Teleop {
     // int moduleNumber = 3;
 
     Rotation2d snapAngle = null;
+    boolean autoAim = false;
 
     double desiredShooterSpeed = 90.0; 
     boolean intaking = false;
 
-    boolean prevRightTrigger = false;
+    boolean rightTriggerPressed = false;
 
     private void p1Loop(XboxController p) {
 
@@ -92,9 +94,17 @@ public class Teleop {
             } else {
                 snapAngle = Rotation2d.fromDegrees(180);
             }
-        } else {
+        } else if(isAttemptingToTurn()) {
             snapAngle = null;
         }
+
+        if(p.getBButton()) {
+            autoAim = true;
+        } else if(isAttemptingToTurn()) {
+            autoAim = false;
+        }
+
+        // if(LimelightHelpers.getTV(null))
 
         mSwerve.teleopDrive(
             -JoystickUtils.applyDeadband(p.getLeftY()) * SwerveConstants.kMaxVelMPS * 0.5, 
@@ -102,11 +112,11 @@ public class Teleop {
             -JoystickUtils.applyDeadband(p.getRightX()) * SwerveConstants.kMaxVelMPS * 0.5, 
             true, 
             snapAngle, 
-            p.getBButton(),
-            false
+            autoAim,
+            p.getYButton()
         );
 
-        if(p.getBButton()) {
+        if(autoAim) {
             mSuperstructure.angleShooter();
         }
 
@@ -120,17 +130,36 @@ public class Teleop {
         if(p.getRightBumper()) {
             mIntake.setPercentSpeed(1.0, 1.0);
         } else if(p.getRightTriggerAxis() > 0.5) {
-            mIntake.setPercentSpeed(leftTrigger, rightTrigger);
-        } else if(p.getRightTriggerAxis() < 0.5 && prevRightTrigger) {
+            mIntake.setPercentSpeed(-1.0, -1.0);
+        } else {
             mIntake.setPercentSpeed(0.0, 0.0);
         }
-        prevRightTrigger = p.getRightTriggerAxis() > 0.5;
+        // else if(p.getRightBumperReleased() || isRightTriggerReleased()) {
+        //     mIntake.setPercentSpeed(0.0, 0.0);
+        // }
 
 
-        mIntake.setPercentSpeed(rightTrigger - leftTrigger, rightTrigger - leftTrigger);
+
+        // prevRightTrigger = p.getRightTriggerAxis() > 0.5;
+        // if(p.getLeftBumper()) {
+        //     mWrist.setAngle(SuperstructureConstants.kWristStowAngle);
+        // } else if(p.getRightBumper()) {
+        //     mWrist.setAngle(SuperstructureConstants.kWristIntakingAngle);
+        // }
+
+        // mIntake.setPercentSpeed(rightTrigger - leftTrigger, rightTrigger - leftTrigger);
     }
 
     private void p2Loop(GenericHID p) {
+        // manual conveyor control
+        if(p.getRawButton(6)) {
+            mConveyor.setPercentSpeed(1.0);
+        } else if(p.getRawButton(7)) {
+            mConveyor.setPercentSpeed(-1.0);
+        } else {
+            mConveyor.setPercentSpeed(0.0);
+        }
+
         // Amp
         if(p.getRawButton(10)) {
             mSuperstructure.ampState();
@@ -169,10 +198,25 @@ public class Teleop {
             mShooter.setPercentSpeed(0.0);
         }
 
-        if(false) { // if button pressed
+        if(p.getRawButton(3)) { // if button pressed
             mWrist.home(true);
-        } else if(false) { // if button released
+        } else if(p.getRawButtonReleased(3)) { // if button released
             mWrist.home(false);
         }
+    }
+
+    private boolean isRightTriggerReleased() {
+        boolean pressed = p1.getRightTriggerAxis() > 0.5;
+        if(rightTriggerPressed && !pressed) {
+            rightTriggerPressed = false;
+            return true;
+        } else if(pressed) {
+            rightTriggerPressed = true; 
+        }
+        return false;
+    }
+
+    private boolean isAttemptingToTurn() {
+        return Math.abs(p1.getRightX()) > Constants.kJoystickDeadband;
     }
 }

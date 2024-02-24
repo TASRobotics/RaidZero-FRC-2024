@@ -245,8 +245,7 @@ public class SwerveModule extends Submodule {
         config.withMotorOutput(motorOutputConfigs);
 
         // Current Limit Configuration
-        CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
-        config.withCurrentLimits(currentLimitsConfigs);
+        config.withCurrentLimits(SwerveConstants.kThrottleCurrentLimitsConfigs);
         
         // Feedback Configuration
         FeedbackConfigs feedbackConfigs = new FeedbackConfigs();
@@ -284,8 +283,7 @@ public class SwerveModule extends Submodule {
         config.withMotorOutput(motorOutputConfigs);
 
         // Current Limit Configuration
-        CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
-        config.withCurrentLimits(currentLimitsConfigs);
+        config.withCurrentLimits(SwerveConstants.kAzimuthCurrentLimitsConfigs);
         
         // Feedback Configuration
         FeedbackConfigs feedbackConfigs = new FeedbackConfigs();
