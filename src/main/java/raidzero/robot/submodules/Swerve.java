@@ -70,7 +70,8 @@ public class Swerve extends Submodule {
 
     private ControlState mControlState = ControlState.OPEN_LOOP;
 
-    private final Limelight mLimelight = Limelight.getInstance();
+    // private final Limelight mLimelight = Limelight.getInstance();
+
     private ProfiledPIDController mAimAssistYController = new ProfiledPIDController(
         SwerveConstants.kAimAssistController_kP, 
         SwerveConstants.kAimAssistController_kI, 
@@ -379,8 +380,8 @@ public class Swerve extends Submodule {
         }
 
         // setOpenLoopSpeeds(new ChassisSpeeds(xSpeed, ySpeed, angularSpeed), fieldOriented);
-        if(aimAssist && mLimelight.hasTarget()) {
-            double y = mAimAssistYController.calculate(mLimelight.getTx(), 0.0);
+        if(aimAssist && mVision.seesNote()) {
+            double y = mAimAssistYController.calculate(mVision.getNoteX(), 0.0);
             ChassisSpeeds driverSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, 0.0, angularSpeed, mPigeon.getRotation2d());
             ChassisSpeeds aimAssistSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(0.0, y, 0.0, mPigeon.getRotation2d());
             setClosedLoopSpeeds(driverSpeeds.plus(aimAssistSpeeds), false);
