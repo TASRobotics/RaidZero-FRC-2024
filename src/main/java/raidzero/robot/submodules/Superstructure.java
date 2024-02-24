@@ -177,7 +177,7 @@ public class Superstructure extends Submodule {
             mNoteHasPassed = false;
             mConveyor.setPercentSpeed(0.0);
             mIntake.setPercentSpeed(0.0, 0.0);
-            mWrist.setAngle(SuperstructureConstants.kArmStowAngle);
+            mWrist.setAngle(SuperstructureConstants.kWristStowAngle);
         }
     }
 
