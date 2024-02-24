@@ -61,10 +61,11 @@ public class Teleop {
 
     public void onLoop() {
         SmartDashboard.putBoolean("Blue Alliance?", mBlue);
-        mAngleAdjuster.setPercentSpeed(p1.getLeftTriggerAxis() - p1.getRightTriggerAxis());
-        // p1Loop(p1);
+        // mWrist.setPercentSpeed(p1.getLeftTriggerAxis() - p1.getRightTriggerAxis());
+        // SmartDashboard.putNumber("Wrist angle", mWrist.getAngle().getDegrees());
+        p1Loop(p1);
         
-        // p2Loop(p2);
+        p2Loop(p2);
     }
 
     // int moduleNumber = 3;
@@ -121,20 +122,26 @@ public class Teleop {
             mSuperstructure.angleShooter();
         }
 
-        if(p.getLeftBumper()) {
-            mWrist.setAngle(SuperstructureConstants.kWristStowAngle);
-            // mIntake.setPercentSpeed(1.0, 1.0);
-        } else if(p.getLeftTriggerAxis() > 0.5) {
-            mWrist.setAngle(SuperstructureConstants.kWristIntakingAngle);
-        } 
+        // if(p.getLeftBumper()) {
+        //     mWrist.setAngle(SuperstructureConstants.kWristStowAngle);
+        //     // mIntake.setPercentSpeed(1.0, 1.0);
+        // } else if(p.getLeftTriggerAxis() > 0.5) {
+        //     mWrist.setAngle(SuperstructureConstants.kWristIntakingAngle);
+        // } 
 
-        if(p.getRightBumper()) {
-            mIntake.setPercentSpeed(1.0, 1.0, true);
-        } else if(p.getRightTriggerAxis() > 0.5) {
-            mIntake.setPercentSpeed(-1.0, -1.0);
-        } else {
-            mIntake.setPercentSpeed(0.0, 0.0);
-        }
+        // if(p.getRightBumper()) {
+        //     mSuperstructure.intakeChoreographed(true);
+        // } else if(p.getRightTriggerAxis() > 0.5) {
+        //     mIntake.setPercentSpeed(-1.0, -1.0);
+        // } else {
+        //     mIntake.setPercentSpeed(0.0, 0.0);
+        //     mSuperstructure.intakeChoreographed(false);
+        // }
+
+        mSuperstructure.intakeChoreographed(p.getLeftBumper());
+
+
+
         // else if(p.getRightBumperReleased() || isRightTriggerReleased()) {
         //     mIntake.setPercentSpeed(0.0, 0.0);
         // }
@@ -157,7 +164,7 @@ public class Teleop {
             mConveyor.setPercentSpeed(1.0);
         } else if(p.getRawButton(7)) {
             mConveyor.setPercentSpeed(-1.0);
-        } else {
+        } else if(p.getRawButtonReleased(6) || p.getRawButtonReleased(7)) {
             mConveyor.setPercentSpeed(0.0);
         }
 
@@ -174,21 +181,23 @@ public class Teleop {
             if(mSuperstructure.getState() == SuperstructureState.AMP) {
                 mIntake.setPercentSpeed(-1.0, -1.0);
             } else {
-                mWrist.setAngle(SuperstructureConstants.kWristIntakingAngle);
-                if(mWrist.isSettled()) {
-                    mIntake.setPercentSpeed(1.0, 1.0);
-                    mConveyor.setPercentSpeed(1.0);
-                }
+                // mWrist.setAngle(SuperstructureConstants.kWristIntakingAngle);
+                // if(mWrist.isSettled()) {
+                //     mIntake.setPercentSpeed(1.0, 1.0);
+                //     mConveyor.setPercentSpeed(1.0);
+                // }
+                mConveyor.setPercentSpeed(1.0);
             }
         } else if(p.getRawButtonReleased(11)) {
             if(mSuperstructure.getState() == SuperstructureState.AMP) {
                 mIntake.setPercentSpeed(0.0, 0.0);
             } else if(!intaking) {
-                mWrist.setAngle(SuperstructureConstants.kWristStowAngle);
-                if(mWrist.isSettled()) {
-                    mIntake.setPercentSpeed(0.0, 0.0);
-                    mConveyor.setPercentSpeed(0.0);
-                }
+                // mWrist.setAngle(SuperstructureConstants.kWristStowAngle);
+                // if(mWrist.isSettled()) {
+                //     mIntake.setPercentSpeed(0.0, 0.0);
+                //     mConveyor.setPercentSpeed(0.0);
+                // }
+                mConveyor.setPercentSpeed(0.0);
             }
         }
 

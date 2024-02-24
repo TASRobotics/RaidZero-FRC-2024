@@ -1,9 +1,13 @@
 package raidzero.robot.submodules;
 
+import org.opencv.core.Mat;
+
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.ForwardLimitValue;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkLimitSwitch;
+import com.revrobotics.SparkRelativeEncoder;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.SparkLimitSwitch.Type;
 
@@ -28,12 +32,14 @@ public class Intake extends Submodule{
     private CANSparkMax mRearMotor = new CANSparkMax(IntakeConstants.kRearMotorID, MotorType.kBrushless);
 
     private SparkLimitSwitch mBeamBreak;
+    private RelativeEncoder mEncoder = mFrontMotor.getEncoder();
 
     public static class PeriodicIO {
         public double desiredFrontPercentSpeed = 0.0;
         public double desiredRearPercentSpeed = 0.0;
 
         public boolean limitTriggered = false;
+        public boolean limitWasJustTriggered = false;
     }
 
     private PeriodicIO mPeriodicIO = new PeriodicIO();
@@ -63,6 +69,12 @@ public class Intake extends Submodule{
     public void update(double timestamp) {
         SmartDashboard.putNumber("Front Intake Current", mFrontMotor.getOutputCurrent());
         mPeriodicIO.limitTriggered = mBeamBreak.isPressed();
+        if(mBeamBreak.isPressed() && !mPeriodicIO.limitWasJustTriggered) {
+            mPeriodicIO.limitWasJustTriggered = true;
+            mEncoder.setPosition(0.0);
+        } else {
+            mPeriodicIO.limitWasJustTriggered = false;
+        }
     }
 
     @Override
@@ -90,8 +102,11 @@ public class Intake extends Submodule{
         mPeriodicIO.desiredRearPercentSpeed = rearSpeed;
     }
 
+    @Deprecated
     public void setPercentSpeed(double frontSpeed, double rearSpeed, boolean stopIfLimitIsTriggered) {
-        if(stopIfLimitIsTriggered && mPeriodicIO.limitTriggered) {
+        if(stopIfLimitIsTriggered && mPeriodicIO.limitTriggered && Math.abs(mEncoder.getPosition()) < 1) {
+            setPercentSpeed(0.5, 0.5);
+        } else if(stopIfLimitIsTriggered && mPeriodicIO.limitTriggered) {
             setPercentSpeed(0, 0);
         } else {
             setPercentSpeed(frontSpeed, rearSpeed);

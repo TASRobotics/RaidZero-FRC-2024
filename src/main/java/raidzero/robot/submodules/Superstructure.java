@@ -3,6 +3,7 @@ package raidzero.robot.submodules;
 import java.util.List;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import raidzero.robot.Constants.AngleAdjusterConstants;
@@ -37,7 +38,7 @@ public class Superstructure extends Submodule {
     // private static final Shooter mShooter = Shooter.getInstance();
     // private static final Swerve mSwerve = Swerve.getInstance();
     private static final Wrist mWrist = Wrist.getInstance();
-    // private static final Conveyor mConveyor = Conveyor.getInstance();
+    private static final Conveyor mConveyor = Conveyor.getInstance();
 
     private static final Vision mVision = Vision.getInstance();
 
@@ -48,16 +49,25 @@ public class Superstructure extends Submodule {
 
     private SuperstructureState mCurrentState;
 
+    private Alliance mAlliance;
+
+    private boolean mBeamBreakWasToggled = false;
+    private boolean mNoteHasPassed = false;
+
     @Override
     public void onInit() {}
 
     @Override
     public void onStart(double timestamp) {
         clearRequestQueue();
+        mAlliance = DriverStation.getAlliance().get();
     }
 
     @Override
-    public void update(double timestamp) {}
+    public void update(double timestamp) {
+        SmartDashboard.putBoolean("Note passed beam break", noteHasPassedBeamBreak());
+        SmartDashboard.putBoolean("Note at beam break", mIntake.ringPresent());
+    }
 
     @Override
     public void run() {
@@ -140,19 +150,47 @@ public class Superstructure extends Submodule {
     }
 
     public void angleShooter() {
-        if(mVision.getSpeakerDistance(Alliance.Blue) == 0.0) {
+        if(mVision.getSpeakerDistance(mAlliance) == 0.0) {
             return;
         }
-        double dist = mVision.getSpeakerDistance(Alliance.Blue);
+        double dist = mVision.getSpeakerDistance(mAlliance);
         double desiredAngleDegrees = 0.0;
         if(AngleAdjusterConstants.kAimMap.getInterpolated(new InterpolatingDouble(dist)).value != null) {
             desiredAngleDegrees = AngleAdjusterConstants.kAimMap.getInterpolated(new InterpolatingDouble(dist)).value.doubleValue();
         }
 
-
         SmartDashboard.putNumber("Desired Angle Val", desiredAngleDegrees);
         
         mAngleAdjuster.setAngle(Rotation2d.fromDegrees(desiredAngleDegrees));
+    }
+
+    public void intakeChoreographed(boolean enable) {
+        if(enable && !mNoteHasPassed) {
+            mIntake.setPercentSpeed(1.0, 1.0);
+            mConveyor.setPercentSpeed(0.40);
+            mWrist.setAngle(SuperstructureConstants.kWristIntakingAngle);
+        } else if(enable && mNoteHasPassed) {
+            mIntake.setPercentSpeed(0.0, 0.0);
+            mConveyor.setPercentSpeed(0.0);
+            mWrist.setAngle(SuperstructureConstants.kWristStowAngle);
+        } else if(!enable) {
+            mNoteHasPassed = false;
+            mConveyor.setPercentSpeed(0.0);
+            mIntake.setPercentSpeed(0.0, 0.0);
+            mWrist.setAngle(SuperstructureConstants.kWristStowAngle);
+        }
+    }
+
+    private boolean noteHasPassedBeamBreak() {
+        boolean beamBreakIsToggled = mIntake.ringPresent();
+        if(beamBreakIsToggled != mBeamBreakWasToggled) {
+            mBeamBreakWasToggled = beamBreakIsToggled;
+            if(!mBeamBreakWasToggled) {
+                mNoteHasPassed = true;
+                return true;
+            }
+        }
+        return false;
     }
 
     // public void scoreState() {

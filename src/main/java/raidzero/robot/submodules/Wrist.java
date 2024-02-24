@@ -179,6 +179,9 @@ public class Wrist extends Submodule {
         hardwareLimitConfigs.withReverseLimitAutosetPositionEnable(WristConstants.kReverseLimitAutosetPositionEnabled);
         hardwareLimitConfigs.withReverseLimitAutosetPositionValue(WristConstants.kReverseLimitAutosetPositionValue);
 
+        hardwareLimitConfigs.ForwardLimitEnable = false;
+        // config.withHardwareLimitSwitch(hardwareLimitConfigs);
+
         return config;
     }
 }

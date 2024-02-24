@@ -1,14 +1,11 @@
 package raidzero.robot.submodules;
 
-import java.util.Optional;
-
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.estimator.KalmanFilter;
 import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Timer;
@@ -20,6 +17,8 @@ import raidzero.robot.wrappers.LimelightHelpers.Results;
 public class Vision extends Submodule {
     private static Vision instance;
     private static final Swerve drive = Swerve.getInstance();
+
+    private Alliance alliance;
 
     private Pose2d visionPose = new Pose2d();
 
@@ -47,6 +46,7 @@ public class Vision extends Submodule {
 
     @Override
     public void onStart(double timestamp) {
+        alliance = DriverStation.getAlliance().get();
     }
 
     @Override
@@ -60,9 +60,9 @@ public class Vision extends Submodule {
         SmartDashboard.putNumber("Note Y", getNoteY());
         SmartDashboard.putNumber("Note Area", getNoteA());
         SmartDashboard.putBoolean("Has Note", hasNote());
-        SmartDashboard.putNumber("Speaker Distance", getSpeakerDistance(Alliance.Blue));
+        SmartDashboard.putNumber("Speaker Distance", getSpeakerDistance(alliance));
         try {
-            SmartDashboard.putNumber("Speaker Angle", getSpeakerAngle(Alliance.Blue).getDegrees());
+            SmartDashboard.putNumber("Speaker Angle", getSpeakerAngle(alliance).getDegrees());
         } catch (Exception e) {
         }
     }
@@ -91,18 +91,18 @@ public class Vision extends Submodule {
 
     public double getSpeakerDistance(Alliance alliance) {
         Pose2d speakerPose = alliance == Alliance.Blue ? VisionConstants.BLUE_SPEAKER_POSE : VisionConstants.RED_SPEAKER_POSE;
-        if (!hasAprilTag()){
-            return 0;
-        }
+        // if (!hasAprilTag()){
+        //     return 0;
+        // }
         return drive.getPose().getTranslation().getDistance(speakerPose.getTranslation());
     }
 
     public Rotation2d getSpeakerAngle(Alliance alliance) {
         Pose2d speakerPose = alliance == Alliance.Blue ? VisionConstants.BLUE_SPEAKER_POSE : VisionConstants.RED_SPEAKER_POSE;
-        if (!hasAprilTag()){
-            return null;
-        }
-        return Rotation2d.fromRadians(Math.atan2(visionPose.getY() - speakerPose.getY(), visionPose.getX() - speakerPose.getX()));
+        // if (!hasAprilTag()){
+        //     return null;
+        // }
+        return Rotation2d.fromRadians(Math.atan2(drive.getPose().getY() - speakerPose.getY(), drive.getPose().getX() - speakerPose.getX()));
     }
 
     public Boolean hasAprilTag(){

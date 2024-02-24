@@ -221,7 +221,7 @@ public class Constants {
         // Motor Output Constants
         public static final InvertedValue kLeaderInversion = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue kNeutralMode = NeutralModeValue.Coast;
-        public static final boolean kFollowerOpposeLeaderInversion = true;
+        public static final boolean kFollowerOpposeLeaderInversion = false;
         public static final double kFollowerUpdateHz = 1000;
 
         // Current Limit Constants
@@ -265,9 +265,9 @@ public class Constants {
         // Position PID Constants
         public static final int kPositionPIDSlot = 0;
         public static final double kV = 12.0 / (6000.0 / kRotorToSensorRatio / 60); // voltage/rps
-        public static final double kP = 250.0;
+        public static final double kP = 150.0;
         public static final double kI = 0.0;
-        public static final double kD = 0.5;
+        public static final double kD = 0.0;
         public static final double kPIDUpdateHz = 1000;
 
         public static final double kTolerance = 1.0 / 360.0; // rotations
@@ -439,9 +439,9 @@ public class Constants {
 
         // Hardware Limit Switch Constants
         public static final ReverseLimitSourceValue kReverseLimitSource = ReverseLimitSourceValue.LimitSwitchPin;
-        public static final ReverseLimitTypeValue kReverseLimitType = ReverseLimitTypeValue.NormallyClosed;
-        public static final boolean kReverseLimitEnabled = false; // check
-        public static final boolean kReverseLimitAutosetPositionEnabled = false; // check
+        public static final ReverseLimitTypeValue kReverseLimitType = ReverseLimitTypeValue.NormallyOpen;
+        public static final boolean kReverseLimitEnabled = true; // check
+        public static final boolean kReverseLimitAutosetPositionEnabled = true; // check
         public static final double kReverseLimitAutosetPositionValue = 0.0;
     }
 
