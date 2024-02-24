@@ -49,8 +49,8 @@ public class Vision extends Submodule {
         SmartDashboard.putNumber("Speaker Distance", getSpeakerDistance(Alliance.Blue));
         try {
             SmartDashboard.putNumber("Speaker Angle", getSpeakerAngle(Alliance.Blue).getDegrees());
-        } catch (Exception e) {  
-        } 
+        } catch (Exception e) {
+        }
     }
 
     @Override
@@ -59,11 +59,11 @@ public class Vision extends Submodule {
 
     public void updatePose() {
         Results results = LimelightHelpers.getLatestResults(VisionConstants.APRILTAG_CAM_NAME).targetingResults;
-        
+
         Pose2d robotPose = results.getBotPose2d_wpiBlue();
         double tl = results.latency_pipeline;
         double cl = results.latency_capture;
-        
+
         if (robotPose.getX() != 0.0 && seesAprilTags()) {
             visionPose = robotPose;
             drive.getPoseEstimator().setVisionMeasurementStdDevs(VecBuilder.fill(VisionConstants.XY_STDS, VisionConstants.XY_STDS, Units.degreesToRadians(VisionConstants.DEG_STDS)));
@@ -74,7 +74,7 @@ public class Vision extends Submodule {
     public Boolean seesAprilTags(){
         return LimelightHelpers.getTV(VisionConstants.APRILTAG_CAM_NAME);
     }
-    
+
     public Pose2d getVisionPose(){
         return visionPose;
     }
@@ -84,7 +84,7 @@ public class Vision extends Submodule {
         if (!seesAprilTags()){
             return 0;
         }
-        return visionPose.getTranslation().getDistance(speakerPose.getTranslation());
+        return drive.getPose().getTranslation().getDistance(speakerPose.getTranslation());
     }
 
     public Rotation2d getSpeakerAngle(Alliance alliance) {

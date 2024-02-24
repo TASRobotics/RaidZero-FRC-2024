@@ -2,6 +2,8 @@ package raidzero.robot;
 
 import java.nio.file.Path;
 
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.ForwardLimitSourceValue;
@@ -67,10 +69,10 @@ public class Constants {
         // public static final double kRearRightAzimuthOffset = -0.205811 + 0.5;
 
         /* Sheesh Offsets */
-        public static final double kFrontLeftAzimuthOffset = 0.160645;
-        public static final double kFrontRightAzimuthOffset = 0.473145;
-        public static final double kRearLeftAzimuthOffset = 0.118652;
-        public static final double kRearRightAzimuthOffset = 0.038574;
+        public static final double kFrontLeftAzimuthOffset = -0.834473 /*+ 0.5*/;
+        public static final double kFrontRightAzimuthOffset = -0.502197 /*+ 0.5*/;
+        public static final double kRearLeftAzimuthOffset = -0.883789 /*+ 0.5*/;
+        public static final double kRearRightAzimuthOffset = -0.957275 /*+ 0.5*/;
 
         public static final double kThrottleReduction = (14.0 / 50.0) * (28.0 / 16.0) * (15.0 / 45.0);
         public static final double kAzimuthReduction = (14.0 / 50.0) * (10.0 / 60.0);
@@ -112,38 +114,41 @@ public class Constants {
         public static final double kThrottle_kA = 1.5;
         public static final double kThrottlePIDUpdateHz = 1000.0;
 
-        public static final double kTranslationController_kP = 5.0;
+        public static final double kTranslationController_kP = 5.0; //5.0
         public static final double kTranslationController_kD = 0.0;
-        public static final double kThetaController_kP = 2.0; //2.5
-        public static final double kXControllerTolerance = 0.1;
-        public static final double kYControllerTolerance = 0.1;
+        public static final double kThetaController_kP = 2.0; //2.0
+        public static final double kXControllerTolerance = 0.1; //0.1
+        public static final double kYControllerTolerance = 0.1; //0.1
         public static final double kThetaControllerTolerance = Math.toRadians(5);
 
-        public static final double kSnapController_kP = 0.5;
+        public static final double kSnapController_kP = 0.1;
         public static final double kSnapController_kI = 0.0;
         public static final double kSnapController_kD = 0.0;
-        public static final TrapezoidProfile.Constraints kSnapControllerConstraints = 
+        public static final TrapezoidProfile.Constraints kSnapControllerConstraints =
             new TrapezoidProfile.Constraints(kMaxAngularVelRPS, kMaxAngularVelRPS);
+        public static final double kSnapControllerToleranceDegrees = 2.0;
 
         public static final double kAimAssistController_kP = 0.1;
         public static final double kAimAssistController_kI = 0.0;
         public static final double kAimAssistController_kD = 0.0;
-        public static final TrapezoidProfile.Constraints kAimAssistControllerConstraints = 
+        public static final TrapezoidProfile.Constraints kAimAssistControllerConstraints =
             new TrapezoidProfile.Constraints(kRealisticMaxVelMPS, kRealisticMaxVelMPS);
-        
+
 
         // Using SDS 6.75 ratio
         public static final double kThrottleRotToWheelRot = (50.0 / 14.0) * (16.0 / 28.0) * (45.0 / 15.0);
         public static final double kThrottleWheelRotToMeters = 1 / (Math.PI * kWheelDiameterMeters);
         public static final double kMetersToThrottleRot = kThrottleRotToWheelRot/kThrottleWheelRotToMeters;
-        
-        public static final InvertedValue kThrottleInversion = InvertedValue.CounterClockwise_Positive;
+
+        public static final InvertedValue kThrottleInversion = InvertedValue.Clockwise_Positive;
         public static final InvertedValue kAzimuthInversion = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue kThrottleNeutralMode = NeutralModeValue.Brake;
         public static final NeutralModeValue kAzimuthNeutralMode = NeutralModeValue.Brake;
 
         public static final AbsoluteSensorRangeValue kAzimuthEncoderRange = AbsoluteSensorRangeValue.Unsigned_0To1;
         public static final SensorDirectionValue kAzimuthEncoderDirection = SensorDirectionValue.CounterClockwise_Positive;
+
+        // public static final double kOpenLoopRampRate = 0.1;
     }
 
     public static final class LimelightConstants {
@@ -171,8 +176,8 @@ public class Constants {
     }
 
     public static final class IntakeConstants{
-        public static final int kFrontMotorID = 1;
-        public static final int kRearMotorID = 2;
+        public static final int kFrontMotorID = 2;
+        public static final int kRearMotorID = 1;
 
         public static final int kFrontCurrentLimit = 20;
         public static final int kRearCurrentLimit = 40;
@@ -222,7 +227,7 @@ public class Constants {
 
     public static final class AngleAdjusterConstants {
         public static final int kMotorID = 51;
-        public static final int kEncoderID = 21; 
+        public static final int kEncoderID = 21;
 
         // Motor Output Constants
         public static final InvertedValue kInversion = InvertedValue.CounterClockwise_Positive;
@@ -252,7 +257,7 @@ public class Constants {
         // Motion Magic Constants
         public static final double kTheoreticalMaxSpeedRPS = 6000.0 / kRotorToSensorRatio / 60;
 
-        public static final double kMotionMagicVelocity = kTheoreticalMaxSpeedRPS; // rotations per second
+        public static final double kMotionMagicVelocity = kTheoreticalMaxSpeedRPS * 0.60; // rotations per second
         public static final double kMotionMagicAccel = kTheoreticalMaxSpeedRPS * 10.0;
         public static final double kMotionMagicJerk = kTheoreticalMaxSpeedRPS * 100.0;
 
@@ -269,7 +274,7 @@ public class Constants {
         public static final AbsoluteSensorRangeValue kAbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
 
         // Aiming Constants
-        public static InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble> 
+        public static InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble>
             kAimMap = new InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble>();
         static {
             // kAimMap.put(new InterpolatingDouble(ROBOT_DISTANCE_FROM_GOAL), new InterpolatingDouble(DESIRED_ANGLE));
@@ -293,7 +298,7 @@ public class Constants {
          * 30.41015625 | 3.84 | 5.57
          * 27.24609375 | 3.96 | 6.64
          * xxx | 4.20 | 7.00
-         * 
+         *
          * 1.124750566
             1.630963346
             2.345829831
@@ -337,14 +342,24 @@ public class Constants {
         public static final double kI = 0.0;
         public static final double kD = 0.0;
         public static final double kPIDUpdateHz = 1000;
-        
+
         public static final double kTolerance = 2.0 / 360.0; // rotations
 
         // Motion Magic Constants
         public static final double kTheoreticalMaxSpeedRPS = 6000.0 / kRotorToSensorRatio / 60.0;
-        public static final double kMotionMagicVelocity = kTheoreticalMaxSpeedRPS * 1.0;
-        public static final double kMotionMagicAccel = kTheoreticalMaxSpeedRPS * 3.0;
-        public static final double kMotionMagicJerk = kTheoreticalMaxSpeedRPS * 40.0;
+        public static MotionMagicConfigs kUpMotionMagicConfigs = new MotionMagicConfigs();
+        static {
+            kUpMotionMagicConfigs.withMotionMagicCruiseVelocity(kTheoreticalMaxSpeedRPS * 1.0);
+            kUpMotionMagicConfigs.withMotionMagicAcceleration(kTheoreticalMaxSpeedRPS * 3.0);
+            kUpMotionMagicConfigs.withMotionMagicJerk(kTheoreticalMaxSpeedRPS * 40.0);
+        }
+
+        public static MotionMagicConfigs kDownMotionMagicConfigs = new MotionMagicConfigs();
+        static {
+            kDownMotionMagicConfigs.withMotionMagicCruiseVelocity(kTheoreticalMaxSpeedRPS * 1.0);
+            kDownMotionMagicConfigs.withMotionMagicAcceleration(kTheoreticalMaxSpeedRPS * 1.5);
+            kDownMotionMagicConfigs.withMotionMagicJerk(kTheoreticalMaxSpeedRPS * 10.0);
+        }
 
         // Software Limit Switch Constants
         // TODO
@@ -363,7 +378,7 @@ public class Constants {
         public static final int kMotorID = 21;
 
         // public static final double kTheoreticalMaxSpeed = 600; // 6000*(1/25)(20/48)/60*360 degrees per second
-        // public static final double kResetAngleRotations = 128.0 / 360.0; 
+        // public static final double kResetAngleRotations = 128.0 / 360.0;
 
         // Motor Output Constants
         public static final InvertedValue kInversion = InvertedValue.Clockwise_Positive;
@@ -391,16 +406,24 @@ public class Constants {
         // Motion Magic Constants
         public static final double kTheoreticalMaxSpeedRPS = 6000.0 / kSensorToMechanismRatio / 60.0 * 10;
         // public static final double kTheoreticalMaxSpeedRPS = 100.0;
-        public static final double kMotionMagicVelocity = kTheoreticalMaxSpeedRPS * 0.75;
+        public static final double kMotionMagicVelocity = kTheoreticalMaxSpeedRPS * 0.30;
         public static final double kMotionMagicAccel = kTheoreticalMaxSpeedRPS * 3.0;
         public static final double kMotionMagicJerk = kTheoreticalMaxSpeedRPS * 30.0;
 
         // Software Limit Switch Constants
-        // TODO
-        public static final boolean kForwardSoftLimitEnabled = true;
-        public static final double kForwardSoftLimit = 280.0 / 360.0; // rotations
-        public static final boolean kReverseSoftLimitEnabled = true;
-        public static final double kReverseSoftLimit = 0.0; // rotations
+        public static SoftwareLimitSwitchConfigs kNormalSoftLimits = new SoftwareLimitSwitchConfigs();
+        static {
+            kNormalSoftLimits.ForwardSoftLimitEnable = true;
+            kNormalSoftLimits.ForwardSoftLimitThreshold = 280.0 / 360.0; // rotations
+            kNormalSoftLimits.ReverseSoftLimitEnable = true;
+            kNormalSoftLimits.ReverseSoftLimitThreshold = 0.0;
+        }
+
+        public static SoftwareLimitSwitchConfigs kHomingSoftLimits = new SoftwareLimitSwitchConfigs();
+        static {
+            kHomingSoftLimits.ForwardSoftLimitEnable = false;
+            kHomingSoftLimits.ReverseSoftLimitEnable = false;
+        }
 
         // Hardware Limit Switch Constants
         public static final ForwardLimitSourceValue kForwardLimitSource = ForwardLimitSourceValue.LimitSwitchPin;
@@ -476,14 +499,14 @@ public class Constants {
         public static final Pose2d RED_SPEAKER_POSE = new Pose2d(Units.inchesToMeters(652.73), Units.inchesToMeters(218.42), new Rotation2d());
     }
 
-    public static final int kCANTimeoutMs = 10; 
+    public static final int kCANTimeoutMs = 10;
     public static final int kLongCANTimeoutMs = 100; // constructors
 
     public static final String kCANBusName = "seCANdary";
 
-    public static final double kMaxMotorVoltage = 12.0; 
+    public static final double kMaxMotorVoltage = 12.0;
 
-    public static final boolean kEnableFOC = true; 
+    public static final boolean kEnableFOC = true;
 
     public static final double kJoystickDeadband = 0.1;
 }

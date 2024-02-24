@@ -42,11 +42,11 @@ public class Robot extends TimedRobot {
             mSwerve,
             mVision,
             // mLimelight
-            mArm, 
-            mClimb, 
-            mShooter, 
+            mArm,
+            mClimb,
+            mShooter,
             mWrist,
-            mAngleAdjuster, 
+            mAngleAdjuster,
             mSuperstructure
         );
         submoduleManager.onInit();

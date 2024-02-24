@@ -36,6 +36,8 @@ public class WaitForEventMarkerAction implements Action {
 
     @Override
     public boolean isFinished() {
-        return mMarker.shouldTrigger(mSwerve.getPose());
+        // if(mSwerve.)
+        // return mMarker.shouldTrigger(mSwerve.getPose());
+        return false;
     }
 }

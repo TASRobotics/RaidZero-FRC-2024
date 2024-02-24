@@ -113,6 +113,10 @@ public class Superstructure extends Submodule {
         // }
     }
 
+    public SuperstructureState getState() {
+        return mCurrentState;
+    }
+
     public void stowState() {
         request(new SequentialRequest(
             mIntake.intakeRequest(0.0, 0.0, false, false),

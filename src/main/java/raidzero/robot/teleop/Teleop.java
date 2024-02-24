@@ -1,5 +1,6 @@
 package raidzero.robot.teleop;
 
+import raidzero.robot.Constants;
 import raidzero.robot.Constants.SuperstructureConstants;
 import raidzero.robot.Constants.SwerveConstants;
 import raidzero.robot.submodules.AngleAdjuster;
@@ -11,12 +12,9 @@ import raidzero.robot.submodules.Shooter;
 import raidzero.robot.submodules.Superstructure;
 import raidzero.robot.submodules.Swerve;
 import raidzero.robot.submodules.Wrist;
-import raidzero.robot.submodules.SwerveModule.PeriodicIO;
+import raidzero.robot.submodules.Superstructure.SuperstructureState;
 import raidzero.robot.utils.JoystickUtils;
-
-import java.sql.Driver;
-import java.util.Optional;
-
+import raidzero.robot.wrappers.LimelightHelpers;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.Angle;
@@ -31,8 +29,8 @@ public class Teleop {
 
     private static Teleop instance = null;
     private static XboxController p1 = new XboxController(0);
-    private static XboxController p2 = new XboxController(1);
-    private static GenericHID p3 = new GenericHID(2);
+    // private static XboxController p2 = new XboxController(1);
+    private static GenericHID p2 = new GenericHID(1);
 
     private static Swerve mSwerve = Swerve.getInstance();
 
@@ -70,9 +68,13 @@ public class Teleop {
 
     // int moduleNumber = 3;
 
-    // Rotation2d snapAngle = null;
+    Rotation2d snapAngle = null;
+    boolean autoAim = false;
 
     double desiredShooterSpeed = 90.0; 
+    boolean intaking = false;
+
+    boolean rightTriggerPressed = false;
 
     private void p1Loop(XboxController p) {
 
@@ -86,168 +88,120 @@ public class Teleop {
         double leftTrigger = p.getLeftTriggerAxis();
         double rightTrigger = p.getRightTriggerAxis();
 
-        // if(p.getRightBumper()) {
-        //     // mConveyor.setPercentSpeed(1.0);
-        //     // mWrist.setPercentSpeed(0.3);
-        //     // mAngleAdjuster.setAngle(Rotation2d.fromDegrees(30));
-        //     mShooter.setVelocity(90);
-        // } else {
-        //     mShooter.setPercentSpeed(0.0);
-        // }
-        // if(p.getLeftBumper()) {
-        //     // mConveyor.setPercentSpeed(-1.0);
-        //     // mWrist.setPercentSpeed(-0.3);
-        //     // mAngleAdjuster.setAngle(Rotation2d.fromDegrees(50));
-        //     mConveyor.setPercentSpeed(1.0);
-        // } else {
-        //     // mConveyor.setPercentSpeed(0);
-        //     // mWrist.setPercentSpeed(0.0);
-        //     // mAngleAdjuster.setPercentSpeed(0);
-        //     // mShooter.setPercentSpeed(0.0);
-        //     mConveyor.setPercentSpeed(0.0);
-        // }
-
-        // if(p.getBButton()) {
-        //     mIntake.setPercentSpeed(1.0, 1.0);
-        // } else {
-        //     mIntake.setPercentSpeed(0.0, 0.0);
-
-  /*
-        // mSwerve.teleopDrive(
-        //     JoystickUtils.applyDeadband(p.getLeftY()), 
-        //     JoystickUtils.applyDeadband(p.getLeftX()), 
-        //     JoystickUtils.applyDeadband(p.getRightX()), 
-        //     true
-        // );
-        if(p.getBButton()) {
-            // if(mBlue) {
-            //     snapAngle = Rotation2d.fromDegrees(0);
-            // } else {
-            //     snapAngle = Rotation2d.fromDegrees(180);
-            // }
-            snapAngle = Rotation2d.fromDegrees(90.0);
-        } else {
+        if(p.getAButton()) {
+            if(DriverStation.getAlliance().get() == Alliance.Blue) {
+                snapAngle = Rotation2d.fromDegrees(0);
+            } else {
+                snapAngle = Rotation2d.fromDegrees(180);
+            }
+        } else if(isAttemptingToTurn()) {
             snapAngle = null;
         }
 
-        mSwerve.teleopDrive(
-            -JoystickUtils.applyDeadband(p.getLeftY()) * SwerveConstants.kRealisticMaxVelMPS * mReverse, 
-            -JoystickUtils.applyDeadband(p.getLeftX()) * SwerveConstants.kRealisticMaxVelMPS * mReverse, 
-            -JoystickUtils.applyDeadband(p.getRightX()) * SwerveConstants.kRealisticMaxVelMPS, 
-            true, 
-            snapAngle,
-            p.getAButton() //false
-        );
-      */
+        if(p.getBButton()) {
+            autoAim = true;
+        } else if(isAttemptingToTurn()) {
+            autoAim = false;
+        }
 
-        // }
-
-        mArm.setPercentSpeed(leftTrigger - rightTrigger);
-
-        // if(p.getYButton()) {
-        //     // mArm.setAngle(SuperstructureConstants.kArmAmpAngle);
-        //     mShooter.setVelocity(desiredShooterSpeed);
-        // } else {
-        //     // mArm.setPercentSpeed(0);
-        //     mShooter.setPercentSpeed(0.0);
-        // }
-
-        // if(p.getXButton()) {
-        //     // mWrist.setAngle(SuperstructureConstants.kWristStowAngle);
-        //     // mArm.setAngle(SuperstructureConstants.kArmAmpAngle);
-        //     // mIntake.setPercentSpeed(1.0, 1.0);
-        //     mSuperstructure.stowState();
-        // } else if(p.getAButton()) {
-        //     // mWrist.setAngle(SuperstructureConstants.kWristIntakingAngle);
-        //     // mArm.setAngle(SuperstructureConstants.kArmStowAngle);
-        //     // mIntake.setPercentSpeed(-1.0, -1.0);
-        //     mSuperstructure.ampState();
-        // } else {
-        //     // mWrist.setPercentSpeed(leftTrigger - rightTrigger);
-        //     // mWrist.setPercentSpeed(0);
-        //     // mArm.setPercentSpeed(0.0);
-        //     // mIntake.setPercentSpeed(0.0, 0.0);
-        // }
-
-        // mAngleAdjuster.setPercentSpeed((leftTrigger - rightTrigger) * 0.5);
-        // mArm.setPercentSpeed((leftTrigger - rightTrigger) * 0.5);
-
-        
-
-        // SmartDashboard.putNumber("Wrist angle", mWrist.getAngle().getDegrees());
-        // SmartDashboard.putNumber("Current Shooter Speed", mShooter.getVelocity());
-        // SmartDashboard.putNumber("Desired Shooter Speed", desiredShooterSpeed);
-        // SmartDashboard.putNumber("Arm Angle", mArm.getAngle().getDegrees());
-
-        // mShooter.setPercentSpeed(rightTrigger);
-
+        if(LimelightHelpers.getTV(null))
 
         mSwerve.teleopDrive(
-            JoystickUtils.applyDeadband(p.getLeftY()) * SwerveConstants.kMaxVelMPS, 
-            JoystickUtils.applyDeadband(p.getLeftX()) * SwerveConstants.kMaxVelMPS, 
-            JoystickUtils.applyDeadband(p.getRightX()) * SwerveConstants.kMaxVelMPS, 
+            -JoystickUtils.applyDeadband(p.getLeftY()) * SwerveConstants.kMaxVelMPS * 0.5, 
+            -JoystickUtils.applyDeadband(p.getLeftX()) * SwerveConstants.kMaxVelMPS * 0.5, 
+            -JoystickUtils.applyDeadband(p.getRightX()) * SwerveConstants.kMaxVelMPS * 0.5, 
             true, 
-            null, 
-            p.getXButton(),
+            snapAngle, 
+            autoAim,
             false
         );
 
-        // if(p.getXButton()) {
-        //     // mSuperstructure.angleShooter();
-        //     mSuperstructure.ampState();
-        // } 
-        if(p.getYButton()) {
-            mWrist.setPercentSpeed(0.25);
-        } else if(p.getAButton()) {
-            mWrist.setPercentSpeed(-0.25);
-        } else {
-            mWrist.setPercentSpeed(0.0);
+        if(p.getBButton()) {
+            mSuperstructure.angleShooter();
         }
 
         if(p.getLeftBumper()) {
-            mClimb.setPercentSpeed(.25);
-        } else if(p.getRightBumper()) {
-            mClimb.setPercentSpeed(-.25);
-        } else {
-            mClimb.setPercentSpeed(0.0);
+            mWrist.setAngle(SuperstructureConstants.kWristStowAngle);
+            // mIntake.setPercentSpeed(1.0, 1.0);
+        } else if(p.getLeftTriggerAxis() > 0.5) {
+            mWrist.setAngle(SuperstructureConstants.kWristIntakingAngle);
+        } 
+
+        if(p.getRightBumper()) {
+            mIntake.setPercentSpeed(1.0, 1.0);
+        } else if(p.getRightTriggerAxis() > 0.5) {
+            mIntake.setPercentSpeed(leftTrigger, rightTrigger);
+        } else if(p.getRightBumperReleased() && isRightTriggerReleased()) {
+            mIntake.setPercentSpeed(0.0, 0.0);
         }
-        // else {
-        //     mAngleAdjuster.setPercentSpeed(0.0);
+        // prevRightTrigger = p.getRightTriggerAxis() > 0.5;
+        // if(p.getLeftBumper()) {
+        //     mWrist.setAngle(SuperstructureConstants.kWristStowAngle);
+        // } else if(p.getRightBumper()) {
+        //     mWrist.setAngle(SuperstructureConstants.kWristIntakingAngle);
         // }
 
-        
-        // if(p.getBButton()) {
-        //     snapAngle = Rotation2d.fromDegrees(0);
-        // } else {
-        //     snapAngle = null;
-        // }
-
-        // mSwerve.teleopDrive(
-        //     -JoystickUtils.applyDeadband(p.getLeftY()) * SwerveConstants.kRealisticMaxVelMPS, 
-        //     -JoystickUtils.applyDeadband(p.getLeftX()) * SwerveConstants.kRealisticMaxVelMPS, 
-        //     -JoystickUtils.applyDeadband(p.getRightX()) * SwerveConstants.kRealisticMaxVelMPS, 
-        //     true, 
-        //     snapAngle,
-        //     p.getAButton() /*false*/
-        // );
-
-        // SmartDashboard.putNumber("Throttle Position 0", mSwerve.getModules()[0].getThrottleMotor().getPosition().getValueAsDouble());
-        // SmartDashboard.putNumber("Throttle Position 1", mSwerve.getModules()[1].getThrottleMotor().getPosition().getValueAsDouble());
-        // SmartDashboard.putNumber("Throttle Position 2", mSwerve.getModules()[2].getThrottleMotor().getPosition().getValueAsDouble());
-        // SmartDashboard.putNumber("Throttle Position 3", mSwerve.getModules()[3].getThrottleMotor().getPosition().getValueAsDouble());
-
-        // SmartDashboard.putNumber("Throttle Velocity 0", mSwerve.getModules()[0].getThrottleMotor().getVelocity().getValueAsDouble());
-        // SmartDashboard.putNumber("Throttle Velocity 1", mSwerve.getModules()[1].getThrottleMotor().getVelocity().getValueAsDouble());
-        // SmartDashboard.putNumber("Throttle Velocity 2", mSwerve.getModules()[2].getThrottleMotor().getVelocity().getValueAsDouble());
-        // SmartDashboard.putNumber("Throttle Velocity 3", mSwerve.getModules()[3].getThrottleMotor().getVelocity().getValueAsDouble());
-
-        // SmartDashboard.putNumber("CANCoder Angle", mSwerve.getModules()[moduleNumber].getAzimuthEncoder().getPosition().getValueAsDouble());
-        // SmartDashboard.putNumber("Motor Angle", mSwerve.getModules()[moduleNumber].getAzimuthMotor().getPosition().getValueAsDouble());
-        // SmartDashboard.putNumber("Desired Azimuth Angle", mSwerve.getModules()[moduleNumber].getPeriodicIO().desiredState.angle.getRadians()/(2*Math.PI));
-        // SmartDashboard.putNumber("Desired Azimuth Angle 2", mSwerve.getModules()[0].getPeriodicIO().desiredState.angle.getRadians()/(2*Math.PI));
+        // mIntake.setPercentSpeed(rightTrigger - leftTrigger, rightTrigger - leftTrigger);
     }
 
-    private void p2Loop(XboxController p) {
-       
+    private void p2Loop(GenericHID p) {
+        // Amp
+        if(p.getRawButton(10)) {
+            mSuperstructure.ampState();
+        }
+        if(p.getRawButton(9)) {
+            mSuperstructure.stowState();
+        }
+
+        // Score
+        if(p.getRawButton(11)) {
+            if(mSuperstructure.getState() == SuperstructureState.AMP) {
+                mIntake.setPercentSpeed(-1.0, -1.0);
+            } else {
+                mWrist.setAngle(SuperstructureConstants.kWristIntakingAngle);
+                if(mWrist.isSettled()) {
+                    mIntake.setPercentSpeed(1.0, 1.0);
+                    mConveyor.setPercentSpeed(1.0);
+                }
+            }
+        } else if(p.getRawButtonReleased(11)) {
+            if(mSuperstructure.getState() == SuperstructureState.AMP) {
+                mIntake.setPercentSpeed(0.0, 0.0);
+            } else if(!intaking) {
+                mWrist.setAngle(SuperstructureConstants.kWristStowAngle);
+                if(mWrist.isSettled()) {
+                    mIntake.setPercentSpeed(0.0, 0.0);
+                    mConveyor.setPercentSpeed(0.0);
+                }
+            }
+        }
+
+        // Shooter
+        if(p.getRawButton(13)) { 
+            mShooter.setVelocity(90);
+        } else if(p.getRawButton(1)) {
+            mShooter.setPercentSpeed(0.0);
+        }
+
+        if(p.getRawButton(3)) { // if button pressed
+            mWrist.home(true);
+        } else if(p.getRawButtonReleased(3)) { // if button released
+            mWrist.home(false);
+        }
+    }
+
+    private boolean isRightTriggerReleased() {
+        boolean pressed = p1.getRightTriggerAxis() > 0.5;
+        if(rightTriggerPressed && !pressed) {
+            rightTriggerPressed = false;
+            return true;
+        } else if(pressed) {
+            rightTriggerPressed = true; 
+        }
+        return false;
+    }
+
+    private boolean isAttemptingToTurn() {
+        return Math.abs(p1.getRightX()) > Constants.kJoystickDeadband;
     }
 }
