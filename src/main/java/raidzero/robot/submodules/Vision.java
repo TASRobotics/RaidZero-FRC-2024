@@ -38,15 +38,19 @@ public class Vision extends Submodule {
 
     @Override
     public void update(double timestamp) {
-        SmartDashboard.putNumber("Vision X", visionPose.getX());
-        SmartDashboard.putNumber("Vision Y", visionPose.getY());
-        SmartDashboard.putBoolean("Vision Target", hasTarget());
+        updatePose();
+        SmartDashboard.putNumber("Vision X", getVisionPose().getX());
+        SmartDashboard.putNumber("Vision Y", getVisionPose().getY());
+        SmartDashboard.putBoolean("Sees April Tag", seesAprilTags());
+        SmartDashboard.putNumber("Note X", getNoteX());
+        SmartDashboard.putNumber("Note Y", getNoteY());
+        SmartDashboard.putNumber("Note Area", getNoteArea());
+        SmartDashboard.putBoolean("Sees Note", seesNote());
         SmartDashboard.putNumber("Speaker Distance", getSpeakerDistance(Alliance.Blue));
         try {
             SmartDashboard.putNumber("Speaker Angle", getSpeakerAngle(Alliance.Blue).getDegrees());
-        } catch (Exception e) {  
-        } 
-        updatePose();
+        } catch (Exception e) {
+        }
     }
 
     @Override
@@ -54,21 +58,21 @@ public class Vision extends Submodule {
     }
 
     public void updatePose() {
-        Results results = LimelightHelpers.getLatestResults(VisionConstants.NAME).targetingResults;
-        
+        Results results = LimelightHelpers.getLatestResults(VisionConstants.APRILTAG_CAM_NAME).targetingResults;
+
         Pose2d robotPose = results.getBotPose2d_wpiBlue();
         double tl = results.latency_pipeline;
         double cl = results.latency_capture;
-        
-        if (robotPose.getX() != 0.0 && hasTarget()) {
+
+        if (robotPose.getX() != 0.0 && seesAprilTags()) {
             visionPose = robotPose;
             drive.getPoseEstimator().setVisionMeasurementStdDevs(VecBuilder.fill(VisionConstants.XY_STDS, VisionConstants.XY_STDS, Units.degreesToRadians(VisionConstants.DEG_STDS)));
             drive.getPoseEstimator().addVisionMeasurement(robotPose, Timer.getFPGATimestamp() - (tl/1000.0) - (cl/1000.0));
         }
     }
 
-    public Boolean hasTarget(){
-        return LimelightHelpers.getTV(VisionConstants.NAME);
+    public Boolean seesAprilTags(){
+        return LimelightHelpers.getTV(VisionConstants.APRILTAG_CAM_NAME);
     }
 
     public Pose2d getVisionPose(){
@@ -76,18 +80,38 @@ public class Vision extends Submodule {
     }
 
     public double getSpeakerDistance(Alliance alliance) {
-        Pose2d speakerPose = alliance == Alliance.Blue ? VisionConstants.BLUE_SPEAKER : VisionConstants.RED_SPEAKER;
-        if (!hasTarget()){
+        Pose2d speakerPose = alliance == Alliance.Blue ? VisionConstants.BLUE_SPEAKER_POSE : VisionConstants.RED_SPEAKER_POSE;
+        if (!seesAprilTags()){
             return 0;
         }
         return drive.getPose().getTranslation().getDistance(speakerPose.getTranslation());
     }
 
     public Rotation2d getSpeakerAngle(Alliance alliance) {
-        Pose2d speakerPose = alliance == Alliance.Blue ? VisionConstants.BLUE_SPEAKER : VisionConstants.RED_SPEAKER;
-        if (!hasTarget()){
+        Pose2d speakerPose = alliance == Alliance.Blue ? VisionConstants.BLUE_SPEAKER_POSE : VisionConstants.RED_SPEAKER_POSE;
+        if (!seesAprilTags()){
             return null;
         }
         return Rotation2d.fromRadians(Math.atan2(visionPose.getY() - speakerPose.getY(), visionPose.getX() - speakerPose.getX()));
     }
+
+    public Boolean seesNote(){
+        return LimelightHelpers.getTV(VisionConstants.NOTE_CAM_NAME);
+    }
+
+    public double getNoteX(){
+        return LimelightHelpers.getTX(VisionConstants.NOTE_CAM_NAME);
+    }
+
+    public double getNoteY(){
+        return LimelightHelpers.getTY(VisionConstants.NOTE_CAM_NAME);
+    }
+
+    public double getNoteArea(){
+        return LimelightHelpers.getTA(VisionConstants.NOTE_CAM_NAME);
+    }
+
+    // public double updateNoteAngle(){
+    //     return LimelightHelpers.getTX(VisionConstants.NOTE_CAM_NAME);
+    // }
 }

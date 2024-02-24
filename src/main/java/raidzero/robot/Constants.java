@@ -125,22 +125,22 @@ public class Constants {
         public static final double kSnapController_kP = 0.1;
         public static final double kSnapController_kI = 0.0;
         public static final double kSnapController_kD = 0.0;
-        public static final TrapezoidProfile.Constraints kSnapControllerConstraints = 
+        public static final TrapezoidProfile.Constraints kSnapControllerConstraints =
             new TrapezoidProfile.Constraints(kMaxAngularVelRPS, kMaxAngularVelRPS);
         public static final double kSnapControllerToleranceDegrees = 2.0;
 
         public static final double kAimAssistController_kP = 0.1;
         public static final double kAimAssistController_kI = 0.0;
         public static final double kAimAssistController_kD = 0.0;
-        public static final TrapezoidProfile.Constraints kAimAssistControllerConstraints = 
+        public static final TrapezoidProfile.Constraints kAimAssistControllerConstraints =
             new TrapezoidProfile.Constraints(kRealisticMaxVelMPS, kRealisticMaxVelMPS);
-        
+
 
         // Using SDS 6.75 ratio
         public static final double kThrottleRotToWheelRot = (50.0 / 14.0) * (16.0 / 28.0) * (45.0 / 15.0);
         public static final double kThrottleWheelRotToMeters = 1 / (Math.PI * kWheelDiameterMeters);
         public static final double kMetersToThrottleRot = kThrottleRotToWheelRot/kThrottleWheelRotToMeters;
-        
+
         public static final InvertedValue kThrottleInversion = InvertedValue.Clockwise_Positive;
         public static final InvertedValue kAzimuthInversion = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue kThrottleNeutralMode = NeutralModeValue.Brake;
@@ -244,7 +244,7 @@ public class Constants {
 
     public static final class AngleAdjusterConstants {
         public static final int kMotorID = 51;
-        public static final int kEncoderID = 21; 
+        public static final int kEncoderID = 21;
 
         // Motor Output Constants
         public static final InvertedValue kInversion = InvertedValue.CounterClockwise_Positive;
@@ -291,7 +291,7 @@ public class Constants {
         public static final AbsoluteSensorRangeValue kAbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
 
         // Aiming Constants
-        public static InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble> 
+        public static InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble>
             kAimMap = new InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble>();
         static {
             // kAimMap.put(new InterpolatingDouble(ROBOT_DISTANCE_FROM_GOAL), new InterpolatingDouble(DESIRED_ANGLE));
@@ -315,7 +315,7 @@ public class Constants {
          * 30.41015625 | 3.84 | 5.57
          * 27.24609375 | 3.96 | 6.64
          * xxx | 4.20 | 7.00
-         * 
+         *
          * 1.124750566
             1.630963346
             2.345829831
@@ -359,7 +359,7 @@ public class Constants {
         public static final double kI = 0.0;
         public static final double kD = 0.0;
         public static final double kPIDUpdateHz = 1000;
-        
+
         public static final double kTolerance = 2.0 / 360.0; // rotations
 
         // Motion Magic Constants
@@ -395,7 +395,7 @@ public class Constants {
         public static final int kMotorID = 21;
 
         // public static final double kTheoreticalMaxSpeed = 600; // 6000*(1/25)(20/48)/60*360 degrees per second
-        // public static final double kResetAngleRotations = 128.0 / 360.0; 
+        // public static final double kResetAngleRotations = 128.0 / 360.0;
 
         // Motor Output Constants
         public static final InvertedValue kInversion = InvertedValue.Clockwise_Positive;
@@ -506,60 +506,24 @@ public class Constants {
     }
 
     public static final class VisionConstants {
-        public static final String NAME = "limelight";
-        public static final double XY_STDS = 0.1; // 0.5
-        public static final double DEG_STDS = 1; // 6
+        public static final String APRILTAG_CAM_NAME = "limelight";
+        public static final double XY_STDS = 0.1;
+        public static final double DEG_STDS = 1;
 
-        public static final Pose2d BLUE_SPEAKER = new Pose2d(Units.inchesToMeters(-1.5), Units.inchesToMeters(218.42), new Rotation2d());
-        public static final Pose2d RED_SPEAKER = new Pose2d(Units.inchesToMeters(652.73), Units.inchesToMeters(218.42), new Rotation2d());
+        public static final String NOTE_CAM_NAME = "limelight-object";
 
-        // public static final String NAME = "SmartDashboard";
-        // public static final String APRILTAGFAMILY = "tag16h5";
-        // private static final String APRILTAGFILENAME = "AprilTagPoses.json";
-        // public static final Path APRILTAGPATH = Filesystem.getDeployDirectory().toPath().resolve(APRILTAGFILENAME);
-        // private static final double CAMERAXDISPLACEMENT = 0.0772;
-        // private static final double CAMERAYDISPLACEMENT = 0.3429;
-        // // private static final double CAMERAZDISPLACEMENT = 0.56198;
-        // public static final Rotation2d[] CAMERAANGLES = { new Rotation2d(0), new Rotation2d(Math.PI) };
-
-        // public static final Pose2d[] CAMERALOCATIONS = {
-        //         new Pose2d(CAMERAXDISPLACEMENT, -CAMERAYDISPLACEMENT, CAMERAANGLES[0]),
-        //         new Pose2d(-CAMERAXDISPLACEMENT, -CAMERAYDISPLACEMENT, CAMERAANGLES[1]) };
-        // public static final Transform2d[] CAMERATRANSFORMS = { new Transform2d(CAMERALOCATIONS[0], new Pose2d()),
-        //         new Transform2d(CAMERALOCATIONS[1], new Pose2d()) };
-
-        // public static final double ANGLEHISTSECS = 1.0;
-        // public static final double DISTANCETOLERANCE = 3.0;
-        // public static final double DISTANCEERRORFACTOR = 0.01;
-        // public static final double ANGLEERRORFACTOR = 1;
-        // // public static final Pose2d[] APRILTAG_POSE2DS = {new Pose2d(1, 1, new
-        // // Rotation2d(.5))};
-        // // public final Pose2d[] APRILTAG_POSE2DS =
-        // // JSONTools.GenerateAprilTagPoses(APRILTAGPATH);
-        // Path trajectoryFilePath = Filesystem.getDeployDirectory().toPath().resolve("paths/");
-        // public static final int IMU_ID = 0;
-
-        // public static final double CONE_PIXELS_TO_METERS = 0.001;
-
-        // public static final double MID_FIELD_X_POS = 8.3;
-        // public static final double MID_FIELD_Y_POS = 4.2;
-        
-        // public static final double ADD_VISION_TOLERANCE = 1.0;
-        // public static final double DISTANCE_RESET_TOLERANCE = 3.0;
-        // public static final double SPEED_RESET_TOLERANCE = 0.5;
-        // public static final double OMEGA_RESET_TOLERANCE = 0.2;
-        
-        // public static final int NUM_THREADS = 10;
+        public static final Pose2d BLUE_SPEAKER_POSE = new Pose2d(Units.inchesToMeters(-1.5), Units.inchesToMeters(218.42), new Rotation2d());
+        public static final Pose2d RED_SPEAKER_POSE = new Pose2d(Units.inchesToMeters(652.73), Units.inchesToMeters(218.42), new Rotation2d());
     }
 
-    public static final int kCANTimeoutMs = 10; 
+    public static final int kCANTimeoutMs = 10;
     public static final int kLongCANTimeoutMs = 100; // constructors
 
     public static final String kCANBusName = "seCANdary";
 
-    public static final double kMaxMotorVoltage = 12.0; 
+    public static final double kMaxMotorVoltage = 12.0;
 
-    public static final boolean kEnableFOC = true; 
+    public static final boolean kEnableFOC = true;
 
     public static final double kJoystickDeadband = 0.1;
 }
