@@ -3,6 +3,7 @@ package raidzero.robot.submodules;
 import java.util.List;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import raidzero.robot.Constants.AngleAdjusterConstants;
@@ -48,12 +49,15 @@ public class Superstructure extends Submodule {
 
     private SuperstructureState mCurrentState;
 
+    private Alliance mAlliance;
+
     @Override
     public void onInit() {}
 
     @Override
     public void onStart(double timestamp) {
         clearRequestQueue();
+        mAlliance = DriverStation.getAlliance().get();
     }
 
     @Override
@@ -140,10 +144,10 @@ public class Superstructure extends Submodule {
     }
 
     public void angleShooter() {
-        if(mVision.getSpeakerDistance(Alliance.Blue) == 0.0) {
+        if(mVision.getSpeakerDistance(mAlliance) == 0.0) {
             return;
         }
-        double dist = mVision.getSpeakerDistance(Alliance.Blue);
+        double dist = mVision.getSpeakerDistance(mAlliance);
         double desiredAngleDegrees = 0.0;
         if(AngleAdjusterConstants.kAimMap.getInterpolated(new InterpolatingDouble(dist)).value != null) {
             desiredAngleDegrees = AngleAdjusterConstants.kAimMap.getInterpolated(new InterpolatingDouble(dist)).value.doubleValue();
