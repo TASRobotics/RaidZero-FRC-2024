@@ -108,6 +108,10 @@ public class AngleAdjuster extends Submodule {
         return mPeriodicIO.currentPosition;
     }
 
+    public boolean isFinished() {
+        return Math.abs(mMotor.getClosedLoopError().refresh().getValueAsDouble()) < AngleAdjusterConstants.kTolerance;
+    }
+
     public Request angleAdjusterRequest(Rotation2d angle, boolean waitUntilSettled) {
         return new Request() {
             @Override
@@ -117,7 +121,7 @@ public class AngleAdjuster extends Submodule {
 
             @Override
             public boolean isFinished() {
-                return waitUntilSettled ? Math.abs(mMotor.getClosedLoopError().refresh().getValueAsDouble()) < AngleAdjusterConstants.kTolerance : true;
+                return waitUntilSettled ? isFinished() : true;
             }
         };
     }

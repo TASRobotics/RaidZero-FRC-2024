@@ -61,9 +61,10 @@ public class Teleop {
 
     public void onLoop() {
         SmartDashboard.putBoolean("Blue Alliance?", mBlue);
-        p1Loop(p1);
+        mAngleAdjuster.setPercentSpeed(p1.getLeftTriggerAxis() - p1.getRightTriggerAxis());
+        // p1Loop(p1);
         
-        p2Loop(p2);
+        // p2Loop(p2);
     }
 
     // int moduleNumber = 3;
@@ -128,7 +129,7 @@ public class Teleop {
         } 
 
         if(p.getRightBumper()) {
-            mIntake.setPercentSpeed(1.0, 1.0);
+            mIntake.setPercentSpeed(1.0, 1.0, true);
         } else if(p.getRightTriggerAxis() > 0.5) {
             mIntake.setPercentSpeed(-1.0, -1.0);
         } else {
@@ -198,11 +199,10 @@ public class Teleop {
             mShooter.setPercentSpeed(0.0);
         }
 
+        // wrist zeroing
         if(p.getRawButton(3)) { // if button pressed
-            mWrist.home(true);
-        } else if(p.getRawButtonReleased(3)) { // if button released
-            mWrist.home(false);
-        }
+            mWrist.setPercentSpeed(-0.1);
+        } 
     }
 
     private boolean isRightTriggerReleased() {

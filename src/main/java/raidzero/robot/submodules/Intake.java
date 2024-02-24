@@ -3,7 +3,9 @@ package raidzero.robot.submodules;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.ForwardLimitValue;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkLimitSwitch;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.SparkLimitSwitch.Type;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import raidzero.robot.Constants;
@@ -25,7 +27,7 @@ public class Intake extends Submodule{
     private CANSparkMax mFrontMotor = new CANSparkMax(IntakeConstants.kFrontMotorID, MotorType.kBrushless);
     private CANSparkMax mRearMotor = new CANSparkMax(IntakeConstants.kRearMotorID, MotorType.kBrushless);
 
-    private TalonFX mWristMotor = Wrist.getInstance().getMotor();
+    private SparkLimitSwitch mBeamBreak;
 
     public static class PeriodicIO {
         public double desiredFrontPercentSpeed = 0.0;
@@ -49,6 +51,9 @@ public class Intake extends Submodule{
         mRearMotor.setSmartCurrentLimit(IntakeConstants.kRearCurrentLimit);
         mRearMotor.setIdleMode(IntakeConstants.kIdleMode);
         mRearMotor.setInverted(IntakeConstants.kRearInversion);
+
+        mBeamBreak = mFrontMotor.getReverseLimitSwitch(Type.kNormallyOpen);
+        mBeamBreak.enableLimitSwitch(false);
     }
 
     @Override
@@ -57,7 +62,7 @@ public class Intake extends Submodule{
     @Override
     public void update(double timestamp) {
         SmartDashboard.putNumber("Front Intake Current", mFrontMotor.getOutputCurrent());
-        mPeriodicIO.limitTriggered = mWristMotor.getForwardLimit().refresh().getValue() == ForwardLimitValue.ClosedToGround;
+        mPeriodicIO.limitTriggered = mBeamBreak.isPressed();
     }
 
     @Override

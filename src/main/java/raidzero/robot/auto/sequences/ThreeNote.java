@@ -11,11 +11,16 @@ import com.pathplanner.lib.path.PathPlannerTrajectory;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import raidzero.robot.auto.actions.Action;
+import raidzero.robot.auto.actions.AngleShooterAction;
+import raidzero.robot.auto.actions.AutomaticIntakeAction;
 import raidzero.robot.auto.actions.DrivePath;
+import raidzero.robot.auto.actions.DrivePathNoteAim;
 import raidzero.robot.auto.actions.ParallelAction;
 import raidzero.robot.auto.actions.Res;
-import raidzero.robot.auto.actions.RunIntakeAction;
+import raidzero.robot.auto.actions.RunConveyorAction;
+import raidzero.robot.auto.actions.ManualRunIntakeAction;
 import raidzero.robot.auto.actions.SeriesAction;
+import raidzero.robot.auto.actions.ShootAction;
 import raidzero.robot.auto.actions.WaitAction;
 import raidzero.robot.submodules.Swerve;
 
@@ -74,7 +79,22 @@ public class ThreeNote extends AutoSequence {
         idk.add(new DrivePath(trajectory6));
         idk.add(new DrivePath(trajectory7));
         addAction(
-            new SeriesAction(idk)
+            new SeriesAction(Arrays.asList(
+                new Res(), 
+                new ParallelAction(Arrays.asList(
+                    new DrivePath(trajectory1), 
+                    new ShootAction(true), 
+                    new AngleShooterAction(Rotation2d.fromDegrees(40))
+                )), 
+                new RunConveyorAction(1.0, 1.0), 
+                new ParallelAction(Arrays.asList(
+                    new DrivePathNoteAim(trajectory1p5), 
+                    new AutomaticIntakeAction(1.0), 
+                    new AngleShooterAction(Rotation2d.fromDegrees(40))
+                )), 
+                // new DrivePath(trajectory2), 
+                new RunConveyorAction(1.0, 1.0)
+            ))
         );
     }
 

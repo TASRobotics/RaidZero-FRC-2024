@@ -73,19 +73,10 @@ public class Wrist extends Submodule {
     @Override
     public void run() {
         if(mPeriodicIO.controlState == ControlState.FEEDBACK) {
-            mMotor.getConfigurator().apply(WristConstants.kNormalSoftLimits);
             mMotor.setControl(mMotionMagicVoltage.withPosition(mPeriodicIO.desiredPosition.getRotations()));
         } else if(mPeriodicIO.controlState == ControlState.FEEDFORWARD) {
-            mMotor.getConfigurator().apply(WristConstants.kNormalSoftLimits);
             mMotor.setControl(mVoltageOut.withOutput(mPeriodicIO.desiredPercentSpeed * Constants.kMaxMotorVoltage));
-        } else if(mPeriodicIO.controlState == ControlState.HOMING) {
-            mMotor.getConfigurator().apply(WristConstants.kHomingSoftLimits);
-            if(mPeriodicIO.homingMove) {
-                mMotor.setControl(mVoltageOut.withOutput(-0.1 * Constants.kMaxMotorVoltage));
-            } else {
-                zero();
-            }
-        }
+        } 
     }
 
     @Override
@@ -182,11 +173,11 @@ public class Wrist extends Submodule {
 
         // Hardware Limit Switch Configuration
         HardwareLimitSwitchConfigs hardwareLimitConfigs = new HardwareLimitSwitchConfigs();
-        hardwareLimitConfigs.withForwardLimitSource(WristConstants.kForwardLimitSource);
-        hardwareLimitConfigs.withForwardLimitType(WristConstants.kForwardLimitType);
-        hardwareLimitConfigs.withForwardLimitEnable(WristConstants.kForwardLimitEnabled);
         hardwareLimitConfigs.withReverseLimitSource(WristConstants.kReverseLimitSource);
+        hardwareLimitConfigs.withReverseLimitType(WristConstants.kReverseLimitType);
         hardwareLimitConfigs.withReverseLimitEnable(WristConstants.kReverseLimitEnabled);
+        hardwareLimitConfigs.withReverseLimitAutosetPositionEnable(WristConstants.kReverseLimitAutosetPositionEnabled);
+        hardwareLimitConfigs.withReverseLimitAutosetPositionValue(WristConstants.kReverseLimitAutosetPositionValue);
 
         return config;
     }

@@ -21,6 +21,10 @@ public class AutoRunner {
         new ThreeNote(),
         new ThreeNoteMid(),
         new RightSideGoFar(),
+        new ThreeNoteRight(),
+        new ThreeNoteRightRed(), 
+        
+        new SingleNoteSpeaker()
     };
 
     public AutoRunner() {
