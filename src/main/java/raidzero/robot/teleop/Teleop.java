@@ -111,9 +111,9 @@ public class Teleop {
             -JoystickUtils.applyDeadband(p.getLeftX()) * SwerveConstants.kMaxVelMPS * 0.5, 
             -JoystickUtils.applyDeadband(p.getRightX()) * SwerveConstants.kMaxVelMPS * 0.5, 
             true, 
-            null, 
+            snapAngle, 
             autoAim,
-            false
+            p.getYButton()
         );
 
         if(autoAim) {
@@ -198,11 +198,10 @@ public class Teleop {
             mShooter.setPercentSpeed(0.0);
         }
 
+        // wrist zeroing
         if(p.getRawButton(3)) { // if button pressed
-            mWrist.home(true);
-        } else if(p.getRawButtonReleased(3)) { // if button released
-            mWrist.home(false);
-        }
+            mWrist.setPercentSpeed(-0.1);
+        } 
     }
 
     private boolean isRightTriggerReleased() {

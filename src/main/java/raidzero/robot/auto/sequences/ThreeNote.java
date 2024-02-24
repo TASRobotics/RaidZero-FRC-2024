@@ -14,7 +14,7 @@ import raidzero.robot.auto.actions.Action;
 import raidzero.robot.auto.actions.DrivePath;
 import raidzero.robot.auto.actions.ParallelAction;
 import raidzero.robot.auto.actions.Res;
-import raidzero.robot.auto.actions.RunIntakeAction;
+import raidzero.robot.auto.actions.ManualRunIntakeAction;
 import raidzero.robot.auto.actions.SeriesAction;
 import raidzero.robot.auto.actions.WaitAction;
 import raidzero.robot.submodules.Swerve;
@@ -62,7 +62,7 @@ public class ThreeNote extends AutoSequence {
         idk.add(new Res());
         idk.add(new DrivePath(trajectory1));
         idk.add(new DrivePath(trajectory1p5));
-        idk.add(new ParallelAction(new LinkedList<>(Arrays.asList(new DrivePath(trajectory2), new RunIntakeAction(1)))));
+        // idk.add(new ParallelAction(new LinkedList<>(Arrays.asList(new DrivePath(trajectory2), new ManualRunIntakeAction(1)))));
         //idk.add(new DrivePath(trajectory2));
         //idk.add(new WaitAction(1));
         idk.add(new DrivePath(trajectory3));

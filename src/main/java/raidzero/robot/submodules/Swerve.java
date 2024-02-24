@@ -70,6 +70,10 @@ public class Swerve extends Submodule {
     private Timer mTimer = new Timer();
     private Pose2d mCurrentPose;
     private Pose2d mCurrentAutoPose;
+    private boolean mOverridePathingRotationSpeakerAim = false;
+    private boolean mOverridePathingRotationNoteAim = false;
+
+    private Alliance mAlliance; 
 
     private ControlState mControlState = ControlState.OPEN_LOOP;
 
@@ -105,7 +109,7 @@ public class Swerve extends Submodule {
 
     public void onStart(double timestamp) {
         mControlState = ControlState.OPEN_LOOP;
-        // alliance = DriverStation.getAlliance();
+        mAlliance = DriverStation.getAlliance().get();
         zero();
         firstPath = true;
 
@@ -238,11 +242,11 @@ public class Swerve extends Submodule {
      */
     @Override
     public void zero() {
-        if (DriverStation.getAlliance().get() == Alliance.Blue)
+        if (mAlliance == Alliance.Blue)
             zeroHeading(0);
-        else if (DriverStation.getAlliance().get() == Alliance.Red)
+        else if (mAlliance == Alliance.Red)
             //zeroHeading(180);
-            zeroHeading(0);
+            zeroHeading(180);
 
 
 
@@ -262,6 +266,7 @@ public class Swerve extends Submodule {
 
     /**
      * Zeroes the heading of the swerve at set Yaw
+     * Units: degrees
      */
     public void zeroHeading(double q) {
         mPigeon.setYaw(q, Constants.kCANTimeoutMs);
@@ -385,24 +390,30 @@ public class Swerve extends Submodule {
         mControlState = ControlState.OPEN_LOOP;
 
         if(snapAngle != null) {
-            angularSpeed = -mSnapController.calculate(mCurrentPose.getRotation().getDegrees(), snapAngle.getDegrees());
+            angularSpeed = mSnapController.calculate(mCurrentPose.getRotation().getDegrees(), snapAngle.getDegrees());
             SmartDashboard.putNumber("Snap Controller Output Speed", angularSpeed);
         } 
         // else {
         //     mSnapController.reset(mPigeon.getRotation2d().getDegrees());
         // }
 
-        if(autoAim && mVision.getSpeakerAngle(Alliance.Blue) != null) {
-            // angularSpeed = mSnapController.calculate(-mPigeon.getRotation2d().getDegrees(), -mVision.getSpeakerAngle(Alliance.Blue).getDegrees());
-            angularSpeed = -(-mVision.getSpeakerAngle(Alliance.Blue).getDegrees() + mPigeon.getRotation2d().getDegrees()) * 0.15;
+        if(autoAim && mVision.getSpeakerAngle(mAlliance) != null) {
+            // angularSpeed = mSnapController.calculate(-mPigeon.getRotation2d().getDegrees(), -mVision.getSpeakerAngle(mAlliance).getDegrees());
+            angularSpeed = (mVision.getSpeakerAngle(mAlliance).getDegrees() - mPigeon.getRotation2d().getDegrees()) * 0.15;
         }
 
         // setOpenLoopSpeeds(new ChassisSpeeds(xSpeed, ySpeed, angularSpeed), fieldOriented);
         if(aimAssist && mVision.hasNote()) {
-            double y = mAimAssistYController.calculate(mVision.getNoteX(), 0.0);
-            ChassisSpeeds driverSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, 0.0, angularSpeed, mPigeon.getRotation2d());
-            ChassisSpeeds aimAssistSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(0.0, y, 0.0, mPigeon.getRotation2d());
-            setClosedLoopSpeeds(driverSpeeds.plus(aimAssistSpeeds), false);
+            double y = mSnapController.calculate(mVision.getNoteX(), 0.0);
+            // ChassisSpeeds driverSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, 0.0, angularSpeed, mPigeon.getRotation2d());
+            // ChassisSpeeds aimAssistSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(0.0, y, 0.0, mPigeon.getRotation2d());
+            // setClosedLoopSpeeds(driverSpeeds.plus(aimAssistSpeeds), false);
+
+            // ChassisSpeeds speeds = ChassisSpeeds.fromRobotRelativeSpeeds(xSpeed, y, angularSpeed, mPigeon.getRotation2d());
+            // setClosedLoopSpeeds(speeds, false);
+
+            setClosedLoopSpeeds(new ChassisSpeeds(xSpeed, ySpeed, y), fieldOriented);
+
             // setClosedLoopSpeeds(ChassisSpeeds.fromRobotRelativeSpeeds(0.0, y, 0.0, mPigeon.getRotation2d()), false);
         } else {
             setClosedLoopSpeeds(new ChassisSpeeds(xSpeed, ySpeed, angularSpeed), fieldOriented);
@@ -433,14 +444,6 @@ public class Swerve extends Submodule {
     private void updatePathing() {
         PathPlannerTrajectory.State state = (PathPlannerTrajectory.State) mCurrentTrajectory.sample(mTimer.get());
 
-        /*if(DriverStation.getAlliance().get() == Alliance.Red){
-            state.headingAngularVelocityRps*=-1;
-            state.positionMeters = new Translation2d(-state.positionMeters.getX(),state.positionMeters.getY());
-            state.heading = new Rotation2d(-state.heading.getRadians());
-            state.targetHolonomicRotation = new Rotation2d(-state.targetHolonomicRotation.getRadians());
-        }
-        */
-        //SmartDashboard.putNumber("state vel", state.velocityMps);
         mHolonomicController.setEnabled(true); //false, doesnt turn when only ff
         testController.setEnabled(true);
         // PathPlannerPath.fromChoreoTrajectory()
@@ -454,19 +457,25 @@ public class Swerve extends Submodule {
         //    desiredSpeeds.vxMetersPerSecond = -desiredSpeeds.vxMetersPerSecond;
         //    desiredSpeeds.omegaRadiansPerSecond = -desiredSpeeds.omegaRadiansPerSecond;
         //}
+        if(mOverridePathingRotationSpeakerAim && mVision.getSpeakerAngle(mAlliance) != null) {
+            double omega = (mVision.getSpeakerAngle(mAlliance).getDegrees() - mPigeon.getRotation2d().getDegrees()) * 0.15;
+            desiredSpeeds = new ChassisSpeeds(desiredSpeeds.vxMetersPerSecond, desiredSpeeds.vyMetersPerSecond, omega);
+        }
+        if(mOverridePathingRotationNoteAim && mVision.hasNote()) {
+            double omega = mSnapController.calculate(mVision.getNoteX(), 0.0);
+            desiredSpeeds = new ChassisSpeeds(desiredSpeeds.vxMetersPerSecond, desiredSpeeds.vyMetersPerSecond, omega);
+        }
 
         mDesiredPathingSpeeds = desiredSpeeds;
         setClosedLoopSpeeds(mDesiredPathingSpeeds,false); //true
+    }
 
-//// setOpenLoopSpeeds(desiredSpeeds);
-//SmartDashboard.putNumber("desired heading", state.targetHolonomicRotation.getDegrees());
-//if(state.holonomicAngularVelocityRps.isPresent())SmartDashboard.putNumber("desired holonomicAngularVelocityRps", state.holonomicAngularVelocityRps.get());
-//SmartDashboard.putNumber("desired omegaRadiansPerSecond", desiredSpeeds.omegaRadiansPerSecond);
-SmartDashboard.putNumber("desired xmps", desiredSpeeds.vxMetersPerSecond);
-SmartDashboard.putNumber("desired ymps", desiredSpeeds.vyMetersPerSecond);
-////SmartDashboard.putNumber("ff xmps", trash.vxMetersPerSecond);
-////SmartDashboard.putNumber("ff ymps", trash.vyMetersPerSecond);
-//SmartDashboard.putNumber("trottle dist from ideal", aConstants.SwerveConstants.kMetersToThrottleRot*4-mTopRightModule.throttlePosTravelled());
+    public void setPathingSpeakerAim(boolean enable) {
+        mOverridePathingRotationSpeakerAim = enable;
+    }
+
+    public void setPathingNoteAim(boolean enable) {
+        mOverridePathingRotationNoteAim = enable;
     }
 
 
@@ -533,8 +542,8 @@ SmartDashboard.putNumber("desired ymps", desiredSpeeds.vyMetersPerSecond);
                 speeds.vxMetersPerSecond, 
                 speeds.vyMetersPerSecond, 
                 speeds.omegaRadiansPerSecond,
-                mPigeon.getRotation2d()
-                // DriverStation.getAlliance().get() == Alliance.Blue ? mPigeon.getRotation2d() : mPigeon.getRotation2d().minus(Rotation2d.fromDegrees(180))
+                // mPigeon.getRotation2d()
+                mAlliance == Alliance.Blue ? mPigeon.getRotation2d() : mPigeon.getRotation2d().minus(Rotation2d.fromDegrees(180))
             );
         } 
 
