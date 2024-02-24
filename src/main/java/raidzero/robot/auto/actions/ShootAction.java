@@ -3,9 +3,11 @@ package raidzero.robot.auto.actions;
 import edu.wpi.first.wpilibj.Timer;
 
 import raidzero.robot.submodules.Shooter;
+import raidzero.robot.submodules.Superstructure;
 
 public class ShootAction implements Action {
     private static final Shooter mShooter = Shooter.getInstance();
+    private static final Superstructure mAim = Superstructure.getInstance();
     private Timer timer = new Timer();
 
     private boolean mEnabled;
