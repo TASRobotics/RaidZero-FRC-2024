@@ -37,6 +37,7 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         // Register all submodules here
         submoduleManager.setSubmodules(
+            mWrist,
             mIntake,
             mConveyor,
             mSwerve,
@@ -45,7 +46,6 @@ public class Robot extends TimedRobot {
             mArm, 
             mClimb, 
             mShooter, 
-            mWrist,
             mAngleAdjuster, 
             mSuperstructure
         );

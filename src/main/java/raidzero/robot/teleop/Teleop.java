@@ -104,19 +104,19 @@ public class Teleop {
             autoAim = false;
         }
 
-        if(LimelightHelpers.getTV(null))
+        // if(LimelightHelpers.getTV(null))
 
         mSwerve.teleopDrive(
             -JoystickUtils.applyDeadband(p.getLeftY()) * SwerveConstants.kMaxVelMPS * 0.5, 
             -JoystickUtils.applyDeadband(p.getLeftX()) * SwerveConstants.kMaxVelMPS * 0.5, 
             -JoystickUtils.applyDeadband(p.getRightX()) * SwerveConstants.kMaxVelMPS * 0.5, 
             true, 
-            snapAngle, 
+            null, 
             autoAim,
             false
         );
 
-        if(p.getBButton()) {
+        if(autoAim) {
             mSuperstructure.angleShooter();
         }
 
@@ -130,10 +130,16 @@ public class Teleop {
         if(p.getRightBumper()) {
             mIntake.setPercentSpeed(1.0, 1.0);
         } else if(p.getRightTriggerAxis() > 0.5) {
-            mIntake.setPercentSpeed(leftTrigger, rightTrigger);
-        } else if(p.getRightBumperReleased() && isRightTriggerReleased()) {
+            mIntake.setPercentSpeed(-1.0, -1.0);
+        } else {
             mIntake.setPercentSpeed(0.0, 0.0);
         }
+        // else if(p.getRightBumperReleased() || isRightTriggerReleased()) {
+        //     mIntake.setPercentSpeed(0.0, 0.0);
+        // }
+
+
+
         // prevRightTrigger = p.getRightTriggerAxis() > 0.5;
         // if(p.getLeftBumper()) {
         //     mWrist.setAngle(SuperstructureConstants.kWristStowAngle);
@@ -145,6 +151,15 @@ public class Teleop {
     }
 
     private void p2Loop(GenericHID p) {
+        // manual conveyor control
+        if(p.getRawButton(6)) {
+            mConveyor.setPercentSpeed(1.0);
+        } else if(p.getRawButton(7)) {
+            mConveyor.setPercentSpeed(-1.0);
+        } else {
+            mConveyor.setPercentSpeed(0.0);
+        }
+
         // Amp
         if(p.getRawButton(10)) {
             mSuperstructure.ampState();

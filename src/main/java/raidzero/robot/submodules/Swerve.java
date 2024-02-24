@@ -32,6 +32,7 @@ import raidzero.robot.Constants;
 import raidzero.robot.Constants.DriveConstants;
 import raidzero.robot.Constants.SwerveConstants;
 import raidzero.robot.dashboard.Tab;
+import raidzero.robot.wrappers.LimelightHelpers;
 
 public class Swerve extends Submodule {
     private enum ControlState {
@@ -392,7 +393,7 @@ public class Swerve extends Submodule {
         }
 
         // setOpenLoopSpeeds(new ChassisSpeeds(xSpeed, ySpeed, angularSpeed), fieldOriented);
-        if(aimAssist && mLimelight.hasTarget()) {
+        if(aimAssist && LimelightHelpers.getTV("null")) {
             double y = mAimAssistYController.calculate(mLimelight.getTx(), 0.0);
             ChassisSpeeds driverSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, 0.0, angularSpeed, mPigeon.getRotation2d());
             ChassisSpeeds aimAssistSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(0.0, y, 0.0, mPigeon.getRotation2d());

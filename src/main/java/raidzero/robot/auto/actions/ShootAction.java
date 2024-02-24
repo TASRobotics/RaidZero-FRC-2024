@@ -1,4 +1,3 @@
-/*
 package raidzero.robot.auto.actions;
 
 import edu.wpi.first.wpilibj.Timer;
@@ -9,30 +8,33 @@ public class ShootAction implements Action {
     private static final Shooter mShooter = Shooter.getInstance();
     private Timer timer = new Timer();
 
-    private double mSpeed;
+    private boolean mEnabled;
 
-    public ShootAction(double speed) {
-        mSpeed = speed;
+    public ShootAction(boolean on) {
+        mEnabled = on;
     }
 
     @Override
     public boolean isFinished() {
-        return mShooter.ringPresent();
+        if(mEnabled) {
+            return mShooter.isUpToSpeed();
+        }
+        return true;
         //return timer.hasElapsed(mDuration);
     }
 
     @Override
     public void start() {
-        timer.reset();
-        timer.start();
-        // mIntake.setPercentSpeed(mSpeed);
+        if(mEnabled) {
+            mShooter.setVelocity(90);
+        } else {
+            mShooter.setPercentSpeed(0.0);
+        }
         System.out.println("[Auto] Action '" + getClass().getSimpleName() + "' started!");
     }
 
     @Override
-    public void update() {
-        mShooter.setPercentSpeed(mSpeed,-mSpeed,true);
-    }
+    public void update() {}
 
     @Override
     public void done() {
@@ -41,4 +43,3 @@ public class ShootAction implements Action {
         // mIntake.setPercentSpeed(0);
     }
 }
-*/

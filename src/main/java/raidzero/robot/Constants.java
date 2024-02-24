@@ -2,6 +2,7 @@ package raidzero.robot;
 
 import java.nio.file.Path;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
@@ -147,6 +148,22 @@ public class Constants {
 
         public static final AbsoluteSensorRangeValue kAzimuthEncoderRange = AbsoluteSensorRangeValue.Unsigned_0To1;
         public static final SensorDirectionValue kAzimuthEncoderDirection = SensorDirectionValue.CounterClockwise_Positive;
+
+        public static CurrentLimitsConfigs kAzimuthCurrentLimitsConfigs = new CurrentLimitsConfigs();
+        static {
+            kAzimuthCurrentLimitsConfigs.SupplyCurrentLimit = 30;
+            kAzimuthCurrentLimitsConfigs.SupplyCurrentLimitEnable = true;
+            kAzimuthCurrentLimitsConfigs.SupplyCurrentThreshold = 40;
+            kAzimuthCurrentLimitsConfigs.SupplyTimeThreshold = 0.2;
+        }
+
+        public static CurrentLimitsConfigs kThrottleCurrentLimitsConfigs = new CurrentLimitsConfigs();
+        static {
+            kThrottleCurrentLimitsConfigs.SupplyCurrentLimit = 40;
+            kThrottleCurrentLimitsConfigs.SupplyCurrentLimitEnable = true;
+            kThrottleCurrentLimitsConfigs.SupplyCurrentThreshold = 60;
+            kThrottleCurrentLimitsConfigs.SupplyTimeThreshold = 0.2;
+        }
 
         // public static final double kOpenLoopRampRate = 0.1;
     }
