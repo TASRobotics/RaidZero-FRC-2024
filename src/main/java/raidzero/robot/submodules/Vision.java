@@ -5,6 +5,7 @@ import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Timer;
@@ -16,6 +17,8 @@ import raidzero.robot.wrappers.LimelightHelpers.Results;
 public class Vision extends Submodule {
     private static Vision instance;
     private static final Swerve drive = Swerve.getInstance();
+
+    private Alliance alliance;
 
     private Pose2d visionPose = new Pose2d();
 
@@ -43,6 +46,7 @@ public class Vision extends Submodule {
 
     @Override
     public void onStart(double timestamp) {
+        alliance = DriverStation.getAlliance().get();
     }
 
     @Override
@@ -56,9 +60,9 @@ public class Vision extends Submodule {
         SmartDashboard.putNumber("Note Y", getNoteY());
         SmartDashboard.putNumber("Note Area", getNoteA());
         SmartDashboard.putBoolean("Has Note", hasNote());
-        SmartDashboard.putNumber("Speaker Distance", getSpeakerDistance(Alliance.Blue));
+        SmartDashboard.putNumber("Speaker Distance", getSpeakerDistance(alliance));
         try {
-            SmartDashboard.putNumber("Speaker Angle", getSpeakerAngle(Alliance.Blue).getDegrees());
+            SmartDashboard.putNumber("Speaker Angle", getSpeakerAngle(alliance).getDegrees());
         } catch (Exception e) {
         }
     }

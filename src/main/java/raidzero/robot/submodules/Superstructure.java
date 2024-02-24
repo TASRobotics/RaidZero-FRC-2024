@@ -153,7 +153,6 @@ public class Superstructure extends Submodule {
             desiredAngleDegrees = AngleAdjusterConstants.kAimMap.getInterpolated(new InterpolatingDouble(dist)).value.doubleValue();
         }
 
-
         SmartDashboard.putNumber("Desired Angle Val", desiredAngleDegrees);
         
         mAngleAdjuster.setAngle(Rotation2d.fromDegrees(desiredAngleDegrees));
