@@ -81,7 +81,7 @@ public class Wrist extends Submodule {
         } else if(mPeriodicIO.controlState == ControlState.HOMING) {
             mMotor.getConfigurator().apply(WristConstants.kHomingSoftLimits);
             if(mPeriodicIO.homingMove) {
-                mMotor.setControl(mVoltageOut.withOutput(0.1 * Constants.kMaxMotorVoltage));
+                mMotor.setControl(mVoltageOut.withOutput(-0.1 * Constants.kMaxMotorVoltage));
             } else {
                 zero();
             }

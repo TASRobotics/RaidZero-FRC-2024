@@ -111,9 +111,9 @@ public class Teleop {
             -JoystickUtils.applyDeadband(p.getLeftX()) * SwerveConstants.kMaxVelMPS * 0.5, 
             -JoystickUtils.applyDeadband(p.getRightX()) * SwerveConstants.kMaxVelMPS * 0.5, 
             true, 
-            null, 
+            snapAngle, 
             autoAim,
-            false
+            p.getYButton()
         );
 
         if(autoAim) {
