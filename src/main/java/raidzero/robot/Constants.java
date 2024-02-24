@@ -213,15 +213,15 @@ public class Constants {
     }
 
     public static final class ShooterConstants{
-        public static final int kOuterLeaderID = 31;
-        public static final int kInnerFollowerID = 32;
+        public static final int kUpperLeaderID = 31;
+        public static final int kLowerFollowerID = 32;
 
         // public static final double kTheoreticalMaxSpeedRPS = 6000.0 / 60;
 
         // Motor Output Constants
         public static final InvertedValue kLeaderInversion = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue kNeutralMode = NeutralModeValue.Coast;
-        public static final boolean kFollowerOpposeLeaderInversion = false;
+        public static final boolean kFollowerOpposeLeaderInversion = true;
         public static final double kFollowerUpdateHz = 1000;
 
         // Current Limit Constants
@@ -284,11 +284,11 @@ public class Constants {
         public static final boolean kForwardSoftLimitEnabled = true;
         public static final double kForwardSoftLimit = 60.46875 / 360.0; // rotations
         public static final boolean kReverseSoftLimitEnabled = true;
-        public static final double kReverseSoftLimit = 20.0 / 360.0; // rotations
+        public static final double kReverseSoftLimit = 15.0 / 360.0; // rotations
 
         // Magnet Sensor Constants
         public static final SensorDirectionValue kSensorDirection = SensorDirectionValue.CounterClockwise_Positive;
-        public static final double kMagnetOffset = 0.453369 + 42.0 / 360; // 0.499268 /// 42 deg
+        public static final double kMagnetOffset = 0.244629 + 40.0 / 360; // 0.499268 /// 42 deg
         public static final AbsoluteSensorRangeValue kAbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
 
         // Aiming Constants
@@ -433,15 +433,15 @@ public class Constants {
         static {
             kNormalSoftLimits.ForwardSoftLimitEnable = true;
             kNormalSoftLimits.ForwardSoftLimitThreshold = 280.0 / 360.0; // rotations
-            kNormalSoftLimits.ReverseSoftLimitEnable = false;
+            kNormalSoftLimits.ReverseSoftLimitEnable = true;
             kNormalSoftLimits.ReverseSoftLimitThreshold = 0.0;
         }
 
         // Hardware Limit Switch Constants
         public static final ReverseLimitSourceValue kReverseLimitSource = ReverseLimitSourceValue.LimitSwitchPin;
         public static final ReverseLimitTypeValue kReverseLimitType = ReverseLimitTypeValue.NormallyClosed;
-        public static final boolean kReverseLimitEnabled = true;
-        public static final boolean kReverseLimitAutosetPositionEnabled = true;
+        public static final boolean kReverseLimitEnabled = false; // check
+        public static final boolean kReverseLimitAutosetPositionEnabled = false; // check
         public static final double kReverseLimitAutosetPositionValue = 0.0;
     }
 
