@@ -99,6 +99,6 @@ public class ThreeNoteRed extends AutoSequence {
 
     @Override
     public String getName() {
-        return "3 close 1 mid";
+        return "3 close red";
     }
 }

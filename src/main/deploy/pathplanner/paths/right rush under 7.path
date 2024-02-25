@@ -20,20 +20,20 @@
         "y": 4.122214464115091
       },
       "prevControl": {
-        "x": 5.799270029353182,
-        "y": 4.461828723942754
+        "x": 5.693872500441148,
+        "y": 4.20419031993556
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "right4"
+      "linkedName": "rru middle note"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 5.0,
-    "maxAcceleration": 5.0,
+    "maxVelocity": 1.0,
+    "maxAcceleration": 0.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
