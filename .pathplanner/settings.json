@@ -3,15 +3,16 @@
   "robotLength": 0.889,
   "holonomicMode": true,
   "pathFolders": [
-    "right side go far",
+    "left side 3 close auto RED",
     "get one close note then go right",
     "left side 3 close auto",
     "left side mid rush",
+    "right side go far",
     "right side mid rush"
   ],
   "autoFolders": [],
   "defaultMaxVel": 1.0,
-  "defaultMaxAccel": 2.0,
+  "defaultMaxAccel": 0.5,
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,
   "maxModuleSpeed": 4.5

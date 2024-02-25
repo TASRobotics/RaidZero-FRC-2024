@@ -70,7 +70,12 @@ public class ThreeNoteRight extends AutoSequence {
         idk.add(new DrivePath(trajectory4));
         idk.add(new DrivePath(trajectory5));
         //idk.add(new DrivePath(trajectory6));
-        idk.add(new DrivePath(trajectory7));
+        idk.add(new DrivePath(trajectory7));    
+        idk.add(new DrivePath(trajectory8));
+        idk.add(new DrivePath(trajectory9));
+        idk.add(new DrivePath(trajectory10));
+        idk.add(new DrivePath(trajectory11));
+        idk.add(new DrivePath(trajectory12));
         
         addAction(
             new SeriesAction(idk)

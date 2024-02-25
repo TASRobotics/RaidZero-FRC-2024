@@ -12,7 +12,7 @@
         "y": 6.499514282908736
       },
       "isLocked": false,
-      "linkedName": "right5"
+      "linkedName": "rru 4th note"
     },
     {
       "anchor": {
@@ -20,8 +20,8 @@
         "y": 6.604911811820771
       },
       "prevControl": {
-        "x": 5.775848356261618,
-        "y": 6.874261052373746
+        "x": 6.209149308455535,
+        "y": 7.319272841113443
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,7 +33,7 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 1.0,
-    "maxAcceleration": 2.0,
+    "maxAcceleration": 0.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
