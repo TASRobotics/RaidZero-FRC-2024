@@ -243,7 +243,7 @@ public class Swerve extends Submodule {
     @Override
     public void zero() {
         if (mAlliance == Alliance.Blue)
-            zeroHeading(0);
+            zeroHeading(0); 
         else if (mAlliance == Alliance.Red)
             //zeroHeading(180);
             zeroHeading(180);
@@ -447,6 +447,9 @@ public class Swerve extends Submodule {
         mHolonomicController.setEnabled(true); //false, doesnt turn when only ff
         testController.setEnabled(true);
         // PathPlannerPath.fromChoreoTrajectory()
+        System.out.println("degrees: " + mCurrentPose.getRotation().getDegrees());
+        System.out.println("x: " + mCurrentPose.getX());
+        System.out.println("y: " + mCurrentPose.getY());
         ChassisSpeeds desiredSpeeds = mHolonomicController.calculateRobotRelativeSpeeds(/*mCurrentAutoPose*/ mCurrentPose, state);
         SmartDashboard.putNumber("Desired State X", state.getTargetHolonomicPose().getX());
         SmartDashboard.putNumber("error", mHolonomicController.getPositionalError());
