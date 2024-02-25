@@ -20,10 +20,10 @@ public class AutoRunner {
         new TestSequence(),
         new ThreeNote(),
         new ThreeNoteMid(),
-        new ThreeNoteRight(),
-        new ThreeNoteRightRed(), 
-        
-        new SingleNoteSpeaker()
+        new RightSideGoFar(),
+        new ThreeNoteRight(),        
+        new SingleNoteSpeaker(),
+        new ThreeNoteRed()
     };
 
     public AutoRunner() {

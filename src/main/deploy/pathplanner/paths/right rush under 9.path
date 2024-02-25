@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.8786928358450146,
-        "y": 7.4598028796628215
+        "x": 3.9723795282112664,
+        "y": 7.729152120215796
       },
       "isLocked": false,
       "linkedName": "undershoot"
@@ -25,15 +25,15 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "right5"
+      "linkedName": "rru 4th note"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 5.0,
-    "maxAcceleration": 5.0,
+    "maxVelocity": 1.0,
+    "maxAcceleration": 0.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },

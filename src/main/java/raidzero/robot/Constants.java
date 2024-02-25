@@ -502,7 +502,7 @@ public class Constants {
 
     public static final class VisionConstants {
         public static final String APRILTAG_CAM_NAME = "limelight";
-        public static final double XY_STDS = 0.1;
+        public static final double XY_STDS = 0.1; //0.1 try 0.5???
         public static final double DEG_STDS = 1;
 
         public static final String NOTE_CAM_NAME = "limelight-object";
