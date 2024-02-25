@@ -53,7 +53,7 @@ public class ThreeNote extends AutoSequence {
             // path4.flipPath();
         }
         // path1.getPreviewStartingHolonomicPose();
-        Rotation2d test1 = new Rotation2d(Math.toRadians(180)); 
+        Rotation2d test1 = new Rotation2d(Math.toRadians(0)); 
         // Rotation2d test1 = path1.getPoint(0).rotationTarget.getTarget();
         // Rotation2d test1 = mSwerve.getPose().getRotation();
         trajectory1p5 = path1p5.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)));
