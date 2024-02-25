@@ -2,6 +2,7 @@ package raidzero.robot.auto.sequences;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -9,51 +10,39 @@ import com.pathplanner.lib.path.PathPlannerTrajectory;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import raidzero.robot.auto.actions.Action;
 import raidzero.robot.auto.actions.AngleShooterAction;
 import raidzero.robot.auto.actions.AutomaticIntakeAction;
 import raidzero.robot.auto.actions.DrivePath;
+import raidzero.robot.auto.actions.DrivePathNoteAim;
 import raidzero.robot.auto.actions.ParallelAction;
 import raidzero.robot.auto.actions.Res;
 import raidzero.robot.auto.actions.RunConveyorAction;
+import raidzero.robot.auto.actions.ManualRunIntakeAction;
 import raidzero.robot.auto.actions.SeriesAction;
 import raidzero.robot.auto.actions.ShootAction;
+import raidzero.robot.auto.actions.WaitAction;
 import raidzero.robot.submodules.Swerve;
 
-public class ThreeNote extends AutoSequence {
+public class ThreeNoteRed extends AutoSequence {
     private static final Swerve mSwerve = Swerve.getInstance();
 
-    private PathPlannerPath path1 = PathPlannerPath.fromPathFile("first note");
+    private PathPlannerPath path1 = PathPlannerPath.fromPathFile("Copy of first note");
     private PathPlannerTrajectory trajectory1;
-    private PathPlannerPath path1p5 = PathPlannerPath.fromPathFile("first.5 note");
+    private PathPlannerPath path1p5 = PathPlannerPath.fromPathFile("Copy of first.5 note");
     private PathPlannerTrajectory trajectory1p5;
-    private PathPlannerPath path2 = PathPlannerPath.fromPathFile("2nd note");
+    private PathPlannerPath path2 = PathPlannerPath.fromPathFile("Copy of 2nd note");
     private PathPlannerTrajectory trajectory2;
-    private PathPlannerPath path3 = PathPlannerPath.fromPathFile("3rd note");
+    private PathPlannerPath path3 = PathPlannerPath.fromPathFile("Copy of 3rd note");
     private PathPlannerTrajectory trajectory3;
     //get 4th note
-    PathPlannerPath path4 = PathPlannerPath.fromPathFile("4th note");
+    PathPlannerPath path4 = PathPlannerPath.fromPathFile("Copy of 4th note");
     private PathPlannerTrajectory trajectory4;
-    PathPlannerPath path5 = PathPlannerPath.fromPathFile("4th note go shoot");
+    PathPlannerPath path5 = PathPlannerPath.fromPathFile("Copy of 4th note go shoot");
     private PathPlannerTrajectory trajectory5;
     //get 5th note
-    PathPlannerPath path6 = PathPlannerPath.fromPathFile("5th note");
-    private PathPlannerTrajectory trajectory6;
-    PathPlannerPath path7 = PathPlannerPath.fromPathFile("5th note go shoot");
-    private PathPlannerTrajectory trajectory7;
 
-    public ThreeNote() {
-        if(DriverStation.getAlliance().get() == Alliance.Red) {
-            path1 = path1.flipPath();
-            path1p5 = path1p5.flipPath();
-            path2 = path2.flipPath();
-            path3 = path3.flipPath();
-            System.out.println("dkfsdkf");
-            // path4.flipPath();
-        }
-        // path1.getPreviewStartingHolonomicPose();
+    public ThreeNoteRed() {
         Rotation2d test1 = new Rotation2d(Math.toRadians(0)); 
         // Rotation2d test1 = path1.getPoint(0).rotationTarget.getTarget();
         // Rotation2d test1 = mSwerve.getPose().getRotation();
@@ -66,9 +55,7 @@ public class ThreeNote extends AutoSequence {
         trajectory3 = path3.getTrajectory(new ChassisSpeeds(), test3);
         trajectory4 = path4.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)));
         trajectory5 = path5.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)));
-        trajectory6 = path6.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)));
-        trajectory7 = path7.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)));
-
+        
     }
 
     @Override

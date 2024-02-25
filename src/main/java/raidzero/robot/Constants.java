@@ -282,7 +282,7 @@ public class Constants {
         // Software Limit Switch Constants
         // TODO
         public static final boolean kForwardSoftLimitEnabled = true;
-        public static final double kForwardSoftLimit = 60.46875 / 360.0; // rotations
+        public static final double kForwardSoftLimit = 59.0 / 360.0; // rotations
         public static final boolean kReverseSoftLimitEnabled = true;
         public static final double kReverseSoftLimit = 15.0 / 360.0; // rotations
 
@@ -502,7 +502,7 @@ public class Constants {
 
     public static final class VisionConstants {
         public static final String APRILTAG_CAM_NAME = "limelight";
-        public static final double XY_STDS = 0.1;
+        public static final double XY_STDS = 0.1; //0.1
         public static final double DEG_STDS = 1;
 
         public static final String NOTE_CAM_NAME = "limelight-object";
