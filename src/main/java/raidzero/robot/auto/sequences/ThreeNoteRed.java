@@ -94,6 +94,6 @@ public class ThreeNoteRed extends AutoSequence {
 
     @Override
     public String getName() {
-        return "3 close red";
+        return "4 note left red";
     }
 }

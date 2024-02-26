@@ -1,6 +1,7 @@
 package raidzero.robot.auto.sequences;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -9,9 +10,14 @@ import com.pathplanner.lib.path.PathPlannerTrajectory;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import raidzero.robot.auto.actions.Action;
+import raidzero.robot.auto.actions.AngleShooterAction;
+import raidzero.robot.auto.actions.AutomaticIntakeAction;
 import raidzero.robot.auto.actions.DrivePath;
+import raidzero.robot.auto.actions.ParallelAction;
 import raidzero.robot.auto.actions.Res;
+import raidzero.robot.auto.actions.RunConveyorAction;
 import raidzero.robot.auto.actions.SeriesAction;
+import raidzero.robot.auto.actions.ShootAction;
 import raidzero.robot.auto.actions.WaitAction;
 
 public class ThreeNoteRight extends AutoSequence {
@@ -26,21 +32,21 @@ public class ThreeNoteRight extends AutoSequence {
     private PathPlannerTrajectory trajectory4;
     PathPlannerPath path5 = PathPlannerPath.fromPathFile("right rush 5");
     private PathPlannerTrajectory trajectory5;
-    //get 5th note
-    PathPlannerPath path6 = PathPlannerPath.fromPathFile("right rush 6");
-    private PathPlannerTrajectory trajectory6;
-    PathPlannerPath path7 = PathPlannerPath.fromPathFile("right rush under 7");
-    private PathPlannerTrajectory trajectory7;
-    PathPlannerPath path8 = PathPlannerPath.fromPathFile("right rush under 8");
-    private PathPlannerTrajectory trajectory8;
-    PathPlannerPath path9 = PathPlannerPath.fromPathFile("right rush under 9");
-    private PathPlannerTrajectory trajectory9;
-    PathPlannerPath path10 = PathPlannerPath.fromPathFile("right rush under 10");
-    private PathPlannerTrajectory trajectory10;
-    PathPlannerPath path11 = PathPlannerPath.fromPathFile("right rush under 11");
-    private PathPlannerTrajectory trajectory11;
-    PathPlannerPath path12 = PathPlannerPath.fromPathFile("right rush under 12");
-    private PathPlannerTrajectory trajectory12;
+    ////get 5th note
+    //PathPlannerPath path6 = PathPlannerPath.fromPathFile("right rush 6");
+    //private PathPlannerTrajectory trajectory6;
+    //PathPlannerPath path7 = PathPlannerPath.fromPathFile("right rush under 7");
+    //private PathPlannerTrajectory trajectory7;
+    //PathPlannerPath path8 = PathPlannerPath.fromPathFile("right rush under 8");
+    //private PathPlannerTrajectory trajectory8;
+    //PathPlannerPath path9 = PathPlannerPath.fromPathFile("right rush under 9");
+    //private PathPlannerTrajectory trajectory9;
+    //PathPlannerPath path10 = PathPlannerPath.fromPathFile("right rush under 10");
+    //private PathPlannerTrajectory trajectory10;
+    //PathPlannerPath path11 = PathPlannerPath.fromPathFile("right rush under 11");
+    //private PathPlannerTrajectory trajectory11;
+    //PathPlannerPath path12 = PathPlannerPath.fromPathFile("right rush under 12");
+    //private PathPlannerTrajectory trajectory12;
 
     public ThreeNoteRight() {
         Rotation2d test1 = new Rotation2d(Math.toRadians(0));
@@ -51,29 +57,42 @@ public class ThreeNoteRight extends AutoSequence {
         trajectory3 = path3.getTrajectory(new ChassisSpeeds(), test3);
         trajectory4 = path4.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)));
         trajectory5 = path5.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)));
-        trajectory6 = path6.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)));
-        trajectory7 = path7.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)));
-        trajectory8 = path8.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)));
-        trajectory9 = path9.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)));
-        trajectory10 = path10.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)));
-        trajectory11 = path11.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)));
-        trajectory12 = path12.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)));
+        //trajectory6 = path6.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)));
+        //trajectory7 = path7.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)));
+        //trajectory8 = path8.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)));
+        //trajectory9 = path9.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)));
+        //trajectory10 = path10.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)));
+        //trajectory11 = path11.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)));
+        //trajectory12 = path12.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)));
     }
 
     @Override
     public void sequence() {
-        List<Action> idk = new ArrayList();
-        idk.add(new Res());
-        idk.add(new DrivePath(trajectory1));
-        idk.add(new DrivePath(trajectory2));
-        idk.add(new DrivePath(trajectory3));
-        idk.add(new DrivePath(trajectory4));
-        idk.add(new DrivePath(trajectory5));
-        idk.add(new DrivePath(trajectory6));
-        idk.add(new DrivePath(trajectory7));
-        
         addAction(
-            new SeriesAction(idk)
+            new SeriesAction(Arrays.asList(
+                new Res(), 
+                new ParallelAction(Arrays.asList(
+                    new DrivePath(trajectory1), 
+                    new ShootAction(true), 
+                    new AngleShooterAction(Rotation2d.fromDegrees(45))
+                )), 
+                new RunConveyorAction(1.0, 1.0), // Shoot 1st note (preload)
+                new ParallelAction(Arrays.asList(
+                    new DrivePath(trajectory2), 
+                    new AutomaticIntakeAction(), 
+                    new AngleShooterAction(Rotation2d.fromDegrees(37))
+                )), 
+                new DrivePath(trajectory3), //go to shoot place
+                new RunConveyorAction(1.0, 1.0), // shoot 2nd note
+                new ParallelAction(Arrays.asList(
+                    new DrivePath(trajectory4), 
+                    new AutomaticIntakeAction(), 
+                    new AngleShooterAction(Rotation2d.fromDegrees(37))
+                )), 
+                new DrivePath(trajectory5), //go to shoot place
+                new RunConveyorAction(1.0, 1.0), // shoot 3rd note
+                new ShootAction(false)
+            ))
         );
     }
 
@@ -84,6 +103,6 @@ public class ThreeNoteRight extends AutoSequence {
 
     @Override
     public String getName() {
-        return "3 right";
+        return "3 right blue";
     }
 }

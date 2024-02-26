@@ -3,9 +3,10 @@
   "robotLength": 0.889,
   "holonomicMode": true,
   "pathFolders": [
-    "left side mid rush",
+    "right side mid rush RED",
     "get one close note then go right",
     "left side 3 close auto",
+    "left side mid rush",
     "right side mid rush"
   ],
   "autoFolders": [],
