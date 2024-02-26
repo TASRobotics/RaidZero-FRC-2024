@@ -39,11 +39,14 @@
   },
   "goalEndState": {
     "velocity": 3.0,
-    "rotation": -13.0,
+    "rotation": 167.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "left side 3 close auto RED",
-  "previewStartingState": null,
+  "folder": null,
+  "previewStartingState": {
+    "rotation": 180.0,
+    "velocity": 0
+  },
   "useDefaultConstraints": false
 }
