@@ -100,7 +100,7 @@ public class Swerve extends Submodule {
     );
 
     private PIDController mAimAssistController = new PIDController(
-        0.5, 0.0, 0.0
+        0.2, 0.0, 0.0
     );
 
     private Field2d fieldPose = new Field2d();

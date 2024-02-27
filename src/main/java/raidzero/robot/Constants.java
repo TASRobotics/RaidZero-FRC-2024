@@ -489,7 +489,7 @@ public class Constants {
     public static final class SuperstructureConstants {
         // Arm
         public static final Rotation2d kArmStowAngle = Rotation2d.fromDegrees(-39.0);
-        public static final Rotation2d kArmAmpAngle = Rotation2d.fromDegrees(64.0);
+        public static final Rotation2d kArmAmpAngle = Rotation2d.fromDegrees(75.0);
 
         // Wrist
         public static final Rotation2d kWristStowAngle = Rotation2d.fromDegrees(10.0);

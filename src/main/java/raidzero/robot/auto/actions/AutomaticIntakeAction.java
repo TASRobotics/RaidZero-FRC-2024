@@ -32,13 +32,13 @@ public class AutomaticIntakeAction implements Action {
 
     @Override
     public void update() {
-        done = mSuperstructure.intakeChoreographed(true);
+        done = mSuperstructure.intakeChoreographed(true, true);
     }
 
     @Override
     public void done() {
         timer.stop();
         System.out.println("[Auto] Action '" + getClass().getSimpleName() + "' finished!");
-        mSuperstructure.intakeChoreographed(false);
+        mSuperstructure.intakeChoreographed(false, true);
     }
 }

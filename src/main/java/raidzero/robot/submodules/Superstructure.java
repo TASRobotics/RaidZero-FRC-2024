@@ -16,7 +16,7 @@ import raidzero.robot.utils.requests.WaitRequest;
 
 public class Superstructure extends Submodule {
     public enum SuperstructureState {
-        IDLE, AMP, SHOOT, INTAKE
+        IDLE, AMP, SHOOT, INTAKE, TRAP
     }
     
     private static Superstructure instance = null;
@@ -149,6 +149,17 @@ public class Superstructure extends Submodule {
         mCurrentState = SuperstructureState.AMP;
     }
 
+    public void trapState() {
+        request(new ParallelRequest(
+            mArm.armRequest(SuperstructureConstants.kArmAmpAngle, true),
+            new SequentialRequest(
+                new WaitRequest(0.05), 
+                mWrist.wristRequest(SuperstructureConstants.kWristStowAngle, true)
+            )
+        ));
+        mCurrentState = SuperstructureState.TRAP;
+    }
+
     public void angleShooter() {
         if(mVision.getSpeakerDistance(mAlliance) == 0.0) {
             return;
@@ -164,7 +175,7 @@ public class Superstructure extends Submodule {
         mAngleAdjuster.setAngle(Rotation2d.fromDegrees(desiredAngleDegrees));
     }
 
-    public boolean intakeChoreographed(boolean enable) {
+    public boolean intakeChoreographed(boolean enable, boolean justReleased) {
         if(enable && !mNoteHasPassed) {
             mIntake.setPercentSpeed(1.0, 1.0);
             mConveyor.setPercentSpeed(0.40);
@@ -174,7 +185,7 @@ public class Superstructure extends Submodule {
             mConveyor.setPercentSpeed(0.0);
             mWrist.setAngle(SuperstructureConstants.kWristStowAngle);
             return true;
-        } else if(!enable) {
+        } else if(!enable && justReleased) {
             mNoteHasPassed = false;
             mConveyor.setPercentSpeed(0.0);
             mIntake.setPercentSpeed(0.0, 0.0);

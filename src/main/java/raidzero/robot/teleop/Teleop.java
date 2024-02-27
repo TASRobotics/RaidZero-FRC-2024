@@ -139,10 +139,13 @@ public class Teleop {
         //     mSuperstructure.intakeChoreographed(false);
         // }
 
-        mSuperstructure.intakeChoreographed(p.getLeftBumper());
-        if(mIntake.ringPresent()) {
-            p.setRumble(RumbleType.kBothRumble, 1.0);
-        }
+        mSuperstructure.intakeChoreographed(p.getLeftBumper(), p.getLeftBumperReleased());
+
+        // if(mIntake.ringPresent()) {
+        //     p.setRumble(RumbleType.kBothRumble, 1.0);
+        // } else {
+        //     p.setRumble(RumbleType.kBothRumble, 0.0);
+        // }
 
 
 
@@ -179,6 +182,9 @@ public class Teleop {
         if(p.getRawButton(9)) {
             mSuperstructure.stowState();
         }
+        if(p.getRawButton(12)) {
+            mSuperstructure.trapState();
+        }
 
         // Score
         if(p.getRawButton(11)) {
@@ -213,9 +219,17 @@ public class Teleop {
         }
 
         // wrist zeroing
-        if(p.getRawButton(3)) { // if button pressed
-            mWrist.setPercentSpeed(-0.1);
-        } 
+        // if(p.getRawButton(3)) { // if button pressed
+        //     mWrist.setPercentSpeed(-0.1);
+        // } 
+
+        if(p.getRawButton(3)) {
+            mClimb.setPercentSpeed(0.2);
+        } else if(p.getRawButton(2)) {
+            mClimb.setPercentSpeed(-0.2);
+        } else {
+            mClimb.setPercentSpeed(0.0);
+        }
     }
 
     private boolean isRightTriggerReleased() {
