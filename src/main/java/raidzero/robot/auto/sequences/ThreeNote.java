@@ -72,18 +72,6 @@ public class ThreeNote extends AutoSequence {
 
     @Override
     public void sequence() {
-        List<Action> idk = new ArrayList();
-        idk.add(new Res());
-        idk.add(new DrivePath(trajectory1));
-        idk.add(new DrivePath(trajectory1p5));
-        //idk.add(new ParallelAction(new LinkedList<>(Arrays.asList(new DrivePath(trajectory2), new RunIntakeAction(1)))));
-        idk.add(new DrivePath(trajectory2));
-        //idk.add(new WaitAction(1));
-        idk.add(new DrivePath(trajectory3));
-        idk.add(new DrivePath(trajectory4));
-        idk.add(new DrivePath(trajectory5));
-        idk.add(new DrivePath(trajectory6));
-        idk.add(new DrivePath(trajectory7));
         addAction(
             new SeriesAction(Arrays.asList(
                 new Res(), 
@@ -111,7 +99,14 @@ public class ThreeNote extends AutoSequence {
                     new AutomaticIntakeAction(), 
                     new AngleShooterAction(Rotation2d.fromDegrees(35))
                 )), 
-                new RunConveyorAction(1.0, 1.0) // shoot 4th note
+                new RunConveyorAction(1.0, 1.0), // shoot 4th note
+                new ParallelAction(Arrays.asList(
+                    new DrivePath(trajectory4), 
+                    new AutomaticIntakeAction(), 
+                    new AngleShooterAction(Rotation2d.fromDegrees(40))
+                )), 
+                new DrivePath(trajectory5),
+                new RunConveyorAction(1.0, 1.0) // shoot 5th note
             ))
         );
     }
@@ -123,6 +118,6 @@ public class ThreeNote extends AutoSequence {
 
     @Override
     public String getName() {
-        return "4 note left blue";
+        return "4 note close blue";
     }
 }

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.ejml.equation.Sequence;
+
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.PathPlannerTrajectory;
 
@@ -13,6 +15,7 @@ import raidzero.robot.auto.actions.Action;
 import raidzero.robot.auto.actions.AngleShooterAction;
 import raidzero.robot.auto.actions.AutomaticIntakeAction;
 import raidzero.robot.auto.actions.DrivePath;
+import raidzero.robot.auto.actions.DrivePathNoteAim;
 import raidzero.robot.auto.actions.ParallelAction;
 import raidzero.robot.auto.actions.Res;
 import raidzero.robot.auto.actions.RunConveyorAction;
@@ -74,23 +77,30 @@ public class ThreeNoteRight extends AutoSequence {
                 new ParallelAction(Arrays.asList(
                     new DrivePath(trajectory1), 
                     new ShootAction(true), 
-                    new AngleShooterAction(Rotation2d.fromDegrees(45))
+                    new AngleShooterAction(Rotation2d.fromDegrees(25.5))
                 )), 
-                new RunConveyorAction(1.0, 1.0), // Shoot 1st note (preload)
+                new RunConveyorAction(1.0, 0.5), // Shoot 1st note (preload)
                 new ParallelAction(Arrays.asList(
-                    new DrivePath(trajectory2), 
-                    new AutomaticIntakeAction(), 
-                    new AngleShooterAction(Rotation2d.fromDegrees(37))
+                    new SeriesAction(Arrays.asList(
+                        new DrivePathNoteAim(trajectory2), 
+                        new DrivePath(trajectory3)
+                    )),
+                    //new DrivePath(trajectory2), 
+                    new AutomaticIntakeAction(5), 
+                    new AngleShooterAction(Rotation2d.fromDegrees(  29))
                 )), 
-                new DrivePath(trajectory3), //go to shoot place
-                new RunConveyorAction(1.0, 1.0), // shoot 2nd note
+               // new DrivePath(trajectory3), //go to shoot place
+                new RunConveyorAction(1.0, 0.5), // shoot 2nd note
                 new ParallelAction(Arrays.asList(
-                    new DrivePath(trajectory4), 
-                    new AutomaticIntakeAction(), 
-                    new AngleShooterAction(Rotation2d.fromDegrees(37))
+                    new SeriesAction(Arrays.asList(
+                        new DrivePathNoteAim(trajectory4), 
+                        new DrivePath(trajectory5)
+                    )),
+                    new AutomaticIntakeAction(5), 
+                    new AngleShooterAction(Rotation2d.fromDegrees(27.5))
                 )), 
-                new DrivePath(trajectory5), //go to shoot place
-                new RunConveyorAction(1.0, 1.0), // shoot 3rd note
+                //new DrivePath(trajectory5), //go to shoot place
+                new RunConveyorAction(1.0, 0.5), // shoot 3rd note
                 new ShootAction(false)
             ))
         );
