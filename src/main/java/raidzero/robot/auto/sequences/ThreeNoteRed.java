@@ -35,27 +35,27 @@ public class ThreeNoteRed extends AutoSequence {
     private PathPlannerTrajectory trajectory2;
     private PathPlannerPath path3 = PathPlannerPath.fromPathFile("Copy of 3rd note");
     private PathPlannerTrajectory trajectory3;
-    //get 4th note
-    PathPlannerPath path4 = PathPlannerPath.fromPathFile("Copy of 4th note");
+
+    private PathPlannerPath path4 = PathPlannerPath.fromPathFile("Copy of 4th note");
     private PathPlannerTrajectory trajectory4;
-    PathPlannerPath path5 = PathPlannerPath.fromPathFile("Copy of 4th note go shoot");
+    private PathPlannerPath path5 = PathPlannerPath.fromPathFile("Copy of 4th note go shoot");
     private PathPlannerTrajectory trajectory5;
+    //get 4th note
+    
     //get 5th note
 
     public ThreeNoteRed() {
-        Rotation2d test1 = new Rotation2d(Math.toRadians(0)); 
+        Rotation2d test1 = new Rotation2d(Math.toRadians(180)); 
         // Rotation2d test1 = path1.getPoint(0).rotationTarget.getTarget();
         // Rotation2d test1 = mSwerve.getPose().getRotation();
-        trajectory1p5 = path1p5.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)));
+        trajectory1p5 = path1p5.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(180)));
 
         trajectory1 = path1.getTrajectory(new ChassisSpeeds(), test1);
-        Rotation2d test2 = new Rotation2d(Math.toRadians(0)); 
+        Rotation2d test2 = new Rotation2d(Math.toRadians(180)); 
         trajectory2 = path2.getTrajectory(new ChassisSpeeds(), test2);
-        Rotation2d test3 = new Rotation2d(Math.toRadians(0)); 
+        Rotation2d test3 = new Rotation2d(Math.toRadians(180)); 
         trajectory3 = path3.getTrajectory(new ChassisSpeeds(), test3);
-        trajectory4 = path4.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)));
-        trajectory5 = path5.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)));
-        
+ 
     }
 
     @Override
@@ -87,7 +87,15 @@ public class ThreeNoteRed extends AutoSequence {
                     new AutomaticIntakeAction(), 
                     new AngleShooterAction(Rotation2d.fromDegrees(35))
                 )), 
-                new RunConveyorAction(1.0, 1.0) // shoot 4th note
+                new RunConveyorAction(1.0, 1.0), // shoot 4th note
+                new ParallelAction(Arrays.asList(
+                    new DrivePath(trajectory4), 
+                    new AutomaticIntakeAction(), 
+                    new AngleShooterAction(Rotation2d.fromDegrees(40))
+                )), 
+                new DrivePath(trajectory5),
+                new RunConveyorAction(1.0, 1.0) // shoot 5th note 
+
             ))
         );
     }
@@ -99,6 +107,8 @@ public class ThreeNoteRed extends AutoSequence {
 
     @Override
     public String getName() {
-        return "3 close red";
+
+        return "4 note close red";
+
     }
 }

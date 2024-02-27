@@ -19,8 +19,9 @@ public class AutoRunner {
         new EmptySequence(),
         new TestSequence(),
         new ThreeNote(),
-        new ThreeNoteRed(),
-        
+        new ThreeNoteRed(),   
+        new ThreeNoteRight(),     
+
         new SingleNoteSpeaker()
     };
 

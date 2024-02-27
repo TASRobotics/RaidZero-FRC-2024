@@ -3,49 +3,49 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.7310308543584263,
-        "y": 2.41243232843099
+        "x": 8.706593127471969,
+        "y": 0.7482129249972782
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.7179839231130494,
-        "y": 1.7821871396639026
+        "x": 9.706593127471969,
+        "y": 0.7482129249972784
       },
       "isLocked": false,
-      "linkedName": "rightshoot"
+      "linkedName": "rsmrr2"
     },
     {
       "anchor": {
-        "x": 8.380695505785631,
-        "y": 2.11674683439053
+        "x": 13.11023622047244,
+        "y": 2.1512028738343196
       },
       "prevControl": {
-        "x": 7.4665019170049085,
-        "y": 1.9272203362123874
+        "x": 12.022751188359518,
+        "y": 0.9026089480750386
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "right3"
+      "linkedName": "rsmrr shoot"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.0,
-    "maxAcceleration": 0.5,
+    "maxVelocity": 5.0,
+    "maxAcceleration": 5.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": -136.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "get one close note then go right",
+  "folder": "right side mid rush RED",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": 180.0,
     "velocity": 0
   },
   "useDefaultConstraints": true

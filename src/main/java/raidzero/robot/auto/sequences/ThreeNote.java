@@ -50,7 +50,8 @@ public class ThreeNote extends AutoSequence {
             path1p5 = path1p5.flipPath();
             path2 = path2.flipPath();
             path3 = path3.flipPath();
-            System.out.println("dkfsdkf");
+
+
             // path4.flipPath();
         }
         // path1.getPreviewStartingHolonomicPose();
@@ -100,7 +101,14 @@ public class ThreeNote extends AutoSequence {
                     new AutomaticIntakeAction(), 
                     new AngleShooterAction(Rotation2d.fromDegrees(35))
                 )), 
-                new RunConveyorAction(1.0, 1.0) // shoot 4th note
+                new RunConveyorAction(1.0, 1.0), // shoot 4th note
+                new ParallelAction(Arrays.asList(
+                    new DrivePath(trajectory4), 
+                    new AutomaticIntakeAction(), 
+                    new AngleShooterAction(Rotation2d.fromDegrees(40))
+                )), 
+                new DrivePath(trajectory5),
+                new RunConveyorAction(1.0, 1.0) // shoot 5th note
             ))
         );
     }
@@ -112,6 +120,6 @@ public class ThreeNote extends AutoSequence {
 
     @Override
     public String getName() {
-        return "3 close 1 mid";
+        return "4 note close blue";
     }
 }
