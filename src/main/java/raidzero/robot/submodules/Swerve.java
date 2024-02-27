@@ -99,6 +99,10 @@ public class Swerve extends Submodule {
         SwerveConstants.kSnapController_kD
     );
 
+    private PIDController mAimAssistController = new PIDController(
+        0.5, 0.0, 0.0
+    );
+
     private Field2d fieldPose = new Field2d();
 
     private boolean firstPath = true;    
@@ -464,7 +468,7 @@ public class Swerve extends Submodule {
             desiredSpeeds = new ChassisSpeeds(desiredSpeeds.vxMetersPerSecond, desiredSpeeds.vyMetersPerSecond, omega);
         }
         if(mOverridePathingRotationNoteAim && mVision.hasNote()) {
-            double omega = mSnapController.calculate(mVision.getNoteX(), 0.0);
+            double omega = mAimAssistController.calculate(mVision.getNoteX(), 0.0);
             desiredSpeeds = new ChassisSpeeds(desiredSpeeds.vxMetersPerSecond, desiredSpeeds.vyMetersPerSecond, omega);
         }
 
