@@ -35,6 +35,7 @@ public class ThreeNoteRed extends AutoSequence {
     private PathPlannerTrajectory trajectory2;
     private PathPlannerPath path3 = PathPlannerPath.fromPathFile("Copy of 3rd note");
     private PathPlannerTrajectory trajectory3;
+
     private PathPlannerPath path4 = PathPlannerPath.fromPathFile("Copy of 4th note");
     private PathPlannerTrajectory trajectory4;
     private PathPlannerPath path5 = PathPlannerPath.fromPathFile("Copy of 4th note go shoot");
@@ -54,7 +55,7 @@ public class ThreeNoteRed extends AutoSequence {
         trajectory2 = path2.getTrajectory(new ChassisSpeeds(), test2);
         Rotation2d test3 = new Rotation2d(Math.toRadians(180)); 
         trajectory3 = path3.getTrajectory(new ChassisSpeeds(), test3);
-       
+ 
     }
 
     @Override
@@ -94,6 +95,7 @@ public class ThreeNoteRed extends AutoSequence {
                 )), 
                 new DrivePath(trajectory5),
                 new RunConveyorAction(1.0, 1.0) // shoot 5th note 
+
             ))
         );
     }
@@ -105,6 +107,8 @@ public class ThreeNoteRed extends AutoSequence {
 
     @Override
     public String getName() {
+
         return "4 note close red";
+
     }
 }

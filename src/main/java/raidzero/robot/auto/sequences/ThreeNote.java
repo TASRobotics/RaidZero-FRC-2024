@@ -50,6 +50,8 @@ public class ThreeNote extends AutoSequence {
             path1p5 = path1p5.flipPath();
             path2 = path2.flipPath();
             path3 = path3.flipPath();
+
+
             // path4.flipPath();
         }
         // path1.getPreviewStartingHolonomicPose();

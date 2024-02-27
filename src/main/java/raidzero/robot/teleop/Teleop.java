@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
@@ -139,6 +140,9 @@ public class Teleop {
         // }
 
         mSuperstructure.intakeChoreographed(p.getLeftBumper());
+        if(mIntake.ringPresent()) {
+            p.setRumble(RumbleType.kBothRumble, 1.0);
+        }
 
 
 

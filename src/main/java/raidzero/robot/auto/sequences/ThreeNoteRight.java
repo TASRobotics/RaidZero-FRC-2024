@@ -35,21 +35,7 @@ public class ThreeNoteRight extends AutoSequence {
     private PathPlannerTrajectory trajectory4;
     PathPlannerPath path5 = PathPlannerPath.fromPathFile("right rush 5");
     private PathPlannerTrajectory trajectory5;
-    ////get 5th note
-    //PathPlannerPath path6 = PathPlannerPath.fromPathFile("right rush 6");
-    //private PathPlannerTrajectory trajectory6;
-    //PathPlannerPath path7 = PathPlannerPath.fromPathFile("right rush under 7");
-    //private PathPlannerTrajectory trajectory7;
-    //PathPlannerPath path8 = PathPlannerPath.fromPathFile("right rush under 8");
-    //private PathPlannerTrajectory trajectory8;
-    //PathPlannerPath path9 = PathPlannerPath.fromPathFile("right rush under 9");
-    //private PathPlannerTrajectory trajectory9;
-    //PathPlannerPath path10 = PathPlannerPath.fromPathFile("right rush under 10");
-    //private PathPlannerTrajectory trajectory10;
-    //PathPlannerPath path11 = PathPlannerPath.fromPathFile("right rush under 11");
-    //private PathPlannerTrajectory trajectory11;
-    //PathPlannerPath path12 = PathPlannerPath.fromPathFile("right rush under 12");
-    //private PathPlannerTrajectory trajectory12;
+
 
     public ThreeNoteRight() {
         Rotation2d test1 = new Rotation2d(Math.toRadians(0));
@@ -61,16 +47,12 @@ public class ThreeNoteRight extends AutoSequence {
         trajectory4 = path4.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)));
         trajectory5 = path5.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)));
         //trajectory6 = path6.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)));
-        //trajectory7 = path7.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)));
-        //trajectory8 = path8.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)));
-        //trajectory9 = path9.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)));
-        //trajectory10 = path10.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)));
-        //trajectory11 = path11.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)));
-        //trajectory12 = path12.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)));
+
     }
 
     @Override
     public void sequence() {
+
         addAction(
             new SeriesAction(Arrays.asList(
                 new Res(), 

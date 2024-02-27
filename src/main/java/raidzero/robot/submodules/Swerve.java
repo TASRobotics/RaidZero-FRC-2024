@@ -99,6 +99,10 @@ public class Swerve extends Submodule {
         SwerveConstants.kSnapController_kD
     );
 
+    private PIDController mAimAssistController = new PIDController(
+        0.5, 0.0, 0.0
+    );
+
     private Field2d fieldPose = new Field2d();
 
     private boolean firstPath = true;    
@@ -245,7 +249,7 @@ public class Swerve extends Submodule {
         if (mAlliance == Alliance.Blue)
             zeroHeading(0); 
         else if (mAlliance == Alliance.Red)
-            //zeroHeading(180);
+            //zeroHeading(0);
             zeroHeading(180);
 
 
@@ -443,7 +447,7 @@ public class Swerve extends Submodule {
 
     private void updatePathing() {
         PathPlannerTrajectory.State state = (PathPlannerTrajectory.State) mCurrentTrajectory.sample(mTimer.get());
-
+        if(DriverStation.getAlliance().get() == Alliance.Red) state.targetHolonomicRotation = state.targetHolonomicRotation.unaryMinus();
         mHolonomicController.setEnabled(true); //false, doesnt turn when only ff
         testController.setEnabled(true);
         // PathPlannerPath.fromChoreoTrajectory()
@@ -452,6 +456,8 @@ public class Swerve extends Submodule {
         System.out.println("y: " + mCurrentPose.getY());
         ChassisSpeeds desiredSpeeds = mHolonomicController.calculateRobotRelativeSpeeds(/*mCurrentAutoPose*/ mCurrentPose, state);
         SmartDashboard.putNumber("Desired State X", state.getTargetHolonomicPose().getX());
+        SmartDashboard.putNumber("Desired State Y", state.getTargetHolonomicPose().getY());
+
         SmartDashboard.putNumber("error", mHolonomicController.getPositionalError());
         //ChassisSpeeds trash = testController.calculateRobotRelativeSpeeds(mCurrentPose, state);
         // desiredSpeeds.times(-1.0);
@@ -465,7 +471,7 @@ public class Swerve extends Submodule {
             desiredSpeeds = new ChassisSpeeds(desiredSpeeds.vxMetersPerSecond, desiredSpeeds.vyMetersPerSecond, omega);
         }
         if(mOverridePathingRotationNoteAim && mVision.hasNote()) {
-            double omega = mSnapController.calculate(mVision.getNoteX(), 0.0);
+            double omega = mAimAssistController.calculate(mVision.getNoteX(), 0.0);
             desiredSpeeds = new ChassisSpeeds(desiredSpeeds.vxMetersPerSecond, desiredSpeeds.vyMetersPerSecond, omega);
         }
 
