@@ -149,7 +149,7 @@ public class Teleop {
         //     mSuperstructure.intakeChoreographed(false);
         // }
 
-        mSuperstructure.intakeChoreographed(p.getLeftBumper(), p.getLeftBumperReleased());
+        mSuperstructure.intakeChoreographed(p.getRightBumper(), p.getRightBumperReleased());
 
         // if(mIntake.ringPresent()) {
         //     p.setRumble(RumbleType.kBothRumble, 1.0);
