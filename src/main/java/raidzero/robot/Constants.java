@@ -258,7 +258,7 @@ public class Constants {
         public static final double kSupplyTimeThreshold = 0.2;
 
         // Feedback Constants
-        public static final double kSensorToMechanismRatio = 1.0;
+        public static final double kSensorToMechanismRatio = (260.0 / 18.0) * (25.0 / 1.0); // 1.0;
         public static final double kRotorToSensorRatio = (260.0 / 18.0) * (25.0 / 1.0);
         public static final FeedbackSensorSourceValue kFeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
 
@@ -282,13 +282,13 @@ public class Constants {
         // Software Limit Switch Constants
         // TODO
         public static final boolean kForwardSoftLimitEnabled = true;
-        public static final double kForwardSoftLimit = 59.0 / 360.0; // rotations
+        public static final double kForwardSoftLimit = 59.0 / 360.0; // 59.0 / 360.0; // rotations
         public static final boolean kReverseSoftLimitEnabled = true;
         public static final double kReverseSoftLimit = 15.0 / 360.0; // rotations
 
         // Magnet Sensor Constants
         public static final SensorDirectionValue kSensorDirection = SensorDirectionValue.CounterClockwise_Positive;
-        public static final double kMagnetOffset = 0.244629 + 40.0 / 360; // 0.499268 /// 42 deg
+        public static final double kMagnetOffset = -0.142578 + 30.0 / 360.0; //-.077393 + 7.0 / 360; //-0.143311 + 30.0 / 180; // 0.499268 /// 42 deg
         public static final AbsoluteSensorRangeValue kAbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
 
         // Aiming Constants
@@ -388,7 +388,7 @@ public class Constants {
 
         // Magnet Sensor Constants
         public static final SensorDirectionValue kSensorDirection = SensorDirectionValue.CounterClockwise_Positive;
-        public static final double kMagnetOffset = 0.195313;
+        public static final double kMagnetOffset = 0.050049;
         public static final AbsoluteSensorRangeValue kAbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
     }
 

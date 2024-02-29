@@ -64,7 +64,9 @@ public class AngleAdjuster extends Submodule {
     }
 
     @Override
-    public void onStart(double timestamp) {}
+    public void onStart(double timestamp) {
+        mMotor.setPosition(mEncoder.getAbsolutePosition().refresh().getValueAsDouble());
+    }
 
     @Override
     public void update(double timestamp) {
@@ -146,9 +148,9 @@ public class AngleAdjuster extends Submodule {
         // Feedback Configuration
         FeedbackConfigs feedbackConfigs = new FeedbackConfigs();
         feedbackConfigs.withSensorToMechanismRatio(AngleAdjusterConstants.kSensorToMechanismRatio);
-        feedbackConfigs.withRotorToSensorRatio(AngleAdjusterConstants.kRotorToSensorRatio);
-        feedbackConfigs.withFeedbackRemoteSensorID(encoder.getDeviceID());
-        feedbackConfigs.withFeedbackSensorSource(AngleAdjusterConstants.kFeedbackSensorSource);
+        // feedbackConfigs.withRotorToSensorRatio(AngleAdjusterConstants.kRotorToSensorRatio);
+        // feedbackConfigs.withFeedbackRemoteSensorID(encoder.getDeviceID());
+        // feedbackConfigs.withFeedbackSensorSource(AngleAdjusterConstants.kFeedbackSensorSource);
         config.withFeedback(feedbackConfigs);
 
         // Velocity PID Configuration

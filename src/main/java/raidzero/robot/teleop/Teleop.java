@@ -67,6 +67,16 @@ public class Teleop {
         p1Loop(p1);
         
         p2Loop(p2);
+        // mAngleAdjuster.setPercentSpeed(p1.getLeftTriggerAxis() - p1.getRightTriggerAxis());
+        // if(p1.getLeftBumper()) {
+        //     mAngleAdjuster.setAngle(Rotation2d.fromDegrees(30));
+        //     // mAngleAdjuster.setPercentSpeed(0.2);
+        // } else if(p1.getRightBumper()) {
+        //     mAngleAdjuster.setAngle(Rotation2d.fromDegrees(45));
+        //     // mAngleAdjuster.setPercentSpeed(-0.2);
+        // } else {
+        //     mAngleAdjuster.setPercentSpeed(0.0);
+        // }
     }
 
     // int moduleNumber = 3;
