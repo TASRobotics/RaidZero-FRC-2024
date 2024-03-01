@@ -404,6 +404,8 @@ public class Swerve extends Submodule {
         if(autoAim && mVision.getSpeakerAngle(mAlliance) != null) {
             // angularSpeed = mSnapController.calculate(-mPigeon.getRotation2d().getDegrees(), -mVision.getSpeakerAngle(mAlliance).getDegrees());
             angularSpeed = (mVision.getSpeakerAngle(mAlliance).getDegrees() - mPigeon.getRotation2d().getDegrees()) * 0.15;
+            //Possibly fixed auto-aim
+            angularSpeed = mVision.getSpeakerAngle(mAlliance).plus(mPigeon.getRotation2d().unaryMinus()).getDegrees()*0.15;
         }
 
         // setOpenLoopSpeeds(new ChassisSpeeds(xSpeed, ySpeed, angularSpeed), fieldOriented);
@@ -447,7 +449,7 @@ public class Swerve extends Submodule {
 
     private void updatePathing() {
         PathPlannerTrajectory.State state = (PathPlannerTrajectory.State) mCurrentTrajectory.sample(mTimer.get());
-        if(DriverStation.getAlliance().get() == Alliance.Red) state.targetHolonomicRotation = state.targetHolonomicRotation.unaryMinus();
+        // if(DriverStation.getAlliance().get() == Alliance.Red) state.targetHolonomicRotation = state.targetHolonomicRotation.unaryMinus();
         mHolonomicController.setEnabled(true); //false, doesnt turn when only ff
         testController.setEnabled(true);
         // PathPlannerPath.fromChoreoTrajectory()

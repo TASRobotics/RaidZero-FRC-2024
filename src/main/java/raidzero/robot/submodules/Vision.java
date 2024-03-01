@@ -95,6 +95,7 @@ public class Vision extends Submodule {
         // if (!hasAprilTag()){
         //     return 0;
         // }
+        double testReturn = drive.getPose().minus(speakerPose).getTranslation().getNorm();
         return drive.getPose().getTranslation().getDistance(speakerPose.getTranslation());
     }
 
@@ -103,6 +104,7 @@ public class Vision extends Submodule {
         // if (!hasAprilTag()){
         //     return null;
         // }
+        Rotation2d testReturn = drive.getPose().minus(speakerPose).getTranslation().getAngle();
         return Rotation2d.fromRadians(Math.atan2(drive.getPose().getY() - speakerPose.getY(), drive.getPose().getX() - speakerPose.getX()));
     }
 

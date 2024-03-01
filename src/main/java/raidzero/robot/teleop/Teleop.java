@@ -244,6 +244,10 @@ public class Teleop {
         } else {
             mClimb.setPercentSpeed(0.0);
         }
+
+        if(p.getRawButton(5)) {
+            mAngleAdjuster.setAngle(Rotation2d.fromDegrees(49.0));
+        }
     }
 
     private boolean isRightTriggerReleased() {
