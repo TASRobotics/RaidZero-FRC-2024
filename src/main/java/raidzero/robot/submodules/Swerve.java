@@ -449,7 +449,7 @@ public class Swerve extends Submodule {
 
     private void updatePathing() {
         PathPlannerTrajectory.State state = (PathPlannerTrajectory.State) mCurrentTrajectory.sample(mTimer.get());
-        if(DriverStation.getAlliance().get() == Alliance.Red) state.targetHolonomicRotation = state.targetHolonomicRotation.unaryMinus();
+        // if(DriverStation.getAlliance().get() == Alliance.Red) state.targetHolonomicRotation = state.targetHolonomicRotation.unaryMinus();
         mHolonomicController.setEnabled(true); //false, doesnt turn when only ff
         testController.setEnabled(true);
         // PathPlannerPath.fromChoreoTrajectory()
