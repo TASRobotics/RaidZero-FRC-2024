@@ -25,6 +25,7 @@ public class DrivePathNoteAim implements Action {
     @Override
     public void start() {
         System.out.println("[Auto] Action '" + getClass().getSimpleName() + "' started!");
+        swerve.enableTeleopRampRate(false);
         swerve.followPath(mTrajectory);
     }
 

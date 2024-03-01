@@ -1,5 +1,6 @@
 package raidzero.robot.submodules;
 
+import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
@@ -572,6 +573,19 @@ public class Swerve extends Submodule {
         mTopRightModule.setClosedLoopState(desiredState[1]);
         mRearLeftModule.setClosedLoopState(desiredState[2]);
         mRearRightModule.setClosedLoopState(desiredState[3]);
+    }
+
+    public void enableTeleopRampRate(boolean enable) {
+        ClosedLoopRampsConfigs config = new ClosedLoopRampsConfigs();
+        if(enable) {
+            config.VoltageClosedLoopRampPeriod = SwerveConstants.kTeleopRampRate;
+        } else {
+            config.VoltageClosedLoopRampPeriod = 0;
+        }
+        mTopLeftModule.getThrottleMotor().getConfigurator().apply(config, Constants.kCANTimeoutMs);
+        mTopRightModule.getThrottleMotor().getConfigurator().apply(config, Constants.kCANTimeoutMs);
+        mRearLeftModule.getThrottleMotor().getConfigurator().apply(config, Constants.kCANTimeoutMs);
+        mRearRightModule.getThrottleMotor().getConfigurator().apply(config, Constants.kCANTimeoutMs);
     }
 
     // public void setAutoAimLocation(AutoAimLocation location) {
