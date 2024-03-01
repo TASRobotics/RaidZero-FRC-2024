@@ -128,6 +128,9 @@ public class Teleop {
             autoAim,
             p.getYButton()
         );
+        if(p.getAButton()) {
+            mSwerve.zero();
+        }
 
         if(autoAim) {
             mSuperstructure.angleShooter();
