@@ -61,6 +61,8 @@ public class Climb extends Submodule {
         // Follower follower = new Follower(mLeftLeader.getDeviceID(), ClimbConstants.kFollowerOpposeLeaderInversion);
         mFollower.withUpdateFreqHz(ClimbConstants.kFollowerUpdateHz);
         mRightFollower.setControl(mFollower);
+
+        zero();
     }
 
     @Override

@@ -124,7 +124,7 @@ public class Teleop {
             -JoystickUtils.applyDeadband(p.getLeftX()) * SwerveConstants.kMaxVelMPS * 0.5, 
             -JoystickUtils.applyDeadband(p.getRightX()) * SwerveConstants.kMaxVelMPS * 0.5, 
             true, 
-            snapAngle, 
+            null, 
             autoAim,
             p.getYButton()
         );
@@ -149,7 +149,8 @@ public class Teleop {
         //     mSuperstructure.intakeChoreographed(false);
         // }
 
-        mSuperstructure.intakeChoreographed(p.getRightBumper(), p.getRightBumperReleased());
+        mSuperstructure.intakeChoreographed(p.getRightBumper(), p.getRightBumperReleased(), false);
+        mSuperstructure.intakeChoreographed(p.getLeftBumper(), p.getLeftBumperReleased(), true);
 
         // if(mIntake.ringPresent()) {
         //     p.setRumble(RumbleType.kBothRumble, 1.0);

@@ -71,10 +71,10 @@ public class Constants {
         // public static final double kRearRightAzimuthOffset = -0.205811 + 0.5;
 
         /* Sheesh Offsets */
-        public static final double kFrontLeftAzimuthOffset = -0.834473 /*+ 0.5*/;
-        public static final double kFrontRightAzimuthOffset = -0.502197 /*+ 0.5*/;
-        public static final double kRearLeftAzimuthOffset = -0.883789 /*+ 0.5*/;
-        public static final double kRearRightAzimuthOffset = -0.957275 /*+ 0.5*/;
+        public static final double kFrontLeftAzimuthOffset = -0.809814 /*+ 0.5*/;
+        public static final double kFrontRightAzimuthOffset = -0.483643 /*+ 0.5*/;
+        public static final double kRearLeftAzimuthOffset = -0.880859 /*+ 0.5*/;
+        public static final double kRearRightAzimuthOffset = -0.961426 /*+ 0.5*/;
 
         public static final double kThrottleReduction = (14.0 / 50.0) * (28.0 / 16.0) * (15.0 / 45.0);
         public static final double kAzimuthReduction = (14.0 / 50.0) * (10.0 / 60.0);
@@ -480,9 +480,9 @@ public class Constants {
 
         // Software Limit Switch Constants
         // TODO
-        public static final boolean kForwardSoftLimitEnabled = false;
-        public static final double kForwardSoftLimit = 0.0;
-        public static final boolean kReverseSoftLimitEnabled = false;
+        public static final boolean kForwardSoftLimitEnabled = true;
+        public static final double kForwardSoftLimit = 63.285156;
+        public static final boolean kReverseSoftLimitEnabled = true;
         public static final double kReverseSoftLimit = 0.0;
     }
 
