@@ -166,7 +166,7 @@ public class Constants {
             kThrottleCurrentLimitsConfigs.SupplyTimeThreshold = 0.2;
         }
 
-        // public static final double kOpenLoopRampRate = 0.1;
+        public static final double kTeleopRampRate = 0.25;
     }
 
     public static final class LimelightConstants {

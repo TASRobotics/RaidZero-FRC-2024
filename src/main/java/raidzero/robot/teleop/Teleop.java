@@ -58,6 +58,8 @@ public class Teleop {
     public void onStart() {
         mBlue = DriverStation.getAlliance().get() == Alliance.Blue;
         mReverse = mBlue ? 1 : -1;
+
+        mSwerve.enableTeleopRampRate(true);
     }
 
     public void onLoop() {
