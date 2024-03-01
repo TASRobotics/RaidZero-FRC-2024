@@ -356,7 +356,7 @@ public class Constants {
         // public static final GravityTypeValue kGravityCompensationType = GravityTypeValue.Arm_Cosine;
         // public static final double kG = 0.0;
         public static final double kV = 12.0 / (6000.0 / kRotorToSensorRatio / 60.0);
-        public static final double kP = 3.0;
+        public static final double kP = 10.0;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
         public static final double kPIDUpdateHz = 1000;
@@ -480,9 +480,9 @@ public class Constants {
 
         // Software Limit Switch Constants
         // TODO
-        public static final boolean kForwardSoftLimitEnabled = true;
+        public static final boolean kForwardSoftLimitEnabled = false;
         public static final double kForwardSoftLimit = 63.285156;
-        public static final boolean kReverseSoftLimitEnabled = true;
+        public static final boolean kReverseSoftLimitEnabled = false;
         public static final double kReverseSoftLimit = 0.0;
     }
 
@@ -490,6 +490,7 @@ public class Constants {
         // Arm
         public static final Rotation2d kArmStowAngle = Rotation2d.fromDegrees(-39.0);
         public static final Rotation2d kArmAmpAngle = Rotation2d.fromDegrees(75.0);
+        public static final Rotation2d kArmTrapAngle = Rotation2d.fromDegrees(80.0);
 
         // Wrist
         public static final Rotation2d kWristStowAngle = Rotation2d.fromDegrees(10.0);

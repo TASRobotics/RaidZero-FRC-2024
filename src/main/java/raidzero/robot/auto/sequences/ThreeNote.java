@@ -45,15 +45,15 @@ public class ThreeNote extends AutoSequence {
     private PathPlannerTrajectory trajectory7;
 
     public ThreeNote() {
-        if(DriverStation.getAlliance().get() == Alliance.Red) {
-            path1 = path1.flipPath();
-            path1p5 = path1p5.flipPath();
-            path2 = path2.flipPath();
-            path3 = path3.flipPath();
+        // if(DriverStation.getAlliance().get() == Alliance.Red) {
+        //     path1 = path1.flipPath();
+        //     path1p5 = path1p5.flipPath();
+        //     path2 = path2.flipPath();
+        //     path3 = path3.flipPath();
 
 
-            // path4.flipPath();
-        }
+        //     // path4.flipPath();
+        // }
         // path1.getPreviewStartingHolonomicPose();
         Rotation2d test1 = new Rotation2d(Math.toRadians(0)); 
         // Rotation2d test1 = path1.getPoint(0).rotationTarget.getTarget();

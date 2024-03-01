@@ -263,6 +263,7 @@ public class Swerve extends Submodule {
         mRearLeftModule.zero();
         mRearRightModule.zero();
 
+        // mOdometry.resetPosition(mPigeon.getRotation2d(), getModulePositions(), new Pose2d(0.0, 0.0, mPigeon.getRotation2d()));
         mOdometry.resetPosition(mPigeon.getRotation2d(), getModulePositions(), new Pose2d());
 
         // mSnapController.reset(mPigeon.getRotation2d().getDegrees());
@@ -420,9 +421,14 @@ public class Swerve extends Submodule {
 
             setClosedLoopSpeeds(new ChassisSpeeds(xSpeed, ySpeed, y), fieldOriented);
 
+
             // setClosedLoopSpeeds(ChassisSpeeds.fromRobotRelativeSpeeds(0.0, y, 0.0, mPigeon.getRotation2d()), false);
         } else {
+
             setClosedLoopSpeeds(new ChassisSpeeds(xSpeed, ySpeed, angularSpeed), fieldOriented);
+            
+            
+            
             // setOpenLoopSpeeds(new ChassisSpeeds(xSpeed, ySpeed, angularSpeed), fieldOriented);
         }
     }

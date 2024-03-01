@@ -151,7 +151,7 @@ public class Superstructure extends Submodule {
 
     public void trapState() {
         request(new ParallelRequest(
-            mArm.armRequest(SuperstructureConstants.kArmAmpAngle, true),
+            mArm.armRequest(SuperstructureConstants.kArmTrapAngle, true),
             new SequentialRequest(
                 new WaitRequest(0.05), 
                 mWrist.wristRequest(SuperstructureConstants.kWristStowAngle, true)
