@@ -71,10 +71,10 @@ public class Constants {
         // public static final double kRearRightAzimuthOffset = -0.205811 + 0.5;
 
         /* Sheesh Offsets */
-        public static final double kFrontLeftAzimuthOffset = -0.809814 /*+ 0.5*/;
-        public static final double kFrontRightAzimuthOffset = -0.483643 /*+ 0.5*/;
-        public static final double kRearLeftAzimuthOffset = -0.880859 /*+ 0.5*/;
-        public static final double kRearRightAzimuthOffset = -0.961426 /*+ 0.5*/;
+        public static final double kFrontLeftAzimuthOffset = -0.991943; // -0.809814 /*+ 0.5*/;
+        public static final double kFrontRightAzimuthOffset = -0.482910 /*+ 0.5*/;
+        public static final double kRearLeftAzimuthOffset = -0.883057 /*+ 0.5*/;
+        public static final double kRearRightAzimuthOffset = -0.955566 /*+ 0.5*/;
 
         public static final double kThrottleReduction = (14.0 / 50.0) * (28.0 / 16.0) * (15.0 / 45.0);
         public static final double kAzimuthReduction = (14.0 / 50.0) * (10.0 / 60.0);
@@ -198,7 +198,7 @@ public class Constants {
         public static final int kRearMotorID = 1;
 
         public static final int kFrontCurrentLimit = 20;
-        public static final int kRearCurrentLimit = 40;
+        public static final int kRearCurrentLimit = 20;
         public static final IdleMode kIdleMode = IdleMode.kBrake;
         public static final boolean kFrontInversion = true;
         public static final boolean kRearInversion = false;
@@ -288,7 +288,7 @@ public class Constants {
 
         // Magnet Sensor Constants
         public static final SensorDirectionValue kSensorDirection = SensorDirectionValue.CounterClockwise_Positive;
-        public static final double kMagnetOffset = -0.142578 + 30.0 / 360.0; //-.077393 + 7.0 / 360; //-0.143311 + 30.0 / 180; // 0.499268 /// 42 deg
+        public static final double kMagnetOffset = -0.473633 + 30.0 / 360.0; //-.077393 + 7.0 / 360; //-0.143311 + 30.0 / 180; // 0.499268 /// 42 deg
         public static final AbsoluteSensorRangeValue kAbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
 
         // Aiming Constants

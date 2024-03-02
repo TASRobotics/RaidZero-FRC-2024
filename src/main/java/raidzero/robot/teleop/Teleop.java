@@ -122,9 +122,9 @@ public class Teleop {
         // if(LimelightHelpers.getTV(null))
 
         mSwerve.teleopDrive(
-            -JoystickUtils.applyDeadband(p.getLeftY()) * SwerveConstants.kMaxVelMPS * 0.5, 
-            -JoystickUtils.applyDeadband(p.getLeftX()) * SwerveConstants.kMaxVelMPS * 0.5, 
-            -JoystickUtils.applyDeadband(p.getRightX()) * SwerveConstants.kMaxVelMPS * 0.5, 
+            -JoystickUtils.applyDeadband(p.getLeftY()) * SwerveConstants.kMaxVelMPS, 
+            -JoystickUtils.applyDeadband(p.getLeftX()) * SwerveConstants.kMaxVelMPS, 
+            -JoystickUtils.applyDeadband(p.getRightX()) * SwerveConstants.kMaxVelMPS, 
             true, 
             null, 
             autoAim,

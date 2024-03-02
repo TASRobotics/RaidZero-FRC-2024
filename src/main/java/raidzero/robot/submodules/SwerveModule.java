@@ -113,9 +113,6 @@ public class SwerveModule extends Submodule {
         // check if we should use motor position 
         Rotation2d wrappedRotation = Rotation2d.fromRadians(mAzimuthEncoder.getAbsolutePosition().getValueAsDouble() * Math.PI * 2);
         Rotation2d rotation = Rotation2d.fromRotations(mAzimuth.getPosition().refresh().getValueAsDouble());
-        SmartDashboard.putNumber("azi enc pos", wrappedRotation.getDegrees());
-        SmartDashboard.putNumber("azi pos", rotation.getDegrees());
-        SmartDashboard.putNumber("throttle pos", mThrottle.getPosition().refresh().getValue());
 
         // IMPORTANT!!!
         mPeriodicIO.currentState = new SwerveModuleState(

@@ -195,7 +195,7 @@ public class Superstructure extends Submodule {
             }
         } else {
             if(enable && !beamBreakIsToggled) {
-                mIntake.setPercentSpeed(1.0, 1.0);
+                mIntake.setPercentSpeed(0.5, 0.5);
                 mConveyor.setPercentSpeed(0.0);
                 mWrist.setAngle(SuperstructureConstants.kWristIntakingAngle);
             } else if(enable && beamBreakIsToggled) {
