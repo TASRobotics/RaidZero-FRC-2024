@@ -14,31 +14,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "right rush"
+            "pathName": "coop preload"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "right rush 2"
+            "pathName": "coop get 1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "right rush 3"
+            "pathName": "coop shoot 1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "right rush 4"
+            "pathName": "coop get 2"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "right rush 5"
+            "pathName": "coop shoot 2"
           }
         },
         {
