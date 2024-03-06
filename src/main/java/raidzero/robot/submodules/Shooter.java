@@ -72,8 +72,7 @@ public class Shooter extends Submodule {
     @Override
     public void update(double timestamp) {
         mPeriodicIO.currentVelocity = mOuterLeader.getVelocity().refresh().getValueAsDouble();
-
-        SmartDashboard.putNumber("left shooter current velocity", mOuterLeader.getVelocity().getValueAsDouble());
+        SmartDashboard.putBoolean("Shooter Up To Speed", isUpToSpeed());
     }
 
     @Override

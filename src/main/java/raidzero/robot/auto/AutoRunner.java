@@ -22,7 +22,9 @@ public class AutoRunner {
         new ThreeNoteRed(),   
         new ThreeNoteRight(),     
 
-        new SingleNoteSpeaker()
+        new SingleNoteSpeaker(), 
+
+        new ShootPreloadSequence()
     };
 
     public AutoRunner() {

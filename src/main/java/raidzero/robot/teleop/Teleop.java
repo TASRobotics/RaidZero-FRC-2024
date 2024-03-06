@@ -93,9 +93,6 @@ public class Teleop {
 
     private void p1Loop(XboxController p) {
 
-        desiredShooterSpeed = SmartDashboard.getNumber("Desired Shooter Speed", desiredShooterSpeed);
-        SmartDashboard.putNumber("Desired Shooter Speed", desiredShooterSpeed);
-
         SmartDashboard.putNumber("Shooter Angle", mAngleAdjuster.getAngle().getDegrees());
         SmartDashboard.putNumber("Arm Angle", mArm.getAngle().getDegrees());
         SmartDashboard.putNumber("Wrist Angle", mWrist.getAngle().getDegrees());
@@ -183,13 +180,13 @@ public class Teleop {
 
     private void p2Loop(GenericHID p) {
         // manual conveyor control
-        if(p.getRawButton(6)) {
-            mConveyor.setPercentSpeed(1.0);
-        } else if(p.getRawButton(7)) {
-            mConveyor.setPercentSpeed(-1.0);
-        } else if(p.getRawButtonReleased(6) || p.getRawButtonReleased(7)) {
-            mConveyor.setPercentSpeed(0.0);
-        }
+        // if(p.getRawButton(6)) {
+        //     mConveyor.setPercentSpeed(1.0);
+        // } else if(p.getRawButton(7)) {
+        //     mConveyor.setPercentSpeed(-1.0);
+        // } else if(p.getRawButtonReleased(6) || p.getRawButtonReleased(7)) {
+        //     mConveyor.setPercentSpeed(0.0);
+        // }
 
         // Amp
         if(p.getRawButton(10)) {
@@ -248,8 +245,14 @@ public class Teleop {
         }
 
         if(p.getRawButton(5)) {
-            mAngleAdjuster.setAngle(Rotation2d.fromDegrees(49.0));
+            mAngleAdjuster.setAngle(Rotation2d.fromDegrees(49.0 + mSuperstructure.getAngleAdjusterOffset()));
         }
+
+        if(p.getRawButtonPressed(6)) {
+            mSuperstructure.incrementAngleAdjusterOffset(1.0);
+        } else if(p.getRawButtonPressed(7)) {
+            mSuperstructure.incrementAngleAdjusterOffset(-1.0);
+        } 
     }
 
     private boolean isRightTriggerReleased() {

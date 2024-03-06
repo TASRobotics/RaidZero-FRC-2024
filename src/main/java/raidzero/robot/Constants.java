@@ -73,7 +73,7 @@ public class Constants {
         /* Sheesh Offsets */
         public static final double kFrontLeftAzimuthOffset = -0.991943; // -0.809814 /*+ 0.5*/;
         public static final double kFrontRightAzimuthOffset = -0.482910 /*+ 0.5*/;
-        public static final double kRearLeftAzimuthOffset = -0.883057 /*+ 0.5*/;
+        public static final double kRearLeftAzimuthOffset = -0.880371 /*+ 0.5*/;
         public static final double kRearRightAzimuthOffset = -0.955566 /*+ 0.5*/;
 
         public static final double kThrottleReduction = (14.0 / 50.0) * (28.0 / 16.0) * (15.0 / 45.0);
@@ -288,7 +288,7 @@ public class Constants {
 
         // Magnet Sensor Constants
         public static final SensorDirectionValue kSensorDirection = SensorDirectionValue.CounterClockwise_Positive;
-        public static final double kMagnetOffset = -0.473633 + 30.0 / 360.0; //-.077393 + 7.0 / 360; //-0.143311 + 30.0 / 180; // 0.499268 /// 42 deg
+        public static final double kMagnetOffset = -0.479248 + 30.0 / 360.0; //-.077393 + 7.0 / 360; //-0.143311 + 30.0 / 180; // 0.499268 /// 42 deg
         public static final AbsoluteSensorRangeValue kAbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
 
         // Aiming Constants
@@ -367,14 +367,14 @@ public class Constants {
         public static final double kTheoreticalMaxSpeedRPS = 6000.0 / kRotorToSensorRatio / 60.0;
         public static MotionMagicConfigs kUpMotionMagicConfigs = new MotionMagicConfigs();
         static {
-            kUpMotionMagicConfigs.withMotionMagicCruiseVelocity(kTheoreticalMaxSpeedRPS * 1.0);
+            kUpMotionMagicConfigs.withMotionMagicCruiseVelocity(kTheoreticalMaxSpeedRPS * 1.0 * 0.65);
             kUpMotionMagicConfigs.withMotionMagicAcceleration(kTheoreticalMaxSpeedRPS * 3.0);
             kUpMotionMagicConfigs.withMotionMagicJerk(kTheoreticalMaxSpeedRPS * 40.0);
         }
 
         public static MotionMagicConfigs kDownMotionMagicConfigs = new MotionMagicConfigs();
         static {
-            kDownMotionMagicConfigs.withMotionMagicCruiseVelocity(kTheoreticalMaxSpeedRPS * 1.0);
+            kDownMotionMagicConfigs.withMotionMagicCruiseVelocity(kTheoreticalMaxSpeedRPS * 1.0 * 0.65);
             kDownMotionMagicConfigs.withMotionMagicAcceleration(kTheoreticalMaxSpeedRPS * 1.5);
             kDownMotionMagicConfigs.withMotionMagicJerk(kTheoreticalMaxSpeedRPS * 10.0);
         }
@@ -388,7 +388,7 @@ public class Constants {
 
         // Magnet Sensor Constants
         public static final SensorDirectionValue kSensorDirection = SensorDirectionValue.CounterClockwise_Positive;
-        public static final double kMagnetOffset = -0.439209;
+        public static final double kMagnetOffset = -0.103516;
         public static final AbsoluteSensorRangeValue kAbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
     }
 

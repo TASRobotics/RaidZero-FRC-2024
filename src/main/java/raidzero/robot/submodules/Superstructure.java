@@ -54,6 +54,8 @@ public class Superstructure extends Submodule {
     private boolean mBeamBreakWasToggled = false;
     private boolean mNoteHasPassed = false;
 
+    private double angleAdjusterOffset = 0.0;
+
     @Override
     public void onInit() {}
 
@@ -67,6 +69,8 @@ public class Superstructure extends Submodule {
     public void update(double timestamp) {
         SmartDashboard.putBoolean("Note passed beam break", noteHasPassedBeamBreak());
         SmartDashboard.putBoolean("Note at beam break", mIntake.ringPresent());
+
+        SmartDashboard.putNumber("Angle Adjuster Offset", angleAdjusterOffset);
     }
 
     @Override
@@ -172,7 +176,15 @@ public class Superstructure extends Submodule {
 
         SmartDashboard.putNumber("Desired Angle Val", desiredAngleDegrees);
         
-        mAngleAdjuster.setAngle(Rotation2d.fromDegrees(desiredAngleDegrees));
+        mAngleAdjuster.setAngle(Rotation2d.fromDegrees(desiredAngleDegrees + angleAdjusterOffset));
+    }
+
+    public void incrementAngleAdjusterOffset(double val) {
+        angleAdjusterOffset += val;
+    }
+
+    public double getAngleAdjusterOffset() {
+        return angleAdjusterOffset;
     }
 
     public boolean intakeChoreographed(boolean enable, boolean justReleased, boolean intakingForAmp) {
