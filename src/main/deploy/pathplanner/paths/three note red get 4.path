@@ -3,50 +3,50 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.3328624118018553,
-        "y": 3.4781184540971077
+        "x": 14.031988121037584,
+        "y": 6.733731013824367
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.9815373154284097,
-        "y": 3.911419406291023
+        "x": 12.755506937547398,
+        "y": 6.90939356201109
       },
       "isLocked": false,
-      "linkedName": "preend"
+      "linkedName": "l3nRED4"
     },
     {
       "anchor": {
-        "x": 2.379705757984981,
-        "y": 4.227611993027124
+        "x": 8.691846656161214,
+        "y": 7.436381206571257
       },
       "prevControl": {
-        "x": 2.1454890270693507,
-        "y": 4.356431195030721
+        "x": 9.464761868182794,
+        "y": 7.29585116802188
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "firstend"
+      "linkedName": "l3nRED5"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.0,
-    "maxAcceleration": 0.5,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -30.0,
+    "rotation": 180.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "left side 3 close auto",
+  "folder": "3 close RED",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": 180.0,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

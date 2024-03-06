@@ -1,8 +1,5 @@
 package raidzero.robot.auto.sequences;
-
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import org.ejml.equation.Sequence;
 
@@ -24,30 +21,13 @@ import raidzero.robot.auto.actions.ShootAction;
 import raidzero.robot.auto.actions.WaitAction;
 
 public class ThreeNoteRight extends AutoSequence {
-    private PathPlannerPath path1 = PathPlannerPath.fromPathFile("right rush");
-    private PathPlannerTrajectory trajectory1;
-    private PathPlannerPath path2 = PathPlannerPath.fromPathFile("right rush 2");
-    private PathPlannerTrajectory trajectory2;
-    private PathPlannerPath path3 = PathPlannerPath.fromPathFile("right rush 3");
-    private PathPlannerTrajectory trajectory3;
-    //get 4th note
-    PathPlannerPath path4 = PathPlannerPath.fromPathFile("right rush 4");
-    private PathPlannerTrajectory trajectory4;
-    PathPlannerPath path5 = PathPlannerPath.fromPathFile("right rush 5");
-    private PathPlannerTrajectory trajectory5;
-
+    private PathPlannerPath coopPreload = PathPlannerPath.fromPathFile("coop preload");
+    private PathPlannerPath coopGet1 = PathPlannerPath.fromPathFile("coop get 1");
+    private PathPlannerPath coopShoot1 = PathPlannerPath.fromPathFile("coop shoot 2");
+    private PathPlannerPath coopGet2 = PathPlannerPath.fromPathFile("coop get 2");
+    private PathPlannerPath coopShoot2 = PathPlannerPath.fromPathFile("coop shoot 2");
 
     public ThreeNoteRight() {
-        Rotation2d test1 = new Rotation2d(Math.toRadians(0));
-        trajectory1 = path1.getTrajectory(new ChassisSpeeds(), test1);
-        Rotation2d test2 = new Rotation2d(Math.toRadians(0)); 
-        trajectory2 = path2.getTrajectory(new ChassisSpeeds(), test2);
-        Rotation2d test3 = new Rotation2d(Math.toRadians(0)); 
-        trajectory3 = path3.getTrajectory(new ChassisSpeeds(), test3);
-        trajectory4 = path4.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)));
-        trajectory5 = path5.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)));
-        //trajectory6 = path6.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)));
-
     }
 
     @Override
@@ -57,17 +37,16 @@ public class ThreeNoteRight extends AutoSequence {
             new SeriesAction(Arrays.asList(
                 new Res(), 
                 new ParallelAction(Arrays.asList(
-                    new DrivePath(trajectory1), 
+                    new DrivePath(coopPreload.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)))), 
                     new ShootAction(true), 
                     new AngleShooterAction(Rotation2d.fromDegrees(25.5))
                 )), 
                 new RunConveyorAction(1.0, 0.5), // Shoot 1st note (preload)
                 new ParallelAction(Arrays.asList(
                     new SeriesAction(Arrays.asList(
-                        new DrivePathNoteAim(trajectory2), 
-                        new DrivePath(trajectory3)
+                        new DrivePathNoteAim(coopGet1.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)))), 
+                        new DrivePath(coopShoot1.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0))))
                     )),
-                    //new DrivePath(trajectory2), 
                     new AutomaticIntakeAction(5), 
                     new AngleShooterAction(Rotation2d.fromDegrees(  29))
                 )), 
@@ -75,8 +54,8 @@ public class ThreeNoteRight extends AutoSequence {
                 new RunConveyorAction(1.0, 0.5), // shoot 2nd note
                 new ParallelAction(Arrays.asList(
                     new SeriesAction(Arrays.asList(
-                        new DrivePathNoteAim(trajectory4), 
-                        new DrivePath(trajectory5)
+                        new DrivePathNoteAim(coopGet2.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)))), 
+                        new DrivePath(coopShoot2.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0))))
                     )),
                     new AutomaticIntakeAction(5), 
                     new AngleShooterAction(Rotation2d.fromDegrees(27.5))
@@ -95,6 +74,6 @@ public class ThreeNoteRight extends AutoSequence {
 
     @Override
     public String getName() {
-        return "3 right blue";
+        return "3 co op blue";
     }
 }
