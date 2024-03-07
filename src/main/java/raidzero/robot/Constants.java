@@ -194,14 +194,17 @@ public class Constants {
     }
 
     public static final class IntakeConstants{
-        public static final int kFrontMotorID = 2;
-        public static final int kRearMotorID = 1;
+        public static final int kMotorID = 61;
 
-        public static final int kFrontCurrentLimit = 20;
-        public static final int kRearCurrentLimit = 20;
-        public static final IdleMode kIdleMode = IdleMode.kBrake;
-        public static final boolean kFrontInversion = true;
-        public static final boolean kRearInversion = false;
+        // Motor Output Constants
+        public static final InvertedValue kLeaderInversion = InvertedValue.Clockwise_Positive;
+        public static final NeutralModeValue kNeutralMode = NeutralModeValue.Brake;
+
+        // Current Limit Constants
+        public static final double kSupplyCurrentLimit = 30.0;
+        public static final boolean kSupplyCurrentEnable = false;
+        public static final double kSupplyCurrentThreshold = 40.0;
+        public static final double kSupplyTimeThreshold = 0.2;
     }
 
     public static final class ConveyorConstants {
@@ -288,7 +291,7 @@ public class Constants {
 
         // Magnet Sensor Constants
         public static final SensorDirectionValue kSensorDirection = SensorDirectionValue.CounterClockwise_Positive;
-        public static final double kMagnetOffset = -0.479248 + 30.0 / 360.0; //-.077393 + 7.0 / 360; //-0.143311 + 30.0 / 180; // 0.499268 /// 42 deg
+        public static final double kMagnetOffset = 0.331299 + 37.0 / 360.0; //-.077393 + 7.0 / 360; //-0.143311 + 30.0 / 180; // 0.499268 /// 42 deg
         public static final AbsoluteSensorRangeValue kAbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
 
         // Aiming Constants
@@ -324,6 +327,16 @@ public class Constants {
             3.399811629
             3.878163152
             4.144581513
+         */
+
+        /**
+         * New Constants
+         * 
+         * Angle Adjuster Angle | Distance
+         * 52.0 | 1.357
+         * 50.0 | 1.562
+         * 46.670 | 2.000
+         * 
          */
 
         public static final Rotation2d kMaxAngle = new Rotation2d(5);
@@ -388,7 +401,7 @@ public class Constants {
 
         // Magnet Sensor Constants
         public static final SensorDirectionValue kSensorDirection = SensorDirectionValue.CounterClockwise_Positive;
-        public static final double kMagnetOffset = -0.103516;
+        public static final double kMagnetOffset = -0.017090;
         public static final AbsoluteSensorRangeValue kAbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
     }
 
@@ -494,8 +507,8 @@ public class Constants {
 
         // Wrist
         public static final Rotation2d kWristStowAngle = Rotation2d.fromDegrees(10.0);
-        public static final Rotation2d kWristIntakingAngle = Rotation2d.fromDegrees(120.0);
-        public static final Rotation2d kWristAmpAngle = Rotation2d.fromDegrees(204.0);
+        public static final Rotation2d kWristIntakingAngle = Rotation2d.fromDegrees(115.0);
+        public static final Rotation2d kWristAmpAngle = Rotation2d.fromDegrees(200.0);
 
         // Shooter
         public static final double kShootingSpeedRPS = 90.0;

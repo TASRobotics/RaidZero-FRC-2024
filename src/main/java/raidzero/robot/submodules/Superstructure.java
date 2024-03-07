@@ -133,7 +133,7 @@ public class Superstructure extends Submodule {
 
     public void stowState() {
         request(new SequentialRequest(
-            mIntake.intakeRequest(0.0, 0.0, false, false),
+            mIntake.intakeRequest(0.0, false, false),
             new ParallelRequest(
                 mWrist.wristRequest(SuperstructureConstants.kWristStowAngle, true), 
                 mArm.armRequest(SuperstructureConstants.kArmStowAngle, true)
@@ -191,33 +191,33 @@ public class Superstructure extends Submodule {
         boolean beamBreakIsToggled = mIntake.ringPresent();
         if(!intakingForAmp) {
             if(enable && !mNoteHasPassed) {
-                mIntake.setPercentSpeed(1.0, 1.0);
+                mIntake.setPercentSpeed(0.75);
                 mConveyor.setPercentSpeed(0.40);
                 mWrist.setAngle(SuperstructureConstants.kWristIntakingAngle);
             } else if(enable && mNoteHasPassed) {
-                mIntake.setPercentSpeed(0.0, 0.0);
+                mIntake.setPercentSpeed(0.0);
                 mConveyor.setPercentSpeed(0.0);
                 mWrist.setAngle(SuperstructureConstants.kWristStowAngle);
                 return true;
             } else if(!enable && justReleased) {
                 mNoteHasPassed = false;
                 mConveyor.setPercentSpeed(0.0);
-                mIntake.setPercentSpeed(0.0, 0.0);
+                mIntake.setPercentSpeed(0.0);
                 mWrist.setAngle(SuperstructureConstants.kWristStowAngle);
             }
         } else {
             if(enable && !beamBreakIsToggled) {
-                mIntake.setPercentSpeed(0.5, 0.5);
+                mIntake.setPercentSpeed(0.75);
                 mConveyor.setPercentSpeed(0.0);
                 mWrist.setAngle(SuperstructureConstants.kWristIntakingAngle);
             } else if(enable && beamBreakIsToggled) {
-                mIntake.setPercentSpeed(0.0, 0.0);
+                mIntake.setPercentSpeed(0.0);
                 mConveyor.setPercentSpeed(0.0);
                 mWrist.setAngle(SuperstructureConstants.kWristStowAngle);
                 return true;
             } else if(!enable && justReleased) {
                 mConveyor.setPercentSpeed(0.0);
-                mIntake.setPercentSpeed(0.0, 0.0);
+                mIntake.setPercentSpeed(0.0);
                 mWrist.setAngle(SuperstructureConstants.kWristStowAngle);
             }
         }

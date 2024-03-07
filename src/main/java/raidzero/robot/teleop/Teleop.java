@@ -1,7 +1,6 @@
 package raidzero.robot.teleop;
 
 import raidzero.robot.Constants;
-import raidzero.robot.Constants.SuperstructureConstants;
 import raidzero.robot.Constants.SwerveConstants;
 import raidzero.robot.submodules.AngleAdjuster;
 import raidzero.robot.submodules.Arm;
@@ -14,17 +13,13 @@ import raidzero.robot.submodules.Swerve;
 import raidzero.robot.submodules.Wrist;
 import raidzero.robot.submodules.Superstructure.SuperstructureState;
 import raidzero.robot.utils.JoystickUtils;
-import raidzero.robot.wrappers.LimelightHelpers;
+
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.units.Angle;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 
 public class Teleop {
 
@@ -131,9 +126,10 @@ public class Teleop {
             mSwerve.zero();
         }
 
-        if(autoAim) {
-            mSuperstructure.angleShooter();
-        }
+        // if(autoAim) {
+        //     mSuperstructure.angleShooter();
+        // }
+        mAngleAdjuster.setPercentSpeed(leftTrigger - rightTrigger);
 
         // if(p.getLeftBumper()) {
         //     mWrist.setAngle(SuperstructureConstants.kWristStowAngle);
@@ -202,7 +198,7 @@ public class Teleop {
         // Score
         if(p.getRawButton(11)) {
             if(mSuperstructure.getState() == SuperstructureState.AMP) {
-                mIntake.setPercentSpeed(-1.0, -1.0);
+                mIntake.setPercentSpeed(-0.5);
             } else {
                 // mWrist.setAngle(SuperstructureConstants.kWristIntakingAngle);
                 // if(mWrist.isSettled()) {
@@ -213,7 +209,7 @@ public class Teleop {
             }
         } else if(p.getRawButtonReleased(11)) {
             if(mSuperstructure.getState() == SuperstructureState.AMP) {
-                mIntake.setPercentSpeed(0.0, 0.0);
+                mIntake.setPercentSpeed(0.0);
             } else if(!intaking) {
                 // mWrist.setAngle(SuperstructureConstants.kWristStowAngle);
                 // if(mWrist.isSettled()) {
