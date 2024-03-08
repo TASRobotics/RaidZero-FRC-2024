@@ -189,9 +189,10 @@ public class Superstructure extends Submodule {
 
     public boolean intakeChoreographed(boolean enable, boolean justReleased, boolean intakingForAmp) {
         boolean beamBreakIsToggled = mIntake.ringPresent();
+        double intakeSpeed = 0.25;
         if(!intakingForAmp) {
             if(enable && !mNoteHasPassed) {
-                mIntake.setPercentSpeed(0.75);
+                mIntake.setPercentSpeed(intakeSpeed);
                 mConveyor.setPercentSpeed(0.40);
                 mWrist.setAngle(SuperstructureConstants.kWristIntakingAngle);
             } else if(enable && mNoteHasPassed) {
@@ -207,7 +208,7 @@ public class Superstructure extends Submodule {
             }
         } else {
             if(enable && !beamBreakIsToggled) {
-                mIntake.setPercentSpeed(0.75);
+                mIntake.setPercentSpeed(intakeSpeed);
                 mConveyor.setPercentSpeed(0.0);
                 mWrist.setAngle(SuperstructureConstants.kWristIntakingAngle);
             } else if(enable && beamBreakIsToggled) {

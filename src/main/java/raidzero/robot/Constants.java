@@ -201,10 +201,13 @@ public class Constants {
         public static final NeutralModeValue kNeutralMode = NeutralModeValue.Brake;
 
         // Current Limit Constants
-        public static final double kSupplyCurrentLimit = 30.0;
-        public static final boolean kSupplyCurrentEnable = false;
-        public static final double kSupplyCurrentThreshold = 40.0;
+        public static final double kSupplyCurrentLimit = 20.0;
+        public static final boolean kSupplyCurrentEnable = true;
+        public static final double kSupplyCurrentThreshold = 30.0;
         public static final double kSupplyTimeThreshold = 0.2;
+
+        // Open Loop Ramp Rate Constants
+        public static final double kVoltageRampRate = 0.125;
     }
 
     public static final class ConveyorConstants {
@@ -507,7 +510,7 @@ public class Constants {
 
         // Wrist
         public static final Rotation2d kWristStowAngle = Rotation2d.fromDegrees(10.0);
-        public static final Rotation2d kWristIntakingAngle = Rotation2d.fromDegrees(115.0);
+        public static final Rotation2d kWristIntakingAngle = Rotation2d.fromDegrees(112.0);
         public static final Rotation2d kWristAmpAngle = Rotation2d.fromDegrees(200.0);
 
         // Shooter
