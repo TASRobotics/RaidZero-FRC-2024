@@ -71,10 +71,10 @@ public class Constants {
         // public static final double kRearRightAzimuthOffset = -0.205811 + 0.5;
 
         /* Sheesh Offsets */
-        public static final double kFrontLeftAzimuthOffset = -0.809814 /*+ 0.5*/;
-        public static final double kFrontRightAzimuthOffset = -0.483643 /*+ 0.5*/;
-        public static final double kRearLeftAzimuthOffset = -0.880859 /*+ 0.5*/;
-        public static final double kRearRightAzimuthOffset = -0.961426 /*+ 0.5*/;
+        public static final double kFrontLeftAzimuthOffset = -0.991943; // -0.809814 /*+ 0.5*/;
+        public static final double kFrontRightAzimuthOffset = -0.482910 /*+ 0.5*/;
+        public static final double kRearLeftAzimuthOffset = -0.880371 /*+ 0.5*/;
+        public static final double kRearRightAzimuthOffset = -0.955566 /*+ 0.5*/;
 
         public static final double kThrottleReduction = (14.0 / 50.0) * (28.0 / 16.0) * (15.0 / 45.0);
         public static final double kAzimuthReduction = (14.0 / 50.0) * (10.0 / 60.0);
@@ -194,14 +194,20 @@ public class Constants {
     }
 
     public static final class IntakeConstants{
-        public static final int kFrontMotorID = 2;
-        public static final int kRearMotorID = 1;
+        public static final int kMotorID = 61;
 
-        public static final int kFrontCurrentLimit = 20;
-        public static final int kRearCurrentLimit = 40;
-        public static final IdleMode kIdleMode = IdleMode.kBrake;
-        public static final boolean kFrontInversion = true;
-        public static final boolean kRearInversion = false;
+        // Motor Output Constants
+        public static final InvertedValue kLeaderInversion = InvertedValue.Clockwise_Positive;
+        public static final NeutralModeValue kNeutralMode = NeutralModeValue.Brake;
+
+        // Current Limit Constants
+        public static final double kSupplyCurrentLimit = 20.0;
+        public static final boolean kSupplyCurrentEnable = true;
+        public static final double kSupplyCurrentThreshold = 30.0;
+        public static final double kSupplyTimeThreshold = 0.2;
+
+        // Open Loop Ramp Rate Constants
+        public static final double kVoltageRampRate = 0.125;
     }
 
     public static final class ConveyorConstants {
@@ -288,7 +294,7 @@ public class Constants {
 
         // Magnet Sensor Constants
         public static final SensorDirectionValue kSensorDirection = SensorDirectionValue.CounterClockwise_Positive;
-        public static final double kMagnetOffset = -0.142578 + 30.0 / 360.0; //-.077393 + 7.0 / 360; //-0.143311 + 30.0 / 180; // 0.499268 /// 42 deg
+        public static final double kMagnetOffset = 0.331299 + 37.0 / 360.0; //-.077393 + 7.0 / 360; //-0.143311 + 30.0 / 180; // 0.499268 /// 42 deg
         public static final AbsoluteSensorRangeValue kAbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
 
         // Aiming Constants
@@ -326,6 +332,16 @@ public class Constants {
             4.144581513
          */
 
+        /**
+         * New Constants
+         * 
+         * Angle Adjuster Angle | Distance
+         * 52.0 | 1.357
+         * 50.0 | 1.562
+         * 46.670 | 2.000
+         * 
+         */
+
         public static final Rotation2d kMaxAngle = new Rotation2d(5);
     }
 
@@ -356,7 +372,7 @@ public class Constants {
         // public static final GravityTypeValue kGravityCompensationType = GravityTypeValue.Arm_Cosine;
         // public static final double kG = 0.0;
         public static final double kV = 12.0 / (6000.0 / kRotorToSensorRatio / 60.0);
-        public static final double kP = 3.0;
+        public static final double kP = 10.0;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
         public static final double kPIDUpdateHz = 1000;
@@ -367,14 +383,14 @@ public class Constants {
         public static final double kTheoreticalMaxSpeedRPS = 6000.0 / kRotorToSensorRatio / 60.0;
         public static MotionMagicConfigs kUpMotionMagicConfigs = new MotionMagicConfigs();
         static {
-            kUpMotionMagicConfigs.withMotionMagicCruiseVelocity(kTheoreticalMaxSpeedRPS * 1.0);
+            kUpMotionMagicConfigs.withMotionMagicCruiseVelocity(kTheoreticalMaxSpeedRPS * 1.0 * 0.65);
             kUpMotionMagicConfigs.withMotionMagicAcceleration(kTheoreticalMaxSpeedRPS * 3.0);
             kUpMotionMagicConfigs.withMotionMagicJerk(kTheoreticalMaxSpeedRPS * 40.0);
         }
 
         public static MotionMagicConfigs kDownMotionMagicConfigs = new MotionMagicConfigs();
         static {
-            kDownMotionMagicConfigs.withMotionMagicCruiseVelocity(kTheoreticalMaxSpeedRPS * 1.0);
+            kDownMotionMagicConfigs.withMotionMagicCruiseVelocity(kTheoreticalMaxSpeedRPS * 1.0 * 0.65);
             kDownMotionMagicConfigs.withMotionMagicAcceleration(kTheoreticalMaxSpeedRPS * 1.5);
             kDownMotionMagicConfigs.withMotionMagicJerk(kTheoreticalMaxSpeedRPS * 10.0);
         }
@@ -388,7 +404,7 @@ public class Constants {
 
         // Magnet Sensor Constants
         public static final SensorDirectionValue kSensorDirection = SensorDirectionValue.CounterClockwise_Positive;
-        public static final double kMagnetOffset = -0.439209;
+        public static final double kMagnetOffset = -0.017090;
         public static final AbsoluteSensorRangeValue kAbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
     }
 
@@ -480,9 +496,9 @@ public class Constants {
 
         // Software Limit Switch Constants
         // TODO
-        public static final boolean kForwardSoftLimitEnabled = true;
+        public static final boolean kForwardSoftLimitEnabled = false;
         public static final double kForwardSoftLimit = 63.285156;
-        public static final boolean kReverseSoftLimitEnabled = true;
+        public static final boolean kReverseSoftLimitEnabled = false;
         public static final double kReverseSoftLimit = 0.0;
     }
 
@@ -490,11 +506,12 @@ public class Constants {
         // Arm
         public static final Rotation2d kArmStowAngle = Rotation2d.fromDegrees(-39.0);
         public static final Rotation2d kArmAmpAngle = Rotation2d.fromDegrees(75.0);
+        public static final Rotation2d kArmTrapAngle = Rotation2d.fromDegrees(80.0);
 
         // Wrist
         public static final Rotation2d kWristStowAngle = Rotation2d.fromDegrees(10.0);
-        public static final Rotation2d kWristIntakingAngle = Rotation2d.fromDegrees(120.0);
-        public static final Rotation2d kWristAmpAngle = Rotation2d.fromDegrees(204.0);
+        public static final Rotation2d kWristIntakingAngle = Rotation2d.fromDegrees(112.0);
+        public static final Rotation2d kWristAmpAngle = Rotation2d.fromDegrees(200.0);
 
         // Shooter
         public static final double kShootingSpeedRPS = 90.0;

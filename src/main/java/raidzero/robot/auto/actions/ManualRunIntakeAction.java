@@ -37,13 +37,13 @@ public class ManualRunIntakeAction implements Action {
     @Override
     public void update() {
         mWrist.setAngle(mWristDown ? SuperstructureConstants.kWristIntakingAngle : SuperstructureConstants.kWristStowAngle);
-        mIntake.setPercentSpeed(mSpeed, mSpeed);
+        mIntake.setPercentSpeed(mSpeed);
     }
 
     @Override
     public void done() {
         System.out.println("[Auto] Action '" + getClass().getSimpleName() + "' finished!");
         timer.stop();
-        mIntake.setPercentSpeed(0.0, 0.0);
+        mIntake.setPercentSpeed(0.0);
     }
 }

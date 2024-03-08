@@ -54,6 +54,8 @@ public class Superstructure extends Submodule {
     private boolean mBeamBreakWasToggled = false;
     private boolean mNoteHasPassed = false;
 
+    private double angleAdjusterOffset = 0.0;
+
     @Override
     public void onInit() {}
 
@@ -67,6 +69,8 @@ public class Superstructure extends Submodule {
     public void update(double timestamp) {
         SmartDashboard.putBoolean("Note passed beam break", noteHasPassedBeamBreak());
         SmartDashboard.putBoolean("Note at beam break", mIntake.ringPresent());
+
+        SmartDashboard.putNumber("Angle Adjuster Offset", angleAdjusterOffset);
     }
 
     @Override
@@ -129,7 +133,7 @@ public class Superstructure extends Submodule {
 
     public void stowState() {
         request(new SequentialRequest(
-            mIntake.intakeRequest(0.0, 0.0, false, false),
+            mIntake.intakeRequest(0.0, false, false),
             new ParallelRequest(
                 mWrist.wristRequest(SuperstructureConstants.kWristStowAngle, true), 
                 mArm.armRequest(SuperstructureConstants.kArmStowAngle, true)
@@ -151,7 +155,7 @@ public class Superstructure extends Submodule {
 
     public void trapState() {
         request(new ParallelRequest(
-            mArm.armRequest(SuperstructureConstants.kArmAmpAngle, true),
+            mArm.armRequest(SuperstructureConstants.kArmTrapAngle, true),
             new SequentialRequest(
                 new WaitRequest(0.05), 
                 mWrist.wristRequest(SuperstructureConstants.kWristStowAngle, true)
@@ -172,40 +176,49 @@ public class Superstructure extends Submodule {
 
         SmartDashboard.putNumber("Desired Angle Val", desiredAngleDegrees);
         
-        mAngleAdjuster.setAngle(Rotation2d.fromDegrees(desiredAngleDegrees));
+        mAngleAdjuster.setAngle(Rotation2d.fromDegrees(desiredAngleDegrees + angleAdjusterOffset));
+    }
+
+    public void incrementAngleAdjusterOffset(double val) {
+        angleAdjusterOffset += val;
+    }
+
+    public double getAngleAdjusterOffset() {
+        return angleAdjusterOffset;
     }
 
     public boolean intakeChoreographed(boolean enable, boolean justReleased, boolean intakingForAmp) {
         boolean beamBreakIsToggled = mIntake.ringPresent();
+        double intakeSpeed = 0.25;
         if(!intakingForAmp) {
             if(enable && !mNoteHasPassed) {
-                mIntake.setPercentSpeed(1.0, 1.0);
+                mIntake.setPercentSpeed(intakeSpeed);
                 mConveyor.setPercentSpeed(0.40);
                 mWrist.setAngle(SuperstructureConstants.kWristIntakingAngle);
             } else if(enable && mNoteHasPassed) {
-                mIntake.setPercentSpeed(0.0, 0.0);
+                mIntake.setPercentSpeed(0.0);
                 mConveyor.setPercentSpeed(0.0);
                 mWrist.setAngle(SuperstructureConstants.kWristStowAngle);
                 return true;
             } else if(!enable && justReleased) {
                 mNoteHasPassed = false;
                 mConveyor.setPercentSpeed(0.0);
-                mIntake.setPercentSpeed(0.0, 0.0);
+                mIntake.setPercentSpeed(0.0);
                 mWrist.setAngle(SuperstructureConstants.kWristStowAngle);
             }
         } else {
             if(enable && !beamBreakIsToggled) {
-                mIntake.setPercentSpeed(1.0, 1.0);
+                mIntake.setPercentSpeed(intakeSpeed);
                 mConveyor.setPercentSpeed(0.0);
                 mWrist.setAngle(SuperstructureConstants.kWristIntakingAngle);
             } else if(enable && beamBreakIsToggled) {
-                mIntake.setPercentSpeed(0.0, 0.0);
+                mIntake.setPercentSpeed(0.0);
                 mConveyor.setPercentSpeed(0.0);
                 mWrist.setAngle(SuperstructureConstants.kWristStowAngle);
                 return true;
             } else if(!enable && justReleased) {
                 mConveyor.setPercentSpeed(0.0);
-                mIntake.setPercentSpeed(0.0, 0.0);
+                mIntake.setPercentSpeed(0.0);
                 mWrist.setAngle(SuperstructureConstants.kWristStowAngle);
             }
         }

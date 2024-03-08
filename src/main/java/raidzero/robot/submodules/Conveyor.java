@@ -1,7 +1,9 @@
 package raidzero.robot.submodules;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkLimitSwitch;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.SparkLimitSwitch.Type;
 
 import raidzero.robot.Constants;
 import raidzero.robot.Constants.ConveyorConstants;
@@ -57,6 +59,10 @@ public class Conveyor extends Submodule {
 
     public void setPercentSpeed(double speed) {
         mPeriodicIO.desiredPercentSpeed = speed;
+    }
+
+    public SparkLimitSwitch getLimitSwitch() {
+        return mMotor.getReverseLimitSwitch(Type.kNormallyOpen);
     }
 
     public Request conveyorRequest(double speed) {

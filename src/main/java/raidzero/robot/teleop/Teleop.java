@@ -1,7 +1,6 @@
 package raidzero.robot.teleop;
 
 import raidzero.robot.Constants;
-import raidzero.robot.Constants.SuperstructureConstants;
 import raidzero.robot.Constants.SwerveConstants;
 import raidzero.robot.submodules.AngleAdjuster;
 import raidzero.robot.submodules.Arm;
@@ -14,17 +13,13 @@ import raidzero.robot.submodules.Swerve;
 import raidzero.robot.submodules.Wrist;
 import raidzero.robot.submodules.Superstructure.SuperstructureState;
 import raidzero.robot.utils.JoystickUtils;
-import raidzero.robot.wrappers.LimelightHelpers;
+
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.units.Angle;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 
 public class Teleop {
 
@@ -93,9 +88,6 @@ public class Teleop {
 
     private void p1Loop(XboxController p) {
 
-        desiredShooterSpeed = SmartDashboard.getNumber("Desired Shooter Speed", desiredShooterSpeed);
-        SmartDashboard.putNumber("Desired Shooter Speed", desiredShooterSpeed);
-
         SmartDashboard.putNumber("Shooter Angle", mAngleAdjuster.getAngle().getDegrees());
         SmartDashboard.putNumber("Arm Angle", mArm.getAngle().getDegrees());
         SmartDashboard.putNumber("Wrist Angle", mWrist.getAngle().getDegrees());
@@ -122,9 +114,9 @@ public class Teleop {
         // if(LimelightHelpers.getTV(null))
 
         mSwerve.teleopDrive(
-            -JoystickUtils.applyDeadband(p.getLeftY()) * SwerveConstants.kMaxVelMPS * 0.5, 
-            -JoystickUtils.applyDeadband(p.getLeftX()) * SwerveConstants.kMaxVelMPS * 0.5, 
-            -JoystickUtils.applyDeadband(p.getRightX()) * SwerveConstants.kMaxVelMPS * 0.5, 
+            -JoystickUtils.applyDeadband(p.getLeftY()) * SwerveConstants.kMaxVelMPS, 
+            -JoystickUtils.applyDeadband(p.getLeftX()) * SwerveConstants.kMaxVelMPS, 
+            -JoystickUtils.applyDeadband(p.getRightX()) * SwerveConstants.kMaxVelMPS, 
             true, 
             null, 
             autoAim,
@@ -134,9 +126,10 @@ public class Teleop {
             mSwerve.zero();
         }
 
-        if(autoAim) {
-            mSuperstructure.angleShooter();
-        }
+        // if(autoAim) {
+        //     mSuperstructure.angleShooter();
+        // }
+        mAngleAdjuster.setPercentSpeed(leftTrigger - rightTrigger);
 
         // if(p.getLeftBumper()) {
         //     mWrist.setAngle(SuperstructureConstants.kWristStowAngle);
@@ -183,13 +176,13 @@ public class Teleop {
 
     private void p2Loop(GenericHID p) {
         // manual conveyor control
-        if(p.getRawButton(6)) {
-            mConveyor.setPercentSpeed(1.0);
-        } else if(p.getRawButton(7)) {
-            mConveyor.setPercentSpeed(-1.0);
-        } else if(p.getRawButtonReleased(6) || p.getRawButtonReleased(7)) {
-            mConveyor.setPercentSpeed(0.0);
-        }
+        // if(p.getRawButton(6)) {
+        //     mConveyor.setPercentSpeed(1.0);
+        // } else if(p.getRawButton(7)) {
+        //     mConveyor.setPercentSpeed(-1.0);
+        // } else if(p.getRawButtonReleased(6) || p.getRawButtonReleased(7)) {
+        //     mConveyor.setPercentSpeed(0.0);
+        // }
 
         // Amp
         if(p.getRawButton(10)) {
@@ -205,7 +198,7 @@ public class Teleop {
         // Score
         if(p.getRawButton(11)) {
             if(mSuperstructure.getState() == SuperstructureState.AMP) {
-                mIntake.setPercentSpeed(-1.0, -1.0);
+                mIntake.setPercentSpeed(-0.5);
             } else {
                 // mWrist.setAngle(SuperstructureConstants.kWristIntakingAngle);
                 // if(mWrist.isSettled()) {
@@ -216,7 +209,7 @@ public class Teleop {
             }
         } else if(p.getRawButtonReleased(11)) {
             if(mSuperstructure.getState() == SuperstructureState.AMP) {
-                mIntake.setPercentSpeed(0.0, 0.0);
+                mIntake.setPercentSpeed(0.0);
             } else if(!intaking) {
                 // mWrist.setAngle(SuperstructureConstants.kWristStowAngle);
                 // if(mWrist.isSettled()) {
@@ -248,8 +241,14 @@ public class Teleop {
         }
 
         if(p.getRawButton(5)) {
-            mAngleAdjuster.setAngle(Rotation2d.fromDegrees(49.0));
+            mAngleAdjuster.setAngle(Rotation2d.fromDegrees(49.0 + mSuperstructure.getAngleAdjusterOffset()));
         }
+
+        if(p.getRawButtonPressed(6)) {
+            mSuperstructure.incrementAngleAdjusterOffset(1.0);
+        } else if(p.getRawButtonPressed(7)) {
+            mSuperstructure.incrementAngleAdjusterOffset(-1.0);
+        } 
     }
 
     private boolean isRightTriggerReleased() {

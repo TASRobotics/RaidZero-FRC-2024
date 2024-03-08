@@ -1,18 +1,26 @@
 package raidzero.robot.submodules;
 
-import com.revrobotics.CANSparkMax;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.TorqueCurrentFOC;
+import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.hardware.TalonFX;
+
 import com.revrobotics.SparkLimitSwitch;
-import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.SparkLimitSwitch.Type;
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import raidzero.robot.Constants;
 import raidzero.robot.Constants.IntakeConstants;
 import raidzero.robot.utils.requests.Request;
 
 public class Intake extends Submodule{
+    private enum ControlState {
+        FEEDFORWARD, TORQUE
+    }
+
     private static Intake instance = null;
 
     public static Intake getInstance() {
@@ -24,39 +32,35 @@ public class Intake extends Submodule{
 
     private Intake() {}
 
-    private CANSparkMax mFrontMotor = new CANSparkMax(IntakeConstants.kFrontMotorID, MotorType.kBrushless);
-    private CANSparkMax mRearMotor = new CANSparkMax(IntakeConstants.kRearMotorID, MotorType.kBrushless);
+    private TalonFX mMotor = new TalonFX(IntakeConstants.kMotorID);
+    private VoltageOut mVoltageOut = new VoltageOut(0.0).withEnableFOC(Constants.kEnableFOC);
+    private TorqueCurrentFOC mTorqueCurrentFOC = new TorqueCurrentFOC(0.0);
+
+    private static final Conveyor mConveyor = Conveyor.getInstance();
 
     private SparkLimitSwitch mBeamBreak;
 
     private Timer mBeamBreakTimer = new Timer();
 
     public static class PeriodicIO {
-        public double desiredFrontPercentSpeed = 0.0;
-        public double desiredRearPercentSpeed = 0.0;
+        public double desiredPercentSpeed = 0.0;
+
+        public double desiredStatorCurrent = 0.0;
 
         public boolean limitTriggered = false;
         public boolean limitWasTriggered = false;
         public boolean limitWasJustTriggered = false;
+
+        public ControlState controlState = ControlState.FEEDFORWARD;
     }
 
     private PeriodicIO mPeriodicIO = new PeriodicIO();
 
     @Override
     public void onInit() {
-        mFrontMotor.restoreFactoryDefaults();
-        mFrontMotor.enableVoltageCompensation(Constants.kMaxMotorVoltage);
-        mFrontMotor.setSmartCurrentLimit(IntakeConstants.kFrontCurrentLimit);
-        mFrontMotor.setIdleMode(IntakeConstants.kIdleMode);
-        mFrontMotor.setInverted(IntakeConstants.kFrontInversion);
+        mMotor.getConfigurator().apply(getConfig(), Constants.kLongCANTimeoutMs);
 
-        mRearMotor.restoreFactoryDefaults();
-        mRearMotor.enableVoltageCompensation(Constants.kMaxMotorVoltage);
-        mRearMotor.setSmartCurrentLimit(IntakeConstants.kRearCurrentLimit);
-        mRearMotor.setIdleMode(IntakeConstants.kIdleMode);
-        mRearMotor.setInverted(IntakeConstants.kRearInversion);
-
-        mBeamBreak = mFrontMotor.getReverseLimitSwitch(Type.kNormallyOpen);
+        mBeamBreak = mConveyor.getLimitSwitch();
         mBeamBreak.enableLimitSwitch(false);
     }
 
@@ -93,14 +97,16 @@ public class Intake extends Submodule{
 
     @Override
     public void run() {
-        mFrontMotor.set(mPeriodicIO.desiredFrontPercentSpeed);
-        mRearMotor.set(mPeriodicIO.desiredRearPercentSpeed);
+        if(mPeriodicIO.controlState == ControlState.FEEDFORWARD) {
+            mMotor.setControl(mVoltageOut.withOutput(mPeriodicIO.desiredPercentSpeed * Constants.kMaxMotorVoltage));
+        } else if(mPeriodicIO.controlState == ControlState.TORQUE) {
+            mMotor.setControl(mTorqueCurrentFOC.withOutput(mPeriodicIO.desiredStatorCurrent));
+        }
     }
 
     @Override
     public void stop() {
-        mFrontMotor.stopMotor();
-        mRearMotor.stopMotor();
+        mMotor.stopMotor();
     }
 
     @Override
@@ -111,9 +117,14 @@ public class Intake extends Submodule{
      * 
      * @param speed percent speed
      */
-    public void setPercentSpeed(double frontSpeed, double rearSpeed) {
-        mPeriodicIO.desiredFrontPercentSpeed = frontSpeed;
-        mPeriodicIO.desiredRearPercentSpeed = rearSpeed;
+    public void setPercentSpeed(double speed) {
+        mPeriodicIO.controlState = ControlState.FEEDFORWARD;
+        mPeriodicIO.desiredPercentSpeed = speed;
+    }
+
+    public void setStatorCurrent(double current) {
+        mPeriodicIO.controlState = ControlState.TORQUE;
+        mPeriodicIO.desiredStatorCurrent = current;
     }
 
     // @Deprecated
@@ -131,11 +142,11 @@ public class Intake extends Submodule{
         return mPeriodicIO.limitTriggered;
     }
 
-    public Request intakeRequest(double frontSpeed, double rearSpeed, boolean stopIfLimitIsTriggered, boolean waitUntilSettled) {
+    public Request intakeRequest(double speed, boolean stopIfLimitIsTriggered, boolean waitUntilSettled) {
         return new Request() {
             @Override
             public void act() {
-                setPercentSpeed(frontSpeed, rearSpeed);
+                setPercentSpeed(speed);
             }
 
             @Override
@@ -146,5 +157,30 @@ public class Intake extends Submodule{
                 return true;
             }
         };
+    }
+
+    private TalonFXConfiguration getConfig() {
+        TalonFXConfiguration config = new TalonFXConfiguration();
+
+        // Motor Output Configuration
+        MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
+        motorOutputConfigs.withInverted(IntakeConstants.kLeaderInversion);
+        motorOutputConfigs.withNeutralMode(IntakeConstants.kNeutralMode);
+        config.withMotorOutput(motorOutputConfigs);
+
+        // Current Limit Configuration
+        CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
+        currentLimitsConfigs.withSupplyCurrentLimit(IntakeConstants.kSupplyCurrentLimit);
+        currentLimitsConfigs.withSupplyCurrentLimitEnable(IntakeConstants.kSupplyCurrentEnable);
+        currentLimitsConfigs.withSupplyCurrentThreshold(IntakeConstants.kSupplyCurrentThreshold);
+        currentLimitsConfigs.withSupplyTimeThreshold(IntakeConstants.kSupplyTimeThreshold);
+        config.withCurrentLimits(currentLimitsConfigs);
+
+        // Open Loop Ramp Rate Configuration
+        OpenLoopRampsConfigs openLoopRampsConfigs = new OpenLoopRampsConfigs();
+        openLoopRampsConfigs.withVoltageOpenLoopRampPeriod(IntakeConstants.kVoltageRampRate);
+        config.withOpenLoopRamps(openLoopRampsConfigs);
+        
+        return config; 
     }
 }

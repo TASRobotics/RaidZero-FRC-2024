@@ -1,27 +1,19 @@
 package raidzero.robot.submodules;
 
+import java.util.Optional;
+
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.hardware.Pigeon2;
-
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathPlannerTrajectory;
 import com.pathplanner.lib.util.PIDConstants;
 
-import java.util.Optional;
-
-import com.choreo.lib.*;
-
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -29,13 +21,15 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.ADXL345_I2C.AllAxes;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import raidzero.robot.Constants;
 import raidzero.robot.Constants.DriveConstants;
 import raidzero.robot.Constants.SwerveConstants;
 import raidzero.robot.dashboard.Tab;
-import raidzero.robot.wrappers.LimelightHelpers;
 
 public class Swerve extends Submodule {
     private enum ControlState {
@@ -264,6 +258,7 @@ public class Swerve extends Submodule {
         mRearLeftModule.zero();
         mRearRightModule.zero();
 
+        // mOdometry.resetPosition(mPigeon.getRotation2d(), getModulePositions(), new Pose2d(0.0, 0.0, mPigeon.getRotation2d()));
         mOdometry.resetPosition(mPigeon.getRotation2d(), getModulePositions(), new Pose2d());
 
         // mSnapController.reset(mPigeon.getRotation2d().getDegrees());
@@ -421,9 +416,14 @@ public class Swerve extends Submodule {
 
             setClosedLoopSpeeds(new ChassisSpeeds(xSpeed, ySpeed, y), fieldOriented);
 
+
             // setClosedLoopSpeeds(ChassisSpeeds.fromRobotRelativeSpeeds(0.0, y, 0.0, mPigeon.getRotation2d()), false);
         } else {
+
             setClosedLoopSpeeds(new ChassisSpeeds(xSpeed, ySpeed, angularSpeed), fieldOriented);
+            
+            
+            
             // setOpenLoopSpeeds(new ChassisSpeeds(xSpeed, ySpeed, angularSpeed), fieldOriented);
         }
     }
