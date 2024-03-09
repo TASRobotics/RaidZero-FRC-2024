@@ -126,10 +126,10 @@ public class Teleop {
             mSwerve.zero();
         }
 
-        // if(autoAim) {
-        //     mSuperstructure.angleShooter();
-        // }
-        mAngleAdjuster.setPercentSpeed(leftTrigger - rightTrigger);
+        if(autoAim) {
+            mSuperstructure.angleShooter();
+        }
+        // mAngleAdjuster.setPercentSpeed(leftTrigger - rightTrigger);
 
         // if(p.getLeftBumper()) {
         //     mWrist.setAngle(SuperstructureConstants.kWristStowAngle);

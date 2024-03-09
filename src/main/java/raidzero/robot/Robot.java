@@ -44,7 +44,7 @@ public class Robot extends TimedRobot {
             mVision,
             // mLimelight
             mArm, 
-            mClimb, 
+            // mClimb, 
             mShooter, 
             mAngleAdjuster, 
             mSuperstructure

@@ -65,7 +65,7 @@ public class Shooter extends Submodule {
 
     @Override
     public void onStart(double timestamp) {
-        mPeriodicIO.desiredVelocity = 0.0;
+        mPeriodicIO.desiredVelocity = 2.0;
         mPeriodicIO.desiredPercentSpeed = 0.0;
     }
 

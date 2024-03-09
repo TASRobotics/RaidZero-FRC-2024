@@ -302,44 +302,41 @@ public class Constants {
             kAimMap = new InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble>();
         static {
             // kAimMap.put(new InterpolatingDouble(ROBOT_DISTANCE_FROM_GOAL), new InterpolatingDouble(DESIRED_ANGLE));
-            kAimMap.put(new InterpolatingDouble(1.124750566), new InterpolatingDouble(48.69140625));
-            kAimMap.put(new InterpolatingDouble(1.630963346), new InterpolatingDouble(45.3515625));
-            kAimMap.put(new InterpolatingDouble(2.345829831), new InterpolatingDouble(41.8359375));
-            kAimMap.put(new InterpolatingDouble(2.928608228), new InterpolatingDouble(36.9140625));
-            kAimMap.put(new InterpolatingDouble(3.399811629), new InterpolatingDouble(34.1015625));
-            kAimMap.put(new InterpolatingDouble(3.878163152), new InterpolatingDouble(30.41015625));
-            kAimMap.put(new InterpolatingDouble(4.144581513), new InterpolatingDouble(27.24609375));
-            // ...
-        }
 
-        /**
-         * Angle Adjuster Angle |    X Meters    |     Y Meters
-         * 48.69140625 | 1.08 | 5.67
-         * 45.3515625 | 1.57 | 5.82
-         * 41.8359375 | 2.29 | 5.26
-         * 36.9140625 | 2.88 | 5.30
-         * 34.1015625 | 3.36 | 5.44
-         * 30.41015625 | 3.84 | 5.57
-         * 27.24609375 | 3.96 | 6.64
-         * xxx | 4.20 | 7.00
-         *
-         * 1.124750566
-            1.630963346
-            2.345829831
-            2.928608228
-            3.399811629
-            3.878163152
-            4.144581513
-         */
+            /* OLD CONSTANTS */
+            // kAimMap.put(new InterpolatingDouble(1.124750566), new InterpolatingDouble(48.69140625));
+            // kAimMap.put(new InterpolatingDouble(1.630963346), new InterpolatingDouble(45.3515625));
+            // kAimMap.put(new InterpolatingDouble(2.345829831), new InterpolatingDouble(41.8359375));
+            // kAimMap.put(new InterpolatingDouble(2.928608228), new InterpolatingDouble(36.9140625));
+            // kAimMap.put(new InterpolatingDouble(3.399811629), new InterpolatingDouble(34.1015625));
+            // kAimMap.put(new InterpolatingDouble(3.878163152), new InterpolatingDouble(30.41015625));
+            // kAimMap.put(new InterpolatingDouble(4.144581513), new InterpolatingDouble(27.24609375));
+            
+            /* NEW CONSTANTS */
+            kAimMap.put(new InterpolatingDouble(1.347), new InterpolatingDouble(50.71));
+            kAimMap.put(new InterpolatingDouble(1.940), new InterpolatingDouble(42.63));
+            kAimMap.put(new InterpolatingDouble(2.398), new InterpolatingDouble(36.47));
+            kAimMap.put(new InterpolatingDouble(2.855), new InterpolatingDouble(33.66));
+            kAimMap.put(new InterpolatingDouble(3.290), new InterpolatingDouble(30.59));
+            kAimMap.put(new InterpolatingDouble(3.744), new InterpolatingDouble(27.51));
+            kAimMap.put(new InterpolatingDouble(4.234), new InterpolatingDouble(25.05));
+            kAimMap.put(new InterpolatingDouble(4.733), new InterpolatingDouble(23.73));
+            kAimMap.put(new InterpolatingDouble(5.372), new InterpolatingDouble(23.38));
+        }
 
         /**
          * New Constants
          * 
          * Angle Adjuster Angle | Distance
-         * 52.0 | 1.357
-         * 50.0 | 1.562
-         * 46.670 | 2.000
-         * 
+         * 50.71 | 1.347
+         * 42.63 | 1.940
+         * 36.47 | 2.398
+         * 33.66 | 2.855
+         * 30.59 | 3.290
+         * 27.51 | 3.744
+         * 25.05 | 4.234
+         * 23.73 | 4.733
+         * 23.38 | 5.372
          */
 
         public static final Rotation2d kMaxAngle = new Rotation2d(5);
@@ -510,7 +507,7 @@ public class Constants {
 
         // Wrist
         public static final Rotation2d kWristStowAngle = Rotation2d.fromDegrees(10.0);
-        public static final Rotation2d kWristIntakingAngle = Rotation2d.fromDegrees(112.0);
+        public static final Rotation2d kWristIntakingAngle = Rotation2d.fromDegrees(115.0);
         public static final Rotation2d kWristAmpAngle = Rotation2d.fromDegrees(200.0);
 
         // Shooter
