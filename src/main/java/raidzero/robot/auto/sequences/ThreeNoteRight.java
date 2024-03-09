@@ -23,7 +23,7 @@ import raidzero.robot.auto.actions.WaitAction;
 public class ThreeNoteRight extends AutoSequence {
     private PathPlannerPath coopPreload = PathPlannerPath.fromPathFile("coop preload");
     private PathPlannerPath coopGet1 = PathPlannerPath.fromPathFile("coop get 1");
-    private PathPlannerPath coopShoot1 = PathPlannerPath.fromPathFile("coop shoot 2");
+    private PathPlannerPath coopShoot1 = PathPlannerPath.fromPathFile("coop shoot 1");
     private PathPlannerPath coopGet2 = PathPlannerPath.fromPathFile("coop get 2");
     private PathPlannerPath coopShoot2 = PathPlannerPath.fromPathFile("coop shoot 2");
 
@@ -48,7 +48,7 @@ public class ThreeNoteRight extends AutoSequence {
                         new DrivePath(coopShoot1.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0))))
                     )),
                     new AutomaticIntakeAction(5), 
-                    new AngleShooterAction(Rotation2d.fromDegrees(26.72))
+                    new AngleShooterAction(Rotation2d.fromDegrees(23))
                 )), 
                // new DrivePath(trajectory3), //go to shoot place
                 new RunConveyorAction(1.0, 0.5), // shoot 2nd note
