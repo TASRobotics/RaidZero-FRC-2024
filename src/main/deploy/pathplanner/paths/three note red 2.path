@@ -3,25 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 14.020053944869797,
-        "y": 4.331095709810468
+        "x": 14.16,
+        "y": 4.84
       },
       "prevControl": null,
       "nextControl": {
-        "x": 14.125451473781832,
-        "y": 4.881505027462199
+        "x": 14.30362124704591,
+        "y": 4.993208803262012
       },
       "isLocked": false,
       "linkedName": "l3nRED2"
     },
     {
       "anchor": {
-        "x": 14.113963976858052,
-        "y": 5.527514849608872
+        "x": 14.16,
+        "y": 5.43
       },
       "prevControl": {
-        "x": 14.758059986876036,
-        "y": 5.527514849608872
+        "x": 14.317123469526539,
+        "y": 5.2228473622568545
+      },
+      "nextControl": {
+        "x": 13.948487637175813,
+        "y": 5.708859320038849
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 14.0,
+        "y": 6.01
+      },
+      "prevControl": {
+        "x": 14.009526227507143,
+        "y": 5.8002161803439485
       },
       "nextControl": null,
       "isLocked": false,
@@ -39,11 +55,11 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0,
+    "rotation": 167.01,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "3 close RED",
+  "folder": null,
   "previewStartingState": {
     "rotation": 180.0,
     "velocity": 0

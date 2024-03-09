@@ -37,27 +37,35 @@ public class ThreeNote extends AutoSequence {
                     new ShootAction(true), 
                     new AngleShooterAction(Rotation2d.fromDegrees(45))
                 )), 
-                new RunConveyorAction(1.0, 1.0), // Shoot 1st note (preload)
                 new ParallelAction(Arrays.asList(
-                    new DrivePath(threeNote1.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)))), 
+                    new SeriesAction(Arrays.asList(
+                        new RunConveyorAction(1.0, 0.5), // Shoot 1st note (preload)
+                        new DrivePath(threeNote1.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0))))
+                    )),
                     new AutomaticIntakeAction(), 
                     new AngleShooterAction(Rotation2d.fromDegrees(37))
                 )), 
-                new RunConveyorAction(1.0, 1.0), // shoot 2nd note
                 new ParallelAction(Arrays.asList(
-                    new DrivePath(threeNote2.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)))), 
+                    new SeriesAction(Arrays.asList(
+                        new RunConveyorAction(1.0, 1.0), // shoot 2nd note
+                        new DrivePath(threeNote2.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0))))
+                    )),
                     new AutomaticIntakeAction(), 
                     new AngleShooterAction(Rotation2d.fromDegrees(37))
                 )), 
-                new RunConveyorAction(1.0, 1.0), // shoot 3rd note
                 new ParallelAction(Arrays.asList(
-                    new DrivePath(threeNote3.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)))), 
+                    new SeriesAction(Arrays.asList(
+                        new RunConveyorAction(1.0, 1.0), // shoot 3rd note
+                        new DrivePath(threeNote3.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0))))
+                    )),
                     new AutomaticIntakeAction(), 
                     new AngleShooterAction(Rotation2d.fromDegrees(35))
                 )), 
-                new RunConveyorAction(1.0, 1.0), // shoot 4th note
                 new ParallelAction(Arrays.asList(
-                    new DrivePath(threeNoteGet4.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)))), 
+                    new SeriesAction(Arrays.asList(
+                        new RunConveyorAction(1.0, 1.0), // shoot 4th note
+                        new DrivePath(threeNoteGet4.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0))))
+                    )),
                     new AutomaticIntakeAction(), 
                     new AngleShooterAction(Rotation2d.fromDegrees(40))
                 )), 
