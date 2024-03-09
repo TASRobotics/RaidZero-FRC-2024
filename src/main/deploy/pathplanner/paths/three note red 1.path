@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 14.300261703539284,
-        "y": 4.619907518014136
+        "x": 14.257233566826045,
+        "y": 4.6710425365093595
       },
       "isLocked": false,
       "linkedName": "l3nRED"
@@ -31,25 +31,25 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.15,
-      "rotationDegrees": -150.0,
+      "rotationDegrees": -153.3,
       "rotateFast": false
     }
   ],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 4.0,
+    "maxAcceleration": 3.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -148.0,
+    "rotation": -153.3,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Three Note Red",
   "previewStartingState": {
     "rotation": 180.0,
     "velocity": 0

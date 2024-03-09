@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 14.16362124704591,
-        "y": 4.483208803262012
+        "x": 13.854502386085079,
+        "y": 4.660923767336931
       },
       "isLocked": false,
       "linkedName": "l3nRED2"
     },
     {
       "anchor": {
-        "x": 13.58,
-        "y": 5.72
+        "x": 13.43,
+        "y": 5.54
       },
       "prevControl": {
-        "x": 13.776144161589672,
-        "y": 5.121311877623846
+        "x": 13.677289757840562,
+        "y": 5.004324934622531
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,31 +30,31 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.2,
-      "rotationDegrees": 105.0,
+      "waypointRelativePos": 0.05,
+      "rotationDegrees": 104.5,
       "rotateFast": false
     },
     {
-      "waypointRelativePos": 0.6,
-      "rotationDegrees": 105.0,
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 104.5,
       "rotateFast": false
     }
   ],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 2.0,
+    "maxAcceleration": 3.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 175.0,
+    "rotation": 176.7,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Three Note Red",
   "previewStartingState": {
     "rotation": 180.0,
     "velocity": 0
