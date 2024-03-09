@@ -189,7 +189,7 @@ public class Superstructure extends Submodule {
 
     public boolean intakeChoreographed(boolean enable, boolean justReleased, boolean intakingForAmp) {
         boolean beamBreakIsToggled = mIntake.ringPresent();
-        double intakeSpeed = 0.25;
+        double intakeSpeed = 0.75;
         if(!intakingForAmp) {
             if(enable && !mNoteHasPassed) {
                 mIntake.setPercentSpeed(intakeSpeed);
