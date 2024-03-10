@@ -43,7 +43,7 @@
     "rotateFast": true
   },
   "reversed": false,
-  "folder": "right side mid rush BLUE",
+  "folder": null,
   "previewStartingState": null,
   "useDefaultConstraints": false
 }

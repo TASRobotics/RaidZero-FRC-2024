@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.529541854895228,
-        "y": 3.7608033331249913
+        "x": 6.403449232824392,
+        "y": 3.6936489289645253
       },
       "isLocked": false,
       "linkedName": "right3"
@@ -20,15 +20,21 @@
         "y": 4.80666483147975
       },
       "prevControl": {
-        "x": 5.712910273988088,
-        "y": 4.183445993419038
+        "x": 5.817859881090133,
+        "y": 4.170030409505264
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "rightshoot"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": -40.0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -43,7 +49,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "right side mid rush BLUE",
+  "folder": null,
   "previewStartingState": null,
   "useDefaultConstraints": false
 }

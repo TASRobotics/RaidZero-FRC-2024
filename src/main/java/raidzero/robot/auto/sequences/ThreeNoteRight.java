@@ -47,7 +47,10 @@ public class ThreeNoteRight extends AutoSequence {
                         new DrivePath(coopGet1.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)))), 
                         new DrivePath(coopShoot1.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0))))
                     )),
-                    new AutomaticIntakeAction(5), 
+                    new SeriesAction(Arrays.asList(
+                        new WaitAction(1.5), // Delays a bit before dropping intake
+                        new AutomaticIntakeAction(5)
+                    )),
                     new AngleShooterAction(Rotation2d.fromDegrees(23))
                 )), 
                // new DrivePath(trajectory3), //go to shoot place
@@ -57,7 +60,10 @@ public class ThreeNoteRight extends AutoSequence {
                         new DrivePath(coopGet2.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)))), 
                         new DrivePath(coopShoot2.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0))))
                     )),
-                    new AutomaticIntakeAction(5), 
+                    new SeriesAction(Arrays.asList(
+                        new WaitAction(1.5), // Delays a bit before dropping intake
+                        new AutomaticIntakeAction(5)
+                    )),
                     new AngleShooterAction(Rotation2d.fromDegrees(26.72))
                 )), 
                 //new DrivePath(trajectory5), //go to shoot place
