@@ -23,6 +23,8 @@ public class AutoRunner {
         new ThreeNoteRight(),     
         new ThreeNoteRightRed(),
 
+        new BLUE_FiveNoteSpeaker(),
+        new ThreeNoteRed(),
         new ShootPreloadSequence()
     };
 

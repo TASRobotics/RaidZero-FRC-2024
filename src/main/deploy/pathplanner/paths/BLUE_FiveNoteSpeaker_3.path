@@ -12,7 +12,7 @@
         "y": 6.0798172724165
       },
       "isLocked": false,
-      "linkedName": "secondend"
+      "linkedName": "BLUE_FiveNoteSpeaker_2"
     },
     {
       "anchor": {
@@ -25,7 +25,7 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "thirdend"
+      "linkedName": "BLUE_FiveNoteSpeaker_3"
     }
   ],
   "rotationTargets": [
@@ -54,7 +54,10 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Three Note BlueE",
-  "previewStartingState": null,
+  "folder": "FiveNoteSpeaker BLUE ",
+  "previewStartingState": {
+    "rotation": 3.3,
+    "velocity": 0
+  },
   "useDefaultConstraints": false
 }
