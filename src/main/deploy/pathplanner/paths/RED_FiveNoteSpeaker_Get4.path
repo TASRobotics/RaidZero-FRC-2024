@@ -1,0 +1,55 @@
+{
+    "version": 1.0,
+    "waypoints": [
+        {
+            "anchor": {
+                "x": 13.331114183732126,
+                "y": 7.304010597996133
+            },
+            "prevControl": null,
+            "nextControl": {
+                "x": 11.397094476093713,
+                "y": 7.365734631218636
+            },
+            "isLocked": false,
+            "linkedName": "RED_FiveNoteSpeaker_3"
+        },
+        {
+            "anchor": {
+                "x": 8.619512981081098,
+                "y": 7.448033342181972
+            },
+            "prevControl": {
+                "x": 9.915717678753651,
+                "y": 7.427458664441138
+            },
+            "nextControl": null,
+            "isLocked": false,
+            "linkedName": "RED_FiveNoteSpeaker_Get4"
+        }
+    ],
+    "rotationTargets": [
+        {
+            "waypointRelativePos": 0.5,
+            "rotationDegrees": 180,
+            "rotateFast": false
+        }
+    ],
+    "constraintZones": [],
+    "eventMarkers": [],
+    "globalConstraints": {
+        "maxVelocity": 4.8,
+        "maxAcceleration": 4.5,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0
+    },
+    "goalEndState": {
+        "velocity": 0,
+        "rotation": 180.0,
+        "rotateFast": false
+    },
+    "reversed": false,
+    "folder": "Five Note Speaker Blue",
+    "previewStartingState": null,
+    "useDefaultConstraints": false
+}

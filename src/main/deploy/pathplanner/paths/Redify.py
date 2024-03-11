@@ -16,7 +16,7 @@ def replace_values_and_rename(json_file_path):
     
     # Replace 'x', 'rotation', and 'rotationDegrees' values
     for waypoint in data['waypoints']:
-        if 'linkedName' in waypoint:
+        if 'linkedName' in waypoint and waypoint['linkedName'] is not None:
             waypoint['linkedName'] = waypoint['linkedName'].replace('BLUE', 'RED')
         if 'x' in waypoint['anchor']:
             print(waypoint['anchor']['x'])
@@ -32,7 +32,9 @@ def replace_values_and_rename(json_file_path):
         rotationTarget['rotationDegrees'] = 180 - rotationTarget['rotationDegrees']
     if 'folder' in data and data['folder'] is not None:
         data['folder'] = data['folder'].replace('BLUE', 'RED')
-    if 'previewStartingState' in data:
+    if 'goalEndState' in data:
+        data['goalEndState']['rotation'] = 180- data['goalEndState']['rotation']
+    if 'previewStartingState' in data and data['previewStartingState'] is not None:
         if 'rotation' in data['previewStartingState']:
             data['previewStartingState']['rotation'] = 180 - data['previewStartingState']['rotation']
         else:

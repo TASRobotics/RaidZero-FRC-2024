@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.715666105278131,
-        "y": 4.9905920717886865
+        "x": 2.5630386079283927,
+        "y": 4.297412358003825
       },
       "isLocked": false,
       "linkedName": "BLUE_FiveNoteSpeaker_0"
@@ -43,7 +43,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Five Note Speaker Blue",
+  "folder": null,
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0
