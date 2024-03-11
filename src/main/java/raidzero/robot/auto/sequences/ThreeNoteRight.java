@@ -51,7 +51,7 @@ public class ThreeNoteRight extends AutoSequence {
                         new WaitAction(0.9), // Delays a bit before dropping intake
                         new AutomaticIntakeAction(5)
                     )),
-                    new AngleShooterAction(Rotation2d.fromDegrees(25.5))
+                    new AngleShooterAction(Rotation2d.fromDegrees(25))
                 )), 
                // new DrivePath(trajectory3), //go to shoot place
                 new RunConveyorAction(1.0, 0.5), // shoot 2nd note
@@ -64,7 +64,7 @@ public class ThreeNoteRight extends AutoSequence {
                         new WaitAction(0.75), // Delays a bit before dropping intake
                         new AutomaticIntakeAction(5)
                     )),
-                    new AngleShooterAction(Rotation2d.fromDegrees(25.5))
+                    new AngleShooterAction(Rotation2d.fromDegrees(25))
                 )), 
                 //new DrivePath(trajectory5), //go to shoot place
                 new RunConveyorAction(1.0, 0.5), // shoot 3rd note
@@ -80,6 +80,6 @@ public class ThreeNoteRight extends AutoSequence {
 
     @Override
     public String getName() {
-        return "3 co op blue";
+        return "3 Note Source Side";
     }
 }
