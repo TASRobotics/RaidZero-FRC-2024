@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.330367334382138,
-        "y": 4.80666483147975
+        "x": 4.4664725978666615,
+        "y": 4.820991701320227
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.106594025848975,
-        "y": 4.051998568783996
+        "x": 6.2426992893334985,
+        "y": 4.066325438624473
       },
       "isLocked": false,
       "linkedName": "rightshoot"
@@ -43,7 +43,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "right side mid rush BLUE",
+  "folder": null,
   "previewStartingState": null,
   "useDefaultConstraints": false
 }
