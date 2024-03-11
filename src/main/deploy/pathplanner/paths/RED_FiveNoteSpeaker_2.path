@@ -3,47 +3,58 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 15.09,
-        "y": 4.11
+        "x": 14.02,
+        "y": 4.33
       },
       "prevControl": null,
       "nextControl": {
-        "x": 14.951538597525463,
-        "y": 4.052307365939972
+        "x": 13.854502386085079,
+        "y": 4.660923767336931
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "RED_FiveNoteSpeaker_1"
     },
     {
       "anchor": {
-        "x": 14.47,
-        "y": 4.56
+        "x": 13.43,
+        "y": 5.54
       },
       "prevControl": {
-        "x": 14.71971626828938,
-        "y": 4.571907365435995
+        "x": 13.677289757840562,
+        "y": 5.004324934622531
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "l3nRED"
+      "linkedName": "RED_FiveNoteSpeaker_2"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.05,
+      "rotationDegrees": 104.5,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 104.5,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.0,
+    "maxVelocity": 2.0,
     "maxAcceleration": 3.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -163.0,
+    "rotation": 176.7,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Three Note Red",
+  "folder": "FiveNoteSpeaker RED",
   "previewStartingState": {
     "rotation": 180.0,
     "velocity": 0

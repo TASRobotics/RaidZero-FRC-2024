@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.4499800428172283,
+        "x": 15.03,
         "y": 1.5201930403860808
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.9879241154642866,
-        "y": 2.034415517347615
+        "x": 14.49206976520449,
+        "y": 2.034429993163113
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.8045556963714273,
+        "x": 13.68,
         "y": 3.159074799824993
       },
       "prevControl": {
-        "x": 2.589652648764286,
-        "y": 2.901191142696422
+        "x": 13.894922981119631,
+        "y": 2.9012077552623077
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "SourceSide3_Blue_0"
+      "linkedName": "RED_ThreeNoteSource_0"
     }
   ],
   "rotationTargets": [],
@@ -39,11 +39,14 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -37.763077974032,
+    "rotation": -142.24,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "ThreeNoteSource BLUE",
-  "previewStartingState": null,
+  "folder": "ThreeNoteSource RED",
+  "previewStartingState": {
+    "rotation": 180.0,
+    "velocity": 0
+  },
   "useDefaultConstraints": false
 }

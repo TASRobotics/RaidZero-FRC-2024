@@ -12,7 +12,7 @@
         "y": 4.42
       },
       "isLocked": false,
-      "linkedName": "SourceSide3_Red_3"
+      "linkedName": "RED_ThreeNoteSource_Get2"
     },
     {
       "anchor": {
@@ -55,7 +55,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "SourceSide3_Red",
+  "folder": "ThreeNoteSource RED",
   "previewStartingState": {
     "rotation": 180.0,
     "velocity": 0

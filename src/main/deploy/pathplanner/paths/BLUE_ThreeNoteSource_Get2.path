@@ -3,36 +3,36 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 13.68,
-        "y": 3.159074799824993
+        "x": 4.47,
+        "y": 4.820991701320227
       },
       "prevControl": null,
       "nextControl": {
-        "x": 11.18005206829768,
-        "y": 0.7449031445779011
+        "x": 5.616149587238094,
+        "y": 3.6748421140821343
       },
       "isLocked": false,
-      "linkedName": "SourceSide3_Red_0"
+      "linkedName": "BLUE_ThreeNoteSource_Shoot1"
     },
     {
       "anchor": {
-        "x": 8.37,
-        "y": 1.0888421078761885
+        "x": 8.141314711948796,
+        "y": 4.42
       },
       "prevControl": {
-        "x": 10.189469797285902,
-        "y": 2.299526741877367
+        "x": 6.691749803252603,
+        "y": 4.42
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "SourceSide3_Red_1"
+      "linkedName": "BLUE_ThreeNoteSource_Get2"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [
     {
       "name": "New Constraints Zone",
-      "minWaypointRelativePos": 0.65,
+      "minWaypointRelativePos": 0.6,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 3.5,
@@ -51,14 +51,11 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -155.95,
+    "rotation": 0.0,
     "rotateFast": true
   },
   "reversed": false,
-  "folder": "SourceSide3_Red",
-  "previewStartingState": {
-    "rotation": 180.0,
-    "velocity": 0
-  },
+  "folder": "ThreeNoteSource BLUE",
+  "previewStartingState": null,
   "useDefaultConstraints": false
 }
