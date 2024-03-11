@@ -3,8 +3,9 @@
   "robotLength": 0.889,
   "holonomicMode": true,
   "pathFolders": [
-    "Three Note Red",
+    "SourceSide3_Blue",
     "Three Note Blue",
+    "Three Note Red",
     "get one close note then go right",
     "left side 3 close auto",
     "left side mid rush",

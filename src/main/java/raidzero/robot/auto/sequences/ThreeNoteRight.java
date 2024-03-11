@@ -1,18 +1,14 @@
 package raidzero.robot.auto.sequences;
 import java.util.Arrays;
 
-import org.ejml.equation.Sequence;
-
 import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.path.PathPlannerTrajectory;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import raidzero.robot.auto.actions.Action;
+
 import raidzero.robot.auto.actions.AngleShooterAction;
 import raidzero.robot.auto.actions.AutomaticIntakeAction;
 import raidzero.robot.auto.actions.DrivePath;
-import raidzero.robot.auto.actions.DrivePathNoteAim;
 import raidzero.robot.auto.actions.ParallelAction;
 import raidzero.robot.auto.actions.Res;
 import raidzero.robot.auto.actions.RunConveyorAction;

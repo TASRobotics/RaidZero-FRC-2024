@@ -22,8 +22,6 @@ public class AutoRunner {
         new ThreeNoteRed(),   
         new ThreeNoteRight(),     
 
-        new SingleNoteSpeaker(), 
-
         new ShootPreloadSequence()
     };
 
