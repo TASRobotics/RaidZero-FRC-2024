@@ -8,40 +8,40 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.830406121545227,
-        "y": 1.6834072062559495
+        "x": 6.830413702851892,
+        "y": 1.68342346469118
       },
       "isLocked": false,
-      "linkedName": "right2"
+      "linkedName": "SourceSide3_Blue_1"
     },
     {
       "anchor": {
-        "x": 6.479397810453561,
+        "x": 6.48,
         "y": 3.5530637204380864
       },
       "prevControl": {
-        "x": 7.018218834733717,
-        "y": 2.933386636217787
+        "x": 7.018847193455564,
+        "y": 2.9334093917844797
       },
       "nextControl": {
-        "x": 5.988114892896453,
-        "y": 4.118069078730751
+        "x": 5.988693222073188,
+        "y": 4.1180483308001925
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.4664725978666615,
+        "x": 4.47,
         "y": 4.820991701320227
       },
       "prevControl": {
-        "x": 5.240123569252374,
-        "y": 4.3482049965845135
+        "x": 5.242821030338235,
+        "y": 4.3468495825753735
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "rightshoot"
+      "linkedName": "SourceSide3_Blue_2"
     }
   ],
   "rotationTargets": [
@@ -73,7 +73,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -10.823011226207075,
+    "rotation": -10.819999999999993,
     "rotateFast": false
   },
   "reversed": false,

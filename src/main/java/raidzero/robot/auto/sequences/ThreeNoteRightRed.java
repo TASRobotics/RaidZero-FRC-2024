@@ -16,14 +16,14 @@ import raidzero.robot.auto.actions.SeriesAction;
 import raidzero.robot.auto.actions.ShootAction;
 import raidzero.robot.auto.actions.WaitAction;
 
-public class ThreeNoteRight extends AutoSequence {
-    private PathPlannerPath preload = PathPlannerPath.fromPathFile("SourceSide3_Preload_Blue");
-    private PathPlannerPath get1 = PathPlannerPath.fromPathFile("SourceSide3_Get1_Blue");
-    private PathPlannerPath shoot1 = PathPlannerPath.fromPathFile("SourceSide3_Shoot1_Blue");
-    private PathPlannerPath get2 = PathPlannerPath.fromPathFile("SourceSide3_Get2_Blue");
-    private PathPlannerPath shoot2 = PathPlannerPath.fromPathFile("SourceSide3_Shoot2_Blue");
+public class ThreeNoteRightRed extends AutoSequence {
+    private PathPlannerPath preload = PathPlannerPath.fromPathFile("SourceSide3_Preload_Red");
+    private PathPlannerPath get1 = PathPlannerPath.fromPathFile("SourceSide3_Get1_Red");
+    private PathPlannerPath shoot1 = PathPlannerPath.fromPathFile("SourceSide3_Shoot1_Red");
+    private PathPlannerPath get2 = PathPlannerPath.fromPathFile("SourceSide3_Get2_Red");
+    private PathPlannerPath shoot2 = PathPlannerPath.fromPathFile("SourceSide3_Shoot2_Red");
 
-    public ThreeNoteRight() {
+    public ThreeNoteRightRed() {
     }
 
     @Override
@@ -76,6 +76,6 @@ public class ThreeNoteRight extends AutoSequence {
 
     @Override
     public String getName() {
-        return "3 Note Source Side";
+        return "3 Note Source Side Red";
     }
 }
