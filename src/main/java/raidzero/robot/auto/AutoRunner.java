@@ -18,10 +18,8 @@ public class AutoRunner {
     private AutoSequence[] availableSequences = {
         new EmptySequence(),
         new TestSequence(),
-        new ThreeNote(),
-        new ThreeNoteRed(),   
-        new ThreeNoteRight(),     
-
+        new BLUE_FiveNoteSpeaker(),
+        new ThreeNoteRed(),
         new ShootPreloadSequence()
     };
 

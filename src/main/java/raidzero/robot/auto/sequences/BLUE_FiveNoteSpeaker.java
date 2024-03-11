@@ -15,7 +15,7 @@ import raidzero.robot.auto.actions.RunConveyorAction;
 import raidzero.robot.auto.actions.SeriesAction;
 import raidzero.robot.auto.actions.ShootAction;
 
-public class ThreeNote extends AutoSequence {
+public class BLUE_FiveNoteSpeaker extends AutoSequence {
     private PathPlannerPath threeNotePreload = PathPlannerPath.fromPathFile("BLUE_FiveNoteSpeaker_0");
     private PathPlannerPath threeNote1 = PathPlannerPath.fromPathFile("BLUE_FiveNoteSpeaker_1");
     private PathPlannerPath threeNote2 = PathPlannerPath.fromPathFile("BLUE_FiveNoteSpeaker_2");
@@ -23,7 +23,7 @@ public class ThreeNote extends AutoSequence {
     private PathPlannerPath threeNoteGet4 = PathPlannerPath.fromPathFile("BLUE_FiveNoteSpeaker_Get4");
     private PathPlannerPath threeNoteShoot4 = PathPlannerPath.fromPathFile("BLUE_FiveNoteSpeaker_Shoot4");
 
-    public ThreeNote() {
+    public BLUE_FiveNoteSpeaker() {
     }
 
     @Override
@@ -81,6 +81,6 @@ public class ThreeNote extends AutoSequence {
 
     @Override
     public String getName() {
-        return "Three Note Blue";
+        return "BLUE_FiveNoteSpeaker";
     }
 }
