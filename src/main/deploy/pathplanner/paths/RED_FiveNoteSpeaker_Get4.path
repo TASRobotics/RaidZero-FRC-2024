@@ -12,7 +12,7 @@
         "y": 7.361952144609831
       },
       "isLocked": false,
-      "linkedName": "l3nRED4"
+      "linkedName": "RED_FiveNoteSpeaker_3"
     },
     {
       "anchor": {
@@ -25,7 +25,7 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "l3nRED5"
+      "linkedName": "RED_FiveNoteSpeaker_Get4"
     }
   ],
   "rotationTargets": [
@@ -49,7 +49,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Three Note Red",
+  "folder": "FiveNoteSpeaker RED",
   "previewStartingState": {
     "rotation": 180.0,
     "velocity": 0

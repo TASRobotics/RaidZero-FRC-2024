@@ -4,8 +4,9 @@
   "holonomicMode": true,
   "pathFolders": [
     "FiveNoteSpeaker BLUE ",
-    "ThreeNoteSource BLUE",
-    "Three Note Red"
+    "FiveNoteSpeaker RED",
+    "ThreeNoteSource RED",
+    "ThreeNoteSource BLUE"
   ],
   "autoFolders": [],
   "defaultMaxVel": 1.0,
