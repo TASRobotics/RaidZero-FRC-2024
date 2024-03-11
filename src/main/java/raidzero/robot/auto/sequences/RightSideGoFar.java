@@ -1,8 +1,6 @@
 package raidzero.robot.auto.sequences;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -12,11 +10,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import raidzero.robot.auto.actions.Action;
 import raidzero.robot.auto.actions.DrivePath;
-import raidzero.robot.auto.actions.ParallelAction;
 import raidzero.robot.auto.actions.Res;
-//import raidzero.robot.auto.actions.RunIntakeAction;
 import raidzero.robot.auto.actions.SeriesAction;
-import raidzero.robot.auto.actions.WaitAction;
 import raidzero.robot.submodules.Swerve;
 
 public class RightSideGoFar extends AutoSequence {

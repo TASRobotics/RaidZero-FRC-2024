@@ -3,47 +3,47 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.330367334382138,
-        "y": 4.80666483147975
+        "x": 1.4499800428172283,
+        "y": 1.5201930403860808
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.106594025848975,
-        "y": 4.051998568783996
+        "x": 1.9879241154642866,
+        "y": 2.034415517347615
       },
       "isLocked": false,
-      "linkedName": "rightshoot"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.836955588319164,
-        "y": 4.122214464115091
+        "x": 2.8045556963714273,
+        "y": 3.159074799824993
       },
       "prevControl": {
-        "x": 7.045476337199226,
-        "y": 2.6865079155719487
+        "x": 2.589652648764286,
+        "y": 2.901191142696422
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "right4"
+      "linkedName": "SourceSide3_Blue_0"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 5.0,
+    "maxAcceleration": 5.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": -37.763077974032,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "right side mid rush BLUE",
+  "folder": "SourceSide3_Blue",
   "previewStartingState": null,
   "useDefaultConstraints": false
 }

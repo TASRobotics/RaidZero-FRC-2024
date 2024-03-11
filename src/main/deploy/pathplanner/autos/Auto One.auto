@@ -14,43 +14,43 @@
         {
           "type": "path",
           "data": {
-            "pathName": "coop preload"
+            "pathName": "SourceSide3_Preload_Blue"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "coop get 1"
+            "pathName": "SourceSide3_Get1_Blue"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "coop shoot 1"
+            "pathName": null
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "coop get 2"
+            "pathName": "SourceSide3_Get2_Blue"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "coop shoot 2"
+            "pathName": "SourceSide3_Shoot2_Blue"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "right rush 6"
+            "pathName": null
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "right rush 7"
+            "pathName": null
           }
         }
       ]

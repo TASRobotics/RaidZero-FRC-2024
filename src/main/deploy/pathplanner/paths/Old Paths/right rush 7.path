@@ -3,50 +3,47 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.454549670868242,
-        "y": 4.11050362756931
+        "x": 7.836955588319164,
+        "y": 4.122214464115091
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.595079709417621,
-        "y": 4.051949444840401
+        "x": 7.03627309009318,
+        "y": 2.760133892420315
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "right4"
     },
     {
       "anchor": {
-        "x": 2.0669912016515766,
-        "y": 4.557291119594771
+        "x": 4.47,
+        "y": 4.820991701320227
       },
       "prevControl": {
-        "x": 1.821063634190165,
-        "y": 4.545580283048989
+        "x": 6.0805682435580115,
+        "y": 4.4988780526086245
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "preend"
+      "linkedName": "rightshoot"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 3.5,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -17.0,
+    "rotation": -40.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Three Note BLUE",
-  "previewStartingState": {
-    "rotation": 0,
-    "velocity": 0
-  },
+  "folder": null,
+  "previewStartingState": null,
   "useDefaultConstraints": false
 }

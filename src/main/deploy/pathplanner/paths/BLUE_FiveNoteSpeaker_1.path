@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.330367334382138,
-        "y": 4.80666483147975
+        "x": 2.0669912016515766,
+        "y": 4.557291119594771
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.317320403136761,
-        "y": 4.176419642712663
+        "x": 1.715666105278131,
+        "y": 4.9905920717886865
       },
       "isLocked": false,
-      "linkedName": "rightshoot"
+      "linkedName": "BLUE_FiveNoteSpeaker_0"
     },
     {
       "anchor": {
-        "x": 8.392034934157127,
-        "y": 2.5286925268440426
+        "x": 2.5196341119499284,
+        "y": 4.330969664445595
       },
       "prevControl": {
-        "x": 7.4778413453764045,
-        "y": 2.3391660286659
+        "x": 2.285417381034298,
+        "y": 4.459788866449192
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "right3"
+      "linkedName": "BLUE_FiveNoteSpeaker_1"
     }
   ],
   "rotationTargets": [],
@@ -39,11 +39,11 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": -30.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Five Note Speaker Blue",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0
