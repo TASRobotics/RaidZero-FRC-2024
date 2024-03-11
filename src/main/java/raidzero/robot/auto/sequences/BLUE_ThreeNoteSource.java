@@ -16,14 +16,14 @@ import raidzero.robot.auto.actions.SeriesAction;
 import raidzero.robot.auto.actions.ShootAction;
 import raidzero.robot.auto.actions.WaitAction;
 
-public class ThreeNoteRight extends AutoSequence {
-    private PathPlannerPath preload = PathPlannerPath.fromPathFile("SourceSide3_Preload_Blue");
-    private PathPlannerPath get1 = PathPlannerPath.fromPathFile("SourceSide3_Get1_Blue");
-    private PathPlannerPath shoot1 = PathPlannerPath.fromPathFile("SourceSide3_Shoot1_Blue");
-    private PathPlannerPath get2 = PathPlannerPath.fromPathFile("SourceSide3_Get2_Blue");
-    private PathPlannerPath shoot2 = PathPlannerPath.fromPathFile("SourceSide3_Shoot2_Blue");
+public class BLUE_ThreeNoteSource extends AutoSequence {
+    private PathPlannerPath blueThreeNoteSource0 = PathPlannerPath.fromPathFile("BLUE_ThreeNoteSource_0");
+    private PathPlannerPath blueThreeNoteSourceGet1 = PathPlannerPath.fromPathFile("BLUE_ThreeNoteSource_Get1");
+    private PathPlannerPath blueThreeNoteSourceShoot1 = PathPlannerPath.fromPathFile("BLUE_ThreeNoteSource_Shoot1");
+    private PathPlannerPath blueThreeNoteSourceGet2 = PathPlannerPath.fromPathFile("BLUE_ThreeNoteSource_Get2");
+    private PathPlannerPath blueThreeNoteSourceShoot2 = PathPlannerPath.fromPathFile("BLUE_ThreeNoteSource_Shoot2");
 
-    public ThreeNoteRight() {
+    public BLUE_ThreeNoteSource() {
     }
 
     @Override
@@ -33,15 +33,15 @@ public class ThreeNoteRight extends AutoSequence {
             new SeriesAction(Arrays.asList(
                 new Res(), 
                 new ParallelAction(Arrays.asList(
-                    new DrivePath(preload.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)))), 
+                    new DrivePath(blueThreeNoteSource0.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)))), 
                     new ShootAction(true), 
                     new AngleShooterAction(Rotation2d.fromDegrees(26.75))
                 )), 
                 new RunConveyorAction(1.0, 0.5), // Shoot 1st note (preload)
                 new ParallelAction(Arrays.asList(
                     new SeriesAction(Arrays.asList(
-                        new DrivePath(get1.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)))), 
-                        new DrivePath(shoot1.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0))))
+                        new DrivePath(blueThreeNoteSourceGet1.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)))), 
+                        new DrivePath(blueThreeNoteSourceShoot1.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0))))
                     )),
                     new SeriesAction(Arrays.asList(
                         new WaitAction(0.9), // Delays a bit before dropping intake
@@ -53,8 +53,8 @@ public class ThreeNoteRight extends AutoSequence {
                 new RunConveyorAction(1.0, 0.5), // shoot 2nd note
                 new ParallelAction(Arrays.asList(
                     new SeriesAction(Arrays.asList(
-                        new DrivePath(get2.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)))), 
-                        new DrivePath(shoot2.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0))))
+                        new DrivePath(blueThreeNoteSourceGet2.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)))), 
+                        new DrivePath(blueThreeNoteSourceShoot2.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0))))
                     )),
                     new SeriesAction(Arrays.asList(
                         new WaitAction(0.75), // Delays a bit before dropping intake
@@ -76,6 +76,6 @@ public class ThreeNoteRight extends AutoSequence {
 
     @Override
     public String getName() {
-        return "3 Note Source Side";
+        return "BLUE_ThreeNoteSource";
     }
 }
