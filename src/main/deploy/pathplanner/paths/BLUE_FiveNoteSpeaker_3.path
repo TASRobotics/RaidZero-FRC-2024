@@ -55,6 +55,9 @@
   },
   "reversed": false,
   "folder": "FiveNoteSpeaker BLUE ",
-  "previewStartingState": null,
+  "previewStartingState": {
+    "rotation": 3.3,
+    "velocity": 0
+  },
   "useDefaultConstraints": false
 }
