@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.3328624118018553,
-        "y": 3.4781184540971077
+        "x": 2.0669912016515766,
+        "y": 4.557291119594771
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.9815373154284097,
-        "y": 3.911419406291023
+        "x": 1.715666105278131,
+        "y": 4.9905920717886865
       },
       "isLocked": false,
       "linkedName": "preend"
     },
     {
       "anchor": {
-        "x": 2.379705757984981,
-        "y": 4.227611993027124
+        "x": 2.5196341119499284,
+        "y": 4.330969664445595
       },
       "prevControl": {
-        "x": 2.1454890270693507,
-        "y": 4.356431195030721
+        "x": 2.285417381034298,
+        "y": 4.459788866449192
       },
       "nextControl": null,
       "isLocked": false,
@@ -43,7 +43,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Three Note Blue",
+  "folder": null,
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

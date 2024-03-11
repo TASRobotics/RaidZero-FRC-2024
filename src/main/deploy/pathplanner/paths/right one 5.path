@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 8.205785626230938,
-        "y": 2.406914133199994
+        "x": 8.392034934157127,
+        "y": 2.5286925268440426
       },
       "prevControl": {
-        "x": 7.291592037450215,
-        "y": 2.2173876350218515
+        "x": 7.4778413453764045,
+        "y": 2.3391660286659
       },
       "nextControl": null,
       "isLocked": false,
@@ -43,7 +43,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "get one close note then go right BLUE",
+  "folder": null,
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

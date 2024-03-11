@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.205785626230938,
-        "y": 2.406914133199994
+        "x": 8.392034934157127,
+        "y": 2.5286925268440426
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.010531960351458,
-        "y": 1.6669783173701207
+        "x": 7.196781268277648,
+        "y": 1.788756711014169
       },
       "isLocked": false,
       "linkedName": "right3"
@@ -43,7 +43,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "get one close note then go right BLUE",
+  "folder": null,
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0
