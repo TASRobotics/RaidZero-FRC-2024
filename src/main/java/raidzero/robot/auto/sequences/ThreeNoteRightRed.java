@@ -1,4 +1,4 @@
-package raidzero.robot.auto.sequences;
+package raidzero.robot.auto.sequences.oldpaths;
 import java.util.Arrays;
 
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -15,6 +15,7 @@ import raidzero.robot.auto.actions.RunConveyorAction;
 import raidzero.robot.auto.actions.SeriesAction;
 import raidzero.robot.auto.actions.ShootAction;
 import raidzero.robot.auto.actions.WaitAction;
+import raidzero.robot.auto.sequences.AutoSequence;
 
 public class ThreeNoteRightRed extends AutoSequence {
     private PathPlannerPath preload = PathPlannerPath.fromPathFile("SourceSide3_Preload_Red");

@@ -34,7 +34,7 @@ public class BLUE_FiveNoteSpeaker extends AutoSequence {
                 new ParallelAction(Arrays.asList(
                     new DrivePath(threeNotePreload.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)))), 
                     new ShootAction(true), 
-                    new AngleShooterAction(Rotation2d.fromDegrees(37.09))
+                    new AngleShooterAction(Rotation2d.fromDegrees(39.09))
                 )), 
                 new ParallelAction(Arrays.asList(
                     new SeriesAction(Arrays.asList(
@@ -50,7 +50,7 @@ public class BLUE_FiveNoteSpeaker extends AutoSequence {
                         new DrivePath(threeNote2.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0))))
                     )),
                     new AutomaticIntakeAction(), 
-                    new AngleShooterAction(Rotation2d.fromDegrees(32.43))
+                    new AngleShooterAction(Rotation2d.fromDegrees(28.83))
                 )), 
                 new ParallelAction(Arrays.asList(
                     new SeriesAction(Arrays.asList(
@@ -58,7 +58,7 @@ public class BLUE_FiveNoteSpeaker extends AutoSequence {
                         new DrivePath(threeNote3.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0))))
                     )),
                     new AutomaticIntakeAction(), 
-                    new AngleShooterAction(Rotation2d.fromDegrees(30.5))
+                    new AngleShooterAction(Rotation2d.fromDegrees(35.5))
                 )), 
                 new ParallelAction(Arrays.asList(
                     new SeriesAction(Arrays.asList(
@@ -66,7 +66,7 @@ public class BLUE_FiveNoteSpeaker extends AutoSequence {
                         new DrivePath(threeNoteGet4.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0))))
                     )),
                     new AutomaticIntakeAction(), 
-                    new AngleShooterAction(Rotation2d.fromDegrees(24.7))
+                    new AngleShooterAction(Rotation2d.fromDegrees(27.7))
                 )), 
                 new DrivePath(threeNoteShoot4.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)))),
                 new RunConveyorAction(1.0, 0.5) // shoot 5th note

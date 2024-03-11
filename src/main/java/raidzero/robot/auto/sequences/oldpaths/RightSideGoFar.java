@@ -1,4 +1,4 @@
-package raidzero.robot.auto.sequences;
+package raidzero.robot.auto.sequences.oldpaths;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +12,7 @@ import raidzero.robot.auto.actions.Action;
 import raidzero.robot.auto.actions.DrivePath;
 import raidzero.robot.auto.actions.Res;
 import raidzero.robot.auto.actions.SeriesAction;
+import raidzero.robot.auto.sequences.AutoSequence;
 import raidzero.robot.submodules.Swerve;
 
 public class RightSideGoFar extends AutoSequence {
