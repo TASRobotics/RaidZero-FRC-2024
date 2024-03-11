@@ -12,7 +12,7 @@
         "y": 7.087976481717375
       },
       "isLocked": false,
-      "linkedName": "fourend"
+      "linkedName": "BLUE_FiveNoteSpeaker_Get4"
     },
     {
       "anchor": {
@@ -25,7 +25,7 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "shootright"
+      "linkedName": "BLUE_FiveNoteSpeaker_Shoot4"
     }
   ],
   "rotationTargets": [
