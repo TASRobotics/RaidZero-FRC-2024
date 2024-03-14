@@ -92,7 +92,7 @@ public class Intake extends Submodule{
         //     mBeamBreakTimer.restart();
         //     mBeamBreakTimer.start();
         // }
-        mPeriodicIO.limitTriggered = mBeamBreakTimer.get() > 0.1 && mBeamBreak.isPressed();
+        mPeriodicIO.limitTriggered = mBeamBreakTimer.get() > IntakeConstants.kBeamBrakeTime && mBeamBreak.isPressed();
     }
 
     @Override

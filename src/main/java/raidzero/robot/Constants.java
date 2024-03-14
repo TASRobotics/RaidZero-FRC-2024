@@ -208,6 +208,8 @@ public class Constants {
 
         // Open Loop Ramp Rate Constants
         public static final double kVoltageRampRate = 0.125;
+
+        public static final double kBeamBrakeTime = 0.1;
     }
 
     public static final class ConveyorConstants {
