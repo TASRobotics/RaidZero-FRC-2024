@@ -232,17 +232,28 @@ public class Teleop {
         //     mWrist.setPercentSpeed(-0.1);
         // } 
 
-        if(p.getRawButton(3)) {
-            mClimb.setPercentSpeed(0.2);
-        } else if(p.getRawButton(2)) {
-            mClimb.setPercentSpeed(-0.2);
-        } else {
-            mClimb.setPercentSpeed(0.0);
-        }
+        // if(p.getRawButton(3)) {
+        //     mClimb.setPercentSpeed(0.2);
+        // } else if(p.getRawButton(2)) {
+        //     mClimb.setPercentSpeed(-0.2);
+        // } else {
+        //     mClimb.setPercentSpeed(0.0);
+        // }
 
         if(p.getRawButton(5)) {
             mAngleAdjuster.setAngle(Rotation2d.fromDegrees(49.0 + mSuperstructure.getAngleAdjusterOffset()));
         }
+
+        // if(p.getRawButton(3)) {
+        //     mAngleAdjuster.setPercentSpeed(-0.05);
+        // }
+        // else if(p.getRawButton(2)) {
+        //     mAngleAdjuster.setPercentSpeed(0.05);
+        // }
+        // else {
+        //     mAngleAdjuster.setPercentSpeed(0);
+        // }
+
 
         if(p.getRawButtonPressed(6)) {
             mSuperstructure.incrementAngleAdjusterOffset(1.0);
