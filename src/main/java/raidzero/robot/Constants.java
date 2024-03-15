@@ -299,7 +299,7 @@ public class Constants {
         public static final double kMagnetOffset = 0.34197 + 34.0 / 360.0; //-.077393 + 7.0 / 360; //-0.143311 + 30.0 / 180; // 0.499268 /// 42 deg
         public static final AbsoluteSensorRangeValue kAbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
 
-        public static final double DEFAULT_OFFSET = 2.0; 
+        public static final double DEFAULT_OFFSET = 1.0; 
 
         // Aiming Constants
         public static InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble>
