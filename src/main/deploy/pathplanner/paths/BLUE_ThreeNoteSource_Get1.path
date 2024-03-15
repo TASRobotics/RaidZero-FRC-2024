@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.8045556963714273,
-        "y": 3.159074799824993
+        "x": 2.57,
+        "y": 2.72
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.304594483534519,
-        "y": 0.7449972317047616
+        "x": 3.8676927528952776,
+        "y": 1.7502611077805146
       },
       "isLocked": false,
       "linkedName": "BLUE_ThreeNoteSource_0"
     },
     {
       "anchor": {
-        "x": 8.105497537347604,
-        "y": 1.0888421078761885
+        "x": 7.82,
+        "y": 0.92
       },
       "prevControl": {
-        "x": 6.285985067607133,
-        "y": 2.299462609396423
+        "x": 5.432997751469624,
+        "y": 1.039667311789508
       },
       "nextControl": null,
       "isLocked": false,
@@ -51,11 +51,14 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -24.057349450011685,
+    "rotation": -20.0,
     "rotateFast": true
   },
   "reversed": false,
   "folder": "ThreeNoteSource BLUE",
-  "previewStartingState": null,
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
   "useDefaultConstraints": false
 }

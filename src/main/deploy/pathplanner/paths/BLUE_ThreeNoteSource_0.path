@@ -4,24 +4,24 @@
     {
       "anchor": {
         "x": 1.4499800428172283,
-        "y": 1.5201930403860808
+        "y": 1.42
       },
       "prevControl": null,
       "nextControl": {
         "x": 1.9879241154642866,
-        "y": 2.034415517347615
+        "y": 1.9342224769615342
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.8045556963714273,
-        "y": 3.159074799824993
+        "x": 2.57,
+        "y": 2.72
       },
       "prevControl": {
-        "x": 2.589652648764286,
-        "y": 2.901191142696422
+        "x": 2.3550969523928584,
+        "y": 2.4621163428714294
       },
       "nextControl": null,
       "isLocked": false,
@@ -39,11 +39,14 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -37.763077974032,
+    "rotation": -52.0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "ThreeNoteSource BLUE",
-  "previewStartingState": null,
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
   "useDefaultConstraints": false
 }

@@ -3,28 +3,28 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.37,
-        "y": 1.0888421078761885
+        "x": 8.722899450811434,
+        "y": 0.92
       },
       "prevControl": null,
       "nextControl": {
-        "x": 9.645083834495711,
-        "y": 1.68342346469118
+        "x": 9.997983285307146,
+        "y": 1.5145813568149915
       },
       "isLocked": false,
       "linkedName": "RED_ThreeNoteSource_Get1"
     },
     {
       "anchor": {
-        "x": 10.0,
+        "x": 10.059999999999999,
         "y": 3.5530637204380864
       },
       "prevControl": {
-        "x": 9.461152806544437,
+        "x": 9.521152806544436,
         "y": 2.9334093917844797
       },
       "nextControl": {
-        "x": 10.491306777926813,
+        "x": 10.551306777926811,
         "y": 4.1180483308001925
       },
       "isLocked": false,
@@ -32,12 +32,12 @@
     },
     {
       "anchor": {
-        "x": 12.01,
+        "x": 12.07,
         "y": 4.820991701320227
       },
       "prevControl": {
-        "x": 11.237178969661764,
-        "y": 4.346849582575374
+        "x": 11.297178969661765,
+        "y": 4.3468495825753735
       },
       "nextControl": null,
       "isLocked": false,
@@ -47,7 +47,7 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.5,
-      "rotationDegrees": -120.0,
+      "rotationDegrees": 240.0,
       "rotateFast": false
     }
   ],
@@ -73,7 +73,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -169.18,
+    "rotation": 190.82,
     "rotateFast": false
   },
   "reversed": false,

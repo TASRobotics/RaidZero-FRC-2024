@@ -209,7 +209,7 @@ public class Constants {
         // Open Loop Ramp Rate Constants
         public static final double kVoltageRampRate = 0.125;
 
-        public static final double kBeamBrakeTime = 0.05;
+        public static final double kBeamBrakeTime = 0.08;
     }
 
     public static final class ConveyorConstants {
@@ -298,6 +298,8 @@ public class Constants {
         public static final SensorDirectionValue kSensorDirection = SensorDirectionValue.CounterClockwise_Positive;
         public static final double kMagnetOffset = 0.34197 + 34.0 / 360.0; //-.077393 + 7.0 / 360; //-0.143311 + 30.0 / 180; // 0.499268 /// 42 deg
         public static final AbsoluteSensorRangeValue kAbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
+
+        public static final double DEFAULT_OFFSET = 2.0; 
 
         // Aiming Constants
         public static InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble>
@@ -526,6 +528,7 @@ public class Constants {
 
         public static final Pose2d BLUE_SPEAKER_POSE = new Pose2d(Units.inchesToMeters(-1.5), Units.inchesToMeters(218.42), new Rotation2d());
         public static final Pose2d RED_SPEAKER_POSE = new Pose2d(Units.inchesToMeters(652.73), Units.inchesToMeters(218.42), new Rotation2d());
+        public static final double VISION_Y_OFFSET = 0.1;
     }
 
     public static final int kCANTimeoutMs = 10;

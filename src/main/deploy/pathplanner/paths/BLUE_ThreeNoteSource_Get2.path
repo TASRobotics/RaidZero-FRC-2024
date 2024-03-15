@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.616149587238094,
-        "y": 3.6748421140821343
+        "x": 5.490402183376313,
+        "y": 3.9370916028018184
       },
       "isLocked": false,
       "linkedName": "BLUE_ThreeNoteSource_Shoot1"
     },
     {
       "anchor": {
-        "x": 8.141314711948796,
-        "y": 4.42
+        "x": 8.15,
+        "y": 4.11
       },
       "prevControl": {
-        "x": 6.691749803252603,
-        "y": 4.42
+        "x": 6.700435091303807,
+        "y": 4.11
       },
       "nextControl": null,
       "isLocked": false,
@@ -56,6 +56,9 @@
   },
   "reversed": false,
   "folder": "ThreeNoteSource BLUE",
-  "previewStartingState": null,
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
   "useDefaultConstraints": false
 }

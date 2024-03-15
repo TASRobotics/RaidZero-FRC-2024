@@ -63,6 +63,7 @@ public class Superstructure extends Submodule {
     public void onStart(double timestamp) {
         clearRequestQueue();
         mAlliance = DriverStation.getAlliance().get();
+        angleAdjusterOffset += AngleAdjusterConstants.DEFAULT_OFFSET;
     }
 
     @Override

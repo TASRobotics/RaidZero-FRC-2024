@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 12.01,
+        "x": 12.07,
         "y": 4.820991701320227
       },
       "prevControl": null,
       "nextControl": {
-        "x": 10.863850412761906,
-        "y": 3.674842114082134
+        "x": 11.052079734491226,
+        "y": 3.9392950823816335
       },
       "isLocked": false,
       "linkedName": "RED_ThreeNoteSource_Shoot1"
     },
     {
       "anchor": {
-        "x": 8.34,
-        "y": 4.42
+        "x": 8.38697639480587,
+        "y": 4.114374863820816
       },
       "prevControl": {
-        "x": 9.789564908696194,
-        "y": 4.42
+        "x": 9.836541303502065,
+        "y": 4.114374863820816
       },
       "nextControl": null,
       "isLocked": false,

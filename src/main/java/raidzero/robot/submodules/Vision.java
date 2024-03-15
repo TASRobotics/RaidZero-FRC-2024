@@ -76,11 +76,12 @@ public class Vision extends Submodule {
         Results results = LimelightHelpers.getLatestResults(VisionConstants.APRILTAG_CAM_NAME).targetingResults;
 
         Pose2d robotPose = results.getBotPose2d_wpiBlue();
+
         double tl = results.latency_pipeline;
         double cl = results.latency_capture;
 
         if (robotPose.getX() != 0.0 && hasAprilTag()) {
-            visionPose = robotPose;
+            visionPose = new Pose2d(robotPose.getX(), robotPose.getY() + VisionConstants.VISION_Y_OFFSET, robotPose.getRotation());
             drive.getPoseEstimator().setVisionMeasurementStdDevs(VecBuilder.fill(VisionConstants.XY_STDS, VisionConstants.XY_STDS, Units.degreesToRadians(VisionConstants.DEG_STDS)));
             drive.getPoseEstimator().addVisionMeasurement(robotPose, Timer.getFPGATimestamp() - (tl/1000.0) - (cl/1000.0));
         }

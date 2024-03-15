@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.105497537347604,
-        "y": 1.0888421078761885
+        "x": 7.82,
+        "y": 0.92
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.830413702851892,
-        "y": 1.68342346469118
+        "x": 6.544916165504288,
+        "y": 1.5145813568149915
       },
       "isLocked": false,
       "linkedName": "BLUE_ThreeNoteSource_Get1"
@@ -78,6 +78,9 @@
   },
   "reversed": false,
   "folder": "ThreeNoteSource BLUE",
-  "previewStartingState": null,
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
   "useDefaultConstraints": false
 }

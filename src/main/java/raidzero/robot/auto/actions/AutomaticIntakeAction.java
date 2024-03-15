@@ -19,7 +19,7 @@ public class AutomaticIntakeAction implements Action {
 
     @Override
     public boolean isFinished() {
-        if( timer.hasElapsed(mTimeSeconds)) return true;
+        if(timer.hasElapsed(mTimeSeconds)) return true;
         return done;
     }
 
