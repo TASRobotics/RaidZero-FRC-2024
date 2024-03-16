@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 8.15,
-        "y": 4.11
+        "y": 4.06
       },
       "prevControl": null,
       "nextControl": {
         "x": 6.65,
-        "y": 4.11
+        "y": 4.06
       },
       "isLocked": false,
       "linkedName": "BLUE_ThreeNoteSource_Get2"
@@ -51,7 +51,7 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": -10.222168633636025,
+    "rotation": -4.25,
     "rotateFast": false
   },
   "reversed": false,

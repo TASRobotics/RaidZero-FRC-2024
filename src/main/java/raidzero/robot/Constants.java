@@ -71,10 +71,10 @@ public class Constants {
         // public static final double kRearRightAzimuthOffset = -0.205811 + 0.5;
 
         /* Sheesh Offsets */
-        public static final double kFrontLeftAzimuthOffset = -0.991943; // -0.809814 /*+ 0.5*/;
-        public static final double kFrontRightAzimuthOffset = -0.482910 /*+ 0.5*/;
-        public static final double kRearLeftAzimuthOffset = -0.880371 /*+ 0.5*/;
-        public static final double kRearRightAzimuthOffset = -0.955566 /*+ 0.5*/;
+        public static final double kFrontLeftAzimuthOffset = -0.986084; // -0.809814 /*+ 0.5*/;
+        public static final double kFrontRightAzimuthOffset = -0.452148 /*+ 0.5*/;
+        public static final double kRearLeftAzimuthOffset = -0.843994 /*+ 0.5*/;
+        public static final double kRearRightAzimuthOffset = -0.953125 /*+ 0.5*/;
 
         public static final double kThrottleReduction = (14.0 / 50.0) * (28.0 / 16.0) * (15.0 / 45.0);
         public static final double kAzimuthReduction = (14.0 / 50.0) * (10.0 / 60.0);
@@ -209,7 +209,7 @@ public class Constants {
         // Open Loop Ramp Rate Constants
         public static final double kVoltageRampRate = 0.125;
 
-        public static final double kBeamBrakeTime = 0.08;
+        public static final double kBeamBrakeTime = 0.05;
     }
 
     public static final class ConveyorConstants {
@@ -290,7 +290,7 @@ public class Constants {
         // Software Limit Switch Constants
         // TODO
         public static final boolean kForwardSoftLimitEnabled = true;
-        public static final double kForwardSoftLimit = 59.0 / 360.0; // 59.0 / 360.0; // rotations
+        public static final double kForwardSoftLimit = 52.0 / 360.0; // 59.0 / 360.0; // rotations
         public static final boolean kReverseSoftLimitEnabled = true;
         public static final double kReverseSoftLimit = 15.0 / 360.0; // rotations
 
@@ -528,7 +528,7 @@ public class Constants {
 
         public static final Pose2d BLUE_SPEAKER_POSE = new Pose2d(Units.inchesToMeters(-1.5), Units.inchesToMeters(218.42), new Rotation2d());
         public static final Pose2d RED_SPEAKER_POSE = new Pose2d(Units.inchesToMeters(652.73), Units.inchesToMeters(218.42), new Rotation2d());
-        public static final double VISION_Y_OFFSET = 0.1;
+        public static final double VISION_Y_OFFSET = 0.25;
     }
 
     public static final int kCANTimeoutMs = 10;

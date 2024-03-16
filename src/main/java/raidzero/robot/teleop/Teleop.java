@@ -240,20 +240,19 @@ public class Teleop {
         //     mClimb.setPercentSpeed(0.0);
         // }
 
-        if(p.getRawButton(5)) {
-            mAngleAdjuster.setAngle(Rotation2d.fromDegrees(49.0 + mSuperstructure.getAngleAdjusterOffset()));
-        }
-
         // if(p.getRawButton(3)) {
-        //     mAngleAdjuster.setPercentSpeed(-0.05);
+        //     mAngleAdjuster.setPercentSpeed(0.05);
         // }
         // else if(p.getRawButton(2)) {
-        //     mAngleAdjuster.setPercentSpeed(0.05);
+        //     mAngleAdjuster.setPercentSpeed(-0.05);
         // }
         // else {
         //     mAngleAdjuster.setPercentSpeed(0);
         // }
 
+        if(p.getRawButton(5)) {
+            mAngleAdjuster.setAngle(Rotation2d.fromDegrees(49.0 + mSuperstructure.getAngleAdjusterOffset()));
+        }
 
         if(p.getRawButtonPressed(6)) {
             mSuperstructure.incrementAngleAdjusterOffset(1.0);

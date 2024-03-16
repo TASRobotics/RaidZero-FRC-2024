@@ -35,7 +35,7 @@ public class BLUE_ThreeNoteSource extends AutoSequence {
                 new ParallelAction(Arrays.asList(
                     new DrivePath(blueThreeNoteSource0.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0)))), 
                     new ShootAction(true), 
-                    new AngleShooterAction(Rotation2d.fromDegrees(27.75))
+                    new AngleShooterAction(Rotation2d.fromDegrees(27.74))
                 )), 
                 new RunConveyorAction(1.0, 0.5), // Shoot 1st note (preload)
                 new ParallelAction(Arrays.asList(
@@ -44,10 +44,10 @@ public class BLUE_ThreeNoteSource extends AutoSequence {
                         new DrivePath(blueThreeNoteSourceShoot1.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0))))
                     )),
                     new SeriesAction(Arrays.asList(
-                        new WaitAction(0.9), // Delays a bit before dropping intake
+                        new WaitAction(0.5), // Delays a bit before dropping intake
                         new AutomaticIntakeAction(3)
                     )),
-                    new AngleShooterAction(Rotation2d.fromDegrees(26))
+                    new AngleShooterAction(Rotation2d.fromDegrees(25.15))
                 )), 
                // new DrivePath(trajectory3), //go to shoot place
                 new RunConveyorAction(1.0, 0.5), // shoot 2nd note
@@ -57,10 +57,10 @@ public class BLUE_ThreeNoteSource extends AutoSequence {
                         new DrivePath(blueThreeNoteSourceShoot2.getTrajectory(new ChassisSpeeds(), new Rotation2d(Math.toRadians(0))))
                     )),
                     new SeriesAction(Arrays.asList(
-                        new WaitAction(0.75), // Delays a bit before dropping intake
+                        new WaitAction(0.5), // Delays a bit before dropping intake
                         new AutomaticIntakeAction(3)
                     )),
-                    new AngleShooterAction(Rotation2d.fromDegrees(26))
+                    new AngleShooterAction(Rotation2d.fromDegrees(25.15))
                 )), 
                 //new DrivePath(trajectory5), //go to shoot place
                 new RunConveyorAction(1.0, 0.5), // shoot 3rd note

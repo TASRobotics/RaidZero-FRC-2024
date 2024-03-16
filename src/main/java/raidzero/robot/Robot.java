@@ -29,7 +29,7 @@ public class Robot extends TimedRobot {
     private static final Vision mVision = Vision.getInstance();
 
     private AutoRunner autoRunner;
-
+    
     /**
      * Runs only once at the start of robot code execution.
      */

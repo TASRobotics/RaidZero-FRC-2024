@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 13.33,
-        "y": 7.3
+        "x": 13.238528133898372,
+        "y": 7.2217118870327965
       },
       "prevControl": null,
       "nextControl": {
-        "x": 11.390989445160692,
-        "y": 7.361952144609831
+        "x": 11.078186971110782,
+        "y": 7.067401803976541
       },
       "isLocked": false,
       "linkedName": "RED_FiveNoteSpeaker_3"
     },
     {
       "anchor": {
-        "x": 8.62,
-        "y": 7.45
+        "x": 8.629800319951517,
+        "y": 7.2011372092919625
       },
       "prevControl": {
-        "x": 9.919836038551237,
-        "y": 7.429353622995233
+        "x": 9.926005017624071,
+        "y": 7.180562531551129
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,16 +30,16 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.5,
-      "rotationDegrees": 180.0,
+      "waypointRelativePos": 0.35,
+      "rotationDegrees": 180,
       "rotateFast": false
     }
   ],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.8,
-    "maxAcceleration": 4.5,
+    "maxVelocity": 4.5,
+    "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
@@ -51,7 +51,7 @@
   "reversed": false,
   "folder": "FiveNoteSpeaker RED",
   "previewStartingState": {
-    "rotation": 180.0,
+    "rotation": 153.0,
     "velocity": 0
   },
   "useDefaultConstraints": false

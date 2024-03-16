@@ -43,6 +43,7 @@ public class Vision extends Submodule {
     @Override
     public void onInit() {
         LimelightHelpers.getLatestResults(VisionConstants.APRILTAG_CAM_NAME);
+        LimelightHelpers.getLatestResults(VisionConstants.NOTE_CAM_NAME);
     }
 
     @Override

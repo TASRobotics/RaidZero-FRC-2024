@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 15.09,
-        "y": 4.11
+        "x": 15.059387113962197,
+        "y": 4.31039498670476
       },
       "prevControl": null,
       "nextControl": {
-        "x": 14.951538597525463,
-        "y": 4.052307365939972
+        "x": 14.918857075412816,
+        "y": 4.251840803975852
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 14.47,
-        "y": 4.56
+        "x": 14.469999999999999,
+        "y": 4.557291119594771
       },
       "prevControl": {
-        "x": 14.71971626828938,
-        "y": 4.571907365435995
+        "x": 14.71592756746141,
+        "y": 4.545580283048989
       },
       "nextControl": null,
       "isLocked": false,
@@ -39,13 +39,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -163.0,
+    "rotation": 197.0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "FiveNoteSpeaker RED",
   "previewStartingState": {
-    "rotation": 180.0,
+    "rotation": 180,
     "velocity": 0
   },
   "useDefaultConstraints": false
